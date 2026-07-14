@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>armature procurement board - 10-builder robotics lab</title>
+<meta name="description" content="A procurement board for armature's open robotics, GPU compute, Jetson, sensor, camera, storage, and lab-tooling roadmap for ten parallel builders.">
+<script>
+  (() => {
+    const saved = localStorage.getItem('armature-theme');
+    const theme = ['light','dark','sepia'].includes(saved)
+      ? saved
+      : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme === 'dark' ? 'dark' : 'light';
+  })();
+</script>
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="%23FFFEFA" stroke="%230A1220" stroke-width="1"/><circle cx="16" cy="6.5" r="2.8" fill="%230A1220"/><circle cx="16" cy="6.5" r="1" fill="%23FFFEFA"/><line x1="14.6" y1="12.5" x2="10" y2="26" stroke="%230A1220" stroke-width="2.7" stroke-linecap="round"/><line x1="17.4" y1="12.5" x2="22" y2="26" stroke="%230A1220" stroke-width="2.7" stroke-linecap="round"/><line x1="12.6" y1="20" x2="19.4" y2="20" stroke="%230A1220" stroke-width="2.4" stroke-linecap="round"/></svg>'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Newsreader:ital,opsz,wght@1,18,400;1,18,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A1220; --ink-2:#142036; --ink-3:#1F2D48;
+    --cream:#F2E6CC; --cream-2:#E8D7B3; --tan:#D6BF92; --paper:#FFFEFA; --panel:#FFFFFF;
+    --saffron:#E89A2C; --saffron-wash:#F4C56E; --saffron-deep:#B97516;
+    --brick:#C44A2A; --moss:#3F5430;
+    --fg-2:#3A4655; --fg-3:#6B7585; --fg-4:#9AA1AC;
+    --hair-ink:rgba(10,18,32,0.10); --hair-cream:rgba(242,230,204,0.14);
+    --nav-bg:rgba(255,254,250,0.92); --grid-line:rgba(10,18,32,0.05);
+    --feature-bg:#0A1220; --feature-panel:#142036; --feature-text:#F2E6CC; --feature-muted:#D6BF92;
+    --accent-ink:#0A1220; --console-gradient:linear-gradient(135deg,rgba(255,255,255,0.96),rgba(242,230,204,0.42));
+    --band-bg:#F2E6CC; --mark-ink:#0A1220; --mark-paper:#FFFEFA;
+    --ease:cubic-bezier(0.2,0.7,0.2,1);
+    --sans:'General Sans','Space Grotesk',-apple-system,sans-serif;
+    --display:'Space Grotesk',sans-serif; --serif:'Newsreader',Georgia,serif; --mono:'JetBrains Mono',monospace;
+  }
+  html[data-theme="dark"]{
+    --ink:#F3EDE2; --paper:#0C0F0E; --panel:#151A18;
+    --fg-2:#C4BDB0; --fg-3:#9A9488; --fg-4:#77766F;
+    --hair-ink:rgba(242,230,204,0.15); --nav-bg:rgba(12,15,14,0.92); --grid-line:rgba(242,230,204,0.055);
+    --feature-bg:#07090C; --feature-panel:#111820;
+    --console-gradient:linear-gradient(135deg,rgba(24,30,27,0.98),rgba(36,31,20,0.78));
+    --band-bg:#181B16; --mark-ink:#F2E6CC; --mark-paper:#0C0F0E;
+  }
+  html[data-theme="sepia"]{
+    --ink:#2B281F; --ink-2:#37342A; --ink-3:#464235;
+    --cream:#F3E8CB; --cream-2:#E5D4AC; --tan:#D8C49D; --paper:#F4E8C9; --panel:#FBF3DD;
+    --saffron:#C98422; --saffron-wash:#DDA64F; --saffron-deep:#8B5B10;
+    --brick:#9E4B31; --moss:#4E6239;
+    --fg-2:#574F3F; --fg-3:#786C55; --fg-4:#9B8D72;
+    --hair-ink:rgba(61,51,33,0.15); --hair-cream:rgba(243,232,203,0.16);
+    --nav-bg:rgba(244,232,201,0.92); --grid-line:rgba(61,51,33,0.055);
+    --feature-bg:#2C2A22; --feature-panel:#37342A; --feature-text:#F3E8CB; --feature-muted:#D8C49D;
+    --accent-ink:#2B281F; --console-gradient:linear-gradient(135deg,rgba(251,243,221,0.97),rgba(216,196,157,0.38));
+    --band-bg:#E8D6AA; --mark-ink:#2B281F; --mark-paper:#F4E8C9;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55;overflow-x:hidden}
+  ::selection{background:var(--saffron);color:var(--accent-ink)}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 28px}
+  .mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:0.14em;font-size:12px;font-weight:500}
+  .num{font-family:var(--mono);color:var(--brick);font-weight:500}
+  nav{position:sticky;top:0;z-index:50;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--hair-ink)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:66px;gap:12px}
+  .brand{display:flex;align-items:center;gap:11px;flex:none}
+  .brand .word{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-0.6px;color:var(--ink)}
+  .navlinks{display:flex;gap:4px;align-items:center;justify-content:flex-end;overflow-x:auto;min-width:0;flex:1}
+  .navlinks a{font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;font-size:11px;color:var(--fg-3);padding:9px 11px;border-radius:6px;white-space:nowrap}
+  .navlinks a:hover{color:var(--ink)}
+  .navlinks a.active{color:var(--accent-ink);background:var(--saffron)}
+  .theme-switch{display:flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--hair-ink);border-radius:7px;background:var(--panel);flex:none}
+  .theme-switch button{width:24px;height:24px;border:0;border-radius:4px;background:transparent;display:grid;place-items:center;cursor:pointer}
+  .theme-switch button:hover{background:var(--hair-ink)}
+  .theme-switch button[aria-pressed="true"]{box-shadow:inset 0 0 0 1px var(--fg-3);background:var(--paper)}
+  .theme-swatch{width:12px;height:12px;border-radius:50%;border:1px solid rgba(10,18,32,0.22)}
+  .theme-swatch.light{background:#FFFEFA}.theme-swatch.dark{background:#0C0F0E}.theme-swatch.sepia{background:#D8C49D}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .theme-mark [stroke="#0A1220"]{stroke:var(--mark-ink)}
+  .theme-mark [fill="#0A1220"]{fill:var(--mark-ink)}
+  .theme-mark [fill="#FFFEFA"]{fill:var(--mark-paper)}
+  @media(max-width:760px){nav .wrap{padding:0 18px}.navlinks{justify-content:flex-start}.brand .word{font-size:18px}}
+  .hero{padding:72px 0 54px;border-bottom:1px solid var(--hair-ink);position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(to right,transparent 0 119px,var(--grid-line) 119px 120px),repeating-linear-gradient(to bottom,transparent 0 119px,var(--grid-line) 119px 120px);-webkit-mask-image:linear-gradient(to bottom,#000,transparent 90%);mask-image:linear-gradient(to bottom,#000,transparent 90%);pointer-events:none}
+  .hero .wrap{position:relative;z-index:1}
+  .eyebrow{color:var(--saffron-deep);margin-bottom:24px}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(38px,7vw,78px);line-height:0.98;letter-spacing:-2.2px;color:var(--ink);max-width:16ch}
+  .sub{font-size:clamp(16px,2vw,19px);color:var(--fg-2);margin-top:22px;max-width:68ch;line-height:1.6}
+  .ctas{display:flex;gap:14px;align-items:center;margin-top:30px;flex-wrap:wrap}
+  .btn{font-family:var(--mono);text-transform:uppercase;letter-spacing:0.1em;font-size:12px;font-weight:500;background:var(--saffron);color:var(--accent-ink);padding:13px 22px;border-radius:7px;border:none;cursor:pointer;display:inline-block}
+  .btn:hover{background:var(--saffron-wash)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--hair-ink)}
+  .btn.ghost:hover{color:var(--saffron-deep);border-color:var(--saffron-deep)}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair-ink);border:1px solid var(--hair-ink);border-radius:10px;overflow:hidden;margin-top:44px}
+  .stat{background:var(--paper);padding:20px 18px}
+  .stat .k{font-family:var(--mono);text-transform:uppercase;letter-spacing:0.12em;font-size:10px;color:var(--fg-3)}
+  .stat .v{font-family:var(--display);font-weight:500;font-size:18px;color:var(--ink);margin-top:7px;letter-spacing:-0.4px}
+  @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+  section{padding:76px 0;border-bottom:1px solid var(--hair-ink)}
+  .sec-head{display:flex;align-items:baseline;gap:15px;margin-bottom:20px}
+  .sec-head .num{font-size:13px}
+  h2{font-family:var(--display);font-weight:500;font-size:clamp(25px,3.8vw,36px);letter-spacing:-1px;color:var(--ink);max-width:24ch}
+  .lede{font-family:var(--serif);font-style:italic;font-size:clamp(18px,2.2vw,22px);color:var(--fg-2);max-width:56ch;margin-bottom:26px}
+  .note{color:var(--fg-3);font-size:13.5px;max-width:78ch}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}
+  .grid.two{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:900px){.grid,.grid.two{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--hair-ink);border-radius:12px;padding:22px 20px}
+  .card .tag{color:var(--brick);margin-bottom:12px}
+  .card h3{font-family:var(--display);font-weight:500;font-size:19px;letter-spacing:-0.4px;color:var(--ink);margin-bottom:8px}
+  .card p{color:var(--fg-2);font-size:14.5px}
+  .card .rate{font-family:var(--mono);font-size:11.5px;color:var(--saffron-deep);margin-top:13px;letter-spacing:0.04em}
+  .ink-surface{background:var(--feature-bg);color:var(--feature-text)}
+  .ink-surface h2{color:var(--feature-text)}
+  .ink-surface .lede{color:var(--feature-muted)}
+  .ink-surface .note{color:var(--feature-muted)}
+  .ink-surface .card{background:var(--feature-panel);border-color:var(--hair-cream)}
+  .ink-surface .card h3{color:var(--feature-text)}
+  .ink-surface .card p{color:var(--feature-muted)}
+  .ink-surface .card .tag{color:var(--saffron)}
+  .table-wrap{overflow-x:auto;border:1px solid var(--hair-ink);border-radius:12px;background:var(--panel);margin-top:24px}
+  .ink-surface .table-wrap{border-color:var(--hair-cream);background:var(--feature-panel)}
+  table{width:100%;border-collapse:collapse;font-size:14px;min-width:860px}
+  th,td{text-align:left;padding:13px 11px;border-bottom:1px solid var(--hair-ink);vertical-align:top}
+  .ink-surface th,.ink-surface td{border-bottom-color:var(--hair-cream)}
+  tr:last-child td,tr:last-child th{border-bottom:none}
+  thead th{font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;font-size:10.5px;color:var(--brick);font-weight:500}
+  .ink-surface thead th{color:var(--saffron)}
+  tbody th{font-family:var(--display);font-weight:500;color:var(--ink);font-size:14.5px}
+  .ink-surface tbody th{color:var(--cream)}
+  td{color:var(--fg-2)}
+  .ink-surface td{color:var(--tan)}
+  td .mono{font-size:10.5px;color:var(--fg-3)}
+  .ink-surface td .mono{color:var(--cream-2)}
+  .pill{font-family:var(--mono);font-size:9.5px;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--hair-ink);border-radius:999px;padding:5px 8px;color:var(--fg-3);background:var(--paper);white-space:nowrap;display:inline-block}
+  .pill.buy{color:var(--saffron-deep);border-color:rgba(232,154,44,0.55);background:rgba(232,154,44,0.12)}
+  .pill.quote{color:var(--brick);border-color:rgba(196,74,42,0.34);background:rgba(196,74,42,0.08)}
+  .pill.defer{color:var(--moss);border-color:rgba(63,84,48,0.35);background:rgba(63,84,48,0.08)}
+  .source-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:22px}
+  @media(max-width:760px){.source-list{grid-template-columns:1fr}}
+  .source-list a{border:1px solid var(--hair-ink);background:var(--panel);border-radius:9px;padding:12px 13px;font-size:13.5px;color:var(--fg-2)}
+  .source-list a:hover{border-color:var(--saffron-deep);color:var(--ink)}
+  .board{margin-top:30px;border:1px solid var(--hair-ink);border-radius:14px;background:var(--console-gradient);padding:24px;overflow:hidden}
+  .stations{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  @media(max-width:900px){.stations{grid-template-columns:1fr}}
+  .station{border:1px solid var(--hair-ink);border-radius:10px;background:var(--paper);padding:14px}
+  .station .n{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--saffron-deep);margin-bottom:8px}
+  .station h3{font-family:var(--display);font-size:16px;font-weight:500;color:var(--ink);letter-spacing:-0.3px;margin-bottom:6px}
+  .station p{font-size:13px;color:var(--fg-2);line-height:1.45}
+  .band{padding:42px 0;background:var(--band-bg);border-bottom:1px solid var(--hair-ink)}
+  .q{font-family:var(--serif);font-style:italic;font-size:clamp(20px,2.6vw,28px);line-height:1.2;color:var(--ink);max-width:28ch}
+  @media(max-width:720px){table{font-size:12px}th,td{padding:9px 6px}.wrap{padding:0 20px}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="armature home">
+      <svg class="theme-mark" width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#FFFEFA" stroke="#0A1220"/><circle cx="16" cy="6.5" r="2.8" fill="#0A1220"/><circle cx="16" cy="6.5" r="1" fill="#FFFEFA"/><line x1="14.6" y1="12.5" x2="10" y2="26" stroke="#0A1220" stroke-width="2.7" stroke-linecap="round"/><line x1="17.4" y1="12.5" x2="22" y2="26" stroke="#0A1220" stroke-width="2.7" stroke-linecap="round"/><line x1="12.6" y1="20" x2="19.4" y2="20" stroke="#0A1220" stroke-width="2.4" stroke-linecap="round"/></svg>
+      <div class="word">armature</div>
+    </a>
+    <div class="navlinks">
+      <a href="index.html#projects">Projects</a>
+      <a href="#gpu">GPU compute</a>
+      <a href="#sensors">Sensors</a>
+      <a href="#sources">Sources</a>
+      <a class="active" href="#top">Procurement</a>
+    </div>
+    <div class="theme-switch" role="group" aria-label="Color theme">
+      <button type="button" data-theme-value="light" title="Light theme"><span class="theme-swatch light" aria-hidden="true"></span><span class="sr-only">Light theme</span></button>
+      <button type="button" data-theme-value="dark" title="Dark theme"><span class="theme-swatch dark" aria-hidden="true"></span><span class="sr-only">Dark theme</span></button>
+      <button type="button" data-theme-value="sepia" title="Sepia theme"><span class="theme-swatch sepia" aria-hidden="true"></span><span class="sr-only">Sepia theme</span></button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="eyebrow mono">Procurement board - checked 8 July 2026</div>
+    <h1>Buy for ten builders, not ten isolated labs.</h1>
+    <div class="sub">A source-backed purchasing board for the Projects roadmap: GPU compute, NVIDIA Jetson edge kits, DGX Spark, robot arms, sensors, cameras, storage, mobile robots, and bench tooling. Prices are INR-first indicative planning bands, not vendor quotes.</div>
+    <div class="ctas">
+      <a class="btn" href="#buy-now">Start with must-buy parts</a>
+      <a class="btn ghost" href="index.html#projects">Back to Projects</a>
+    </div>
+    <div class="stats" aria-label="Procurement sizing summary">
+      <div class="stat"><div class="k">Builder target</div><div class="v">10 active builders</div></div>
+      <div class="stat"><div class="k">Default layout</div><div class="v">5 paired stations</div></div>
+      <div class="stat"><div class="k">Shared compute</div><div class="v">GPU node + DGX + Jetsons</div></div>
+      <div class="stat"><div class="k">Rule</div><div class="v">Buy spares for motion parts</div></div>
+    </div>
+    <div class="board">
+      <div class="stations">
+        <div class="station"><div class="n">Station 01</div><h3>SO-ARM cell</h3><p>Two builders share one leader/follower arm pair, two cameras, and one Jetson or workstation lane.</p></div>
+        <div class="station"><div class="n">Station 02</div><h3>SO-ARM cell</h3><p>Second paired teleoperation cell for LeRobot data collection and calibration practice.</p></div>
+        <div class="station"><div class="n">Station 03</div><h3>Vision bench</h3><p>OAK-D, USB cameras, calibration boards, AprilTags, and model deployment on Jetson.</p></div>
+        <div class="station"><div class="n">Station 04</div><h3>Mobile robot bay</h3><p>Valetudo, OOMWOO, rover, LiDAR, RTK, motor drivers, and safety tests.</p></div>
+        <div class="station"><div class="n">Station 05</div><h3>Infra bench</h3><p>NAS, GPU queue, NetBox inventory, OpenBMC/SONiC experiments, and data pipelines.</p></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="buy-now">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">01</span><h2>Must-buy list for ten parallel builders</h2></div>
+    <div class="lede">The practical sizing is five paired build stations, plus shared compute, storage, mobile robot bays, and spare parts.</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Item</th><th>Recommended qty</th><th>What it supports</th><th>Indicative INR price band</th><th>Order source</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><th>Primary NAS / ZFS storage node</th><td>1</td><td>All datasets, video, CAD, model checkpoints, DVC remotes</td><td>Rs 6L-10L depending drives</td><td><a href="https://github.com/AwesomeDog/awesome-nas" target="_blank" rel="noopener noreferrer">awesome-nas</a>, TrueNAS/OpenZFS vendors</td><td><span class="pill buy">Buy now</span></td></tr>
+          <tr><th>Backup NAS or offline backup set</th><td>1</td><td>Dataset survivability before public or cloud copies</td><td>Rs 3L-6L</td><td>Same drive/server suppliers as primary NAS</td><td><span class="pill buy">Buy now</span></td></tr>
+          <tr><th>10GbE switch + NICs + DAC/fiber</th><td>1 switch, 8-12 NIC links</td><td>Shared robotics video, NAS access, GPU ingest</td><td>Rs 1.5L-4L</td><td>FS, MikroTik, Ubiquiti, used datacenter switch suppliers</td><td><span class="pill buy">Buy now</span></td></tr>
+          <tr><th>GPU Autonomous Computer</th><td>1 complete 2-GPU workstation</td><td>LeRobot training, vision, local inference, simulation, dataset jobs</td><td>Rs 9L-24L baseline, more with pro GPUs</td><td><a href="#gpu">GPU matrix below</a></td><td><span class="pill buy">Buy now</span></td></tr>
+          <tr><th>NVIDIA DGX Spark</th><td>1 first, 2 only after utilization is proven</td><td>Shared local LLM, agent, robotics software, and edge-AI prototyping</td><td>Rs 4.5L-6L landed estimate (USD 4,699 source price)</td><td><a href="https://www.nvidia.com/en-us/products/workstations/dgx-spark/" target="_blank" rel="noopener noreferrer">NVIDIA DGX Spark</a></td><td><span class="pill quote">Verify PO</span></td></tr>
+          <tr><th>Jetson Orin Nano Super Developer Kit</th><td>6</td><td>Edge AI, robot cameras, low-cost physical AI stations</td><td>Rs 25k-45k landed estimate (USD 249 official)</td><td><a href="https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/" target="_blank" rel="noopener noreferrer">NVIDIA</a>, Robu, Seeed, ThinkRobotics</td><td><span class="pill buy">Buy now</span></td></tr>
+          <tr><th>Jetson AGX Thor Developer Kit</th><td>1</td><td>High-end physical AI, multi-camera fusion, humanoid/arm experiments</td><td>Rs 3.2L-4.5L landed estimate (USD 3,499 reported)</td><td><a href="https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-thor/" target="_blank" rel="noopener noreferrer">NVIDIA Jetson Thor</a></td><td><span class="pill defer">One pilot</span></td></tr>
+          <tr><th>SO-ARM101 leader/follower sets</th><td>5 two-arm sets + 10 spare servos</td><td>Ten builders in pairs; LeRobot data collection and teleoperation</td><td>About Rs 21k per two-arm setup before printing/shipping/tax (USD 229.88 repo BOM)</td><td><a href="https://github.com/TheRobotStudio/SO-ARM100" target="_blank" rel="noopener noreferrer">SO-ARM100 BOM</a>, Alibaba/Amazon links in repo</td><td><span class="pill buy">Buy now</span></td></tr>
+          <tr><th>Raspberry Pi 5 kits</th><td>10</td><td>Vacuum, rover, logging, controllers, small services</td><td>About Rs 11k+ board-only reference; India kit varies (USD 125 reported for 8GB)</td><td><a href="https://www.raspberrypi.com/products/raspberry-pi-5/" target="_blank" rel="noopener noreferrer">Raspberry Pi</a>, Robu, Silverline, PiBox India</td><td><span class="pill buy">Buy now</span></td></tr>
+          <tr><th>Microcontroller and motor-control pack</th><td>30 ESP32 + 10 STM32/Arduino + drivers</td><td>OOMWOO, rover, sensors, hand prototypes, quick bench tests</td><td>Rs 75k-1.5L as a stocked drawer</td><td>Robu, ThinkRobotics, FlyRobo, Mouser/DigiKey</td><td><span class="pill buy">Buy now</span></td></tr>
+          <tr><th>Electronics bench tooling</th><td>10 mats, 5 soldering stations, shared scope/PSUs</td><td>Ten-person build floor without tool bottlenecks</td><td>Rs 3L-6L</td><td>Robu, element14, Mouser, local SP Road vendors</td><td><span class="pill buy">Buy now</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="ink-surface" id="gpu">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">02</span><h2>GPU Autonomous Computer: exact GPU choices</h2></div>
+    <div class="lede">Use consumer RTX GPUs for speed per rupee, pro GPUs only when VRAM and support matter more than price.</div>
+    <div class="grid two">
+      <div class="card"><div class="tag mono">Recommended baseline</div><h3>2 x GeForce RTX 5090 32GB</h3><p>Good first Autonomous Computer build: strong CUDA ecosystem, high throughput, and enough VRAM for many robotics vision, simulation, and fine-tuning jobs. Needs serious airflow, 1000W+ class PSU headroom per NVIDIA guidance for a single card, and a motherboard/chassis planned for two thick GPUs.</p><div class="rate">Buy 2 GPUs now; add a third only after thermal validation.</div></div>
+      <div class="card"><div class="tag mono">Pro / quote-only</div><h3>1-2 x RTX PRO 6000 Blackwell 96GB</h3><p>Use when the Lab needs much larger local models, bigger batches, or pro support. The premium is huge, but 96GB VRAM changes what can run locally. Start with one quoted card, not two, unless a tenant or funded project pays for it.</p><div class="rate">Quote before PO; pricing has moved sharply in 2026.</div></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>GPU / system</th><th>Qty for 10 builders</th><th>Why buy it</th><th>Indicative INR price</th><th>Source evidence</th></tr></thead>
+        <tbody>
+          <tr><th>RTX 5090 32GB</th><td>2</td><td>Primary training/inference GPUs for the Autonomous Computer. NVIDIA lists 32GB GDDR7, 575W board power, 1000W required system power for a single-GPU system.</td><td>Rs 1.8L MSRP reference; 2026 street pricing can imply Rs 3.4L-5L+ (USD 1,999 MSRP; USD 3,800-5,500+ street reports)</td><td><a href="https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/" target="_blank" rel="noopener noreferrer">NVIDIA specs</a>, <a href="https://www.windowscentral.com/hardware/nvidia/rtx-5090-disappears-us-stores" target="_blank" rel="noopener noreferrer">street-price report</a></td></tr>
+          <tr><th>RTX 4090 24GB</th><td>0-2 fallback</td><td>Fallback if 5090 availability or pricing is bad. Good CUDA support, lower VRAM than 5090/Pro cards.</td><td>Quote in INR locally; used/new market varies widely</td><td>NVIDIA AIB/Indian PC component retailers</td></tr>
+          <tr><th>RTX PRO 6000 Blackwell 96GB</th><td>1 optional</td><td>Large local models, bigger context/vision jobs, professional workloads. Strong candidate if a paid tenant needs high VRAM.</td><td>About Rs 11.9L reference before India landing/tax (USD 13,250 reported marketplace/MSRP)</td><td><a href="https://www.tomshardware.com/pc-components/gpus/nvidia-raises-rtx-pro-6000-blackwell-gpu-pricing-to-usd13-250-55-percent-increase-over-msrp-in-a-years-time" target="_blank" rel="noopener noreferrer">pricing report</a>, <a href="https://www.theverge.com/news/631868/nvidia-rtx-pro-6000-blackwell-gpu-professionals" target="_blank" rel="noopener noreferrer">spec report</a></td></tr>
+          <tr><th>DGX Spark</th><td>1</td><td>Desktop 128GB unified-memory AI box for local model testing, agent workflows, and robotics software prototyping outside the main GPU queue.</td><td>Rs 4.5L-6L landed estimate (USD 4,699 source price)</td><td><a href="https://www.nvidia.com/en-us/products/workstations/dgx-spark/" target="_blank" rel="noopener noreferrer">NVIDIA specs</a>, <a href="https://www.tomshardware.com/desktops/mini-pcs/nvidia-dgx-spark-gets-18-percent-price-increase-as-memory-shortages-bite-founders-edition-now-usd4-699-up-from-usd3-999" target="_blank" rel="noopener noreferrer">price report</a></td></tr>
+          <tr><th>Jetson Orin Nano Super</th><td>6</td><td>Edge AI at builder stations. NVIDIA lists 67 INT8 TOPS, 8GB LPDDR5, 7W-25W power.</td><td>Rs 25k-45k landed estimate (USD 249 official)</td><td><a href="https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/" target="_blank" rel="noopener noreferrer">NVIDIA Jetson Orin Nano Super</a></td></tr>
+          <tr><th>Jetson AGX Thor</th><td>1 pilot</td><td>High-end physical AI edge box with 128GB memory, high-speed sensor ingest, and 4x25GbE class networking for advanced robotics.</td><td>Rs 3.2L-4.5L landed estimate (USD 3,499 reported)</td><td><a href="https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-thor/" target="_blank" rel="noopener noreferrer">NVIDIA Jetson Thor</a>, <a href="https://www.techradar.com/pro/going-to-sell-like-hotcakes-first-reviews-of-nvidia-jetson-agx-thor-developer-kit-leaves-me-with-no-doubt-nvidia-has-a-sleeper-hit-on-its-hands" target="_blank" rel="noopener noreferrer">price/spec report</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">GPU workstation base parts to include: Threadripper/EPYC-class CPU or equivalent PCIe-rich platform, 256GB RAM target, 2-4TB NVMe scratch, 8TB+ local SSD/HDD staging, 10GbE, 1600-2200W quality PSU depending GPU choice, open-air or server-grade airflow, vertical GPU supports, power metering, and thermal logging.</p>
+  </div>
+</section>
+
+<section id="sensors">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">03</span><h2>Required cameras, sensors, and robot electronics</h2></div>
+    <div class="lede">This is the set that prevents ten builders from blocking each other during perception, manipulation, mobile-robot, and autopilot work.</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Part</th><th>Qty</th><th>Used for</th><th>Indicative INR price</th><th>Order/source</th></tr></thead>
+        <tbody>
+          <tr><th>USB webcams, C920/Brio-class</th><td>20</td><td>Two per arm station, spare views, calibration, demos</td><td>Rs 3k-18k each depending model</td><td>Amazon India, Logitech, local IT suppliers</td></tr>
+          <tr><th>Luxonis OAK-D Lite</th><td>6</td><td>Affordable stereo depth + onboard AI camera for stations</td><td>About Rs 15k reference before landing/tax (USD 169 listed)</td><td><a href="https://shop.luxonis.com/products/oak-d-lite-1" target="_blank" rel="noopener noreferrer">Luxonis OAK-D Lite</a></td></tr>
+          <tr><th>Luxonis OAK-D Pro</th><td>4</td><td>Active stereo, IR illumination, low-light object and robot tests</td><td>About Rs 39k reference before landing/tax (USD 429 listed)</td><td><a href="https://shop.luxonis.com/products/oak-d-pro" target="_blank" rel="noopener noreferrer">Luxonis OAK-D Pro</a></td></tr>
+          <tr><th>Depth camera compatibility pair</th><td>2</td><td>Projects expecting RealSense-style RGB-D pipelines</td><td>Quote current D455/D435-class stock in INR</td><td><a href="https://www.intelrealsense.com/depth-camera-d455/" target="_blank" rel="noopener noreferrer">Intel RealSense D455</a></td></tr>
+          <tr><th>RPLIDAR A1/C1 or similar 2D LiDAR</th><td>4</td><td>OOMWOO, rover navigation, mapping exercises</td><td>Rs 9k-18k reference before landing/tax (USD 100-200 equivalent)</td><td><a href="https://www.slamtec.com/en/lidar/a1" target="_blank" rel="noopener noreferrer">SLAMTEC RPLIDAR A1</a>, Robu/Alibaba</td></tr>
+          <tr><th>RTK GNSS base + rover kits</th><td>2 pairs</td><td>OpenMower, rover, outdoor autonomy</td><td>Rs 20k-50k+ per kit reference before landing/tax (EUR 200-500+)</td><td><a href="https://www.ardusimple.com/product/simplertk2b-basic-starter-kit-ip65/" target="_blank" rel="noopener noreferrer">ArduSimple simpleRTK2B</a></td></tr>
+          <tr><th>Pixhawk 6C-class autopilot sets</th><td>2</td><td>PX4/ArduPilot rover first, drone later inside cage</td><td>Quote Holybro/Indian drone suppliers in INR</td><td><a href="https://docs.px4.io/main/en/assembly/quick_start_pixhawk6c.html" target="_blank" rel="noopener noreferrer">PX4 Pixhawk 6C wiring guide</a>, Holybro</td></tr>
+          <tr><th>RC transmitter + receiver</th><td>2</td><td>Manual control and safety fallback for rover/drone builds</td><td>Rs 15k-45k each</td><td>Indian drone retailers, Holybro ecosystem</td></tr>
+          <tr><th>AprilTag / Charuco / checkerboard boards</th><td>10 sets</td><td>Camera calibration, pose estimation, data collection</td><td>Rs 20k-60k total</td><td>Print locally, acrylic/aluminium print vendors</td></tr>
+          <tr><th>Force/torque or load-cell sensor kit</th><td>2 starter kits</td><td>Gripper force, manipulation studies, safety experiments</td><td>Rs 50k-3L depending quality</td><td>Mouser, Robu, ATI/OnRobot quote for high-end</td></tr>
+          <tr><th>LiPo batteries, chargers, safe bags, extinguisher</th><td>Shared safety set</td><td>Drones, rovers, mower, mobile robots</td><td>Rs 1L-2L</td><td>Drone retailers, local safety suppliers</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="num">04</span><h2>Project-specific buys</h2></div>
+    <div class="lede">These should be bought after the shared spine is in place, so hardware does not sit idle while storage, tools, and cameras are missing.</div>
+    <div class="grid">
+      <div class="card"><div class="tag mono">P0 arms</div><h3>LeRobot + SO-ARM</h3><p>Buy five two-arm leader/follower sets, print parts in-house, and buy ten spare STS3215 servos. The SO-ARM repo lists about Rs 21k for the two-arm off-the-shelf parts before printing, shipping, and tax (USD 229.88).</p><div class="rate">5 pair cells for 10 builders</div></div>
+      <div class="card"><div class="tag mono">Robot vacuum</div><h3>Valetudo + OOMWOO</h3><p>Buy two supported Valetudo vacuums from the official supported list, plus one OOMWOO prototype kit. OOMWOO currently targets about Rs 18k in sourced parts plus a Raspberry Pi 5, with the BOM still work in progress (USD 200).</p><div class="rate">2 commercial rigs + 1 DIY rig</div></div>
+      <div class="card"><div class="tag mono">Outdoor robot</div><h3>OpenMower</h3><p>Buy one donor mower, one OpenMower controller path, RTK base/rover GNSS, safety stop hardware, batteries, and outdoor barriers. Do not buy multiple mowers until the first is safe and map-aware.</p><div class="rate">1 donor mower first</div></div>
+      <div class="card"><div class="tag mono">Manipulation</div><h3>reBot, OpenArm, hands</h3><p>Buy one reBot DevArm after SO-ARM training is useful. Defer OpenArm, AmazingHand, and LEAP Hand to one pilot each because dexterous hardware needs mature cameras, arms, calibration, and safety routines.</p><div class="rate">1 medium arm, hands later</div></div>
+      <div class="card"><div class="tag mono">Autonomy</div><h3>ArduPilot + PX4</h3><p>Start with two rover chassis and Pixhawk-class controllers. Buy the drone frame only when the cage, RC failsafe, LiPo safety, and sim workflow are ready.</p><div class="rate">2 rover rigs before drones</div></div>
+      <div class="card"><div class="tag mono">Open infra</div><h3>NetBox, OpenBMC, SONiC</h3><p>NetBox runs on an existing VM. Buy a SONiC-compatible used/whitebox switch and one OpenBMC-compatible dev board only when multiple nodes and racks exist.</p><div class="rate">Track now, buy later</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="sources">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">05</span><h2>Sources and order checks</h2></div>
+    <div class="lede">Primary docs and purchase pages checked for this procurement board. Retail prices can move quickly; verify stock and tax before any purchase order.</div>
+    <div class="source-list">
+      <a href="https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/" target="_blank" rel="noopener noreferrer">NVIDIA Jetson Orin Nano Super: official specs, about Rs 22k source reference (USD 249), 67 TOPS</a>
+      <a href="https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-thor/" target="_blank" rel="noopener noreferrer">NVIDIA Jetson Thor: 128GB edge robotics platform specs</a>
+      <a href="https://www.nvidia.com/en-us/products/workstations/dgx-spark/" target="_blank" rel="noopener noreferrer">NVIDIA DGX Spark: 128GB unified-memory desktop AI system</a>
+      <a href="https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/" target="_blank" rel="noopener noreferrer">NVIDIA RTX 5090: 32GB GDDR7, 575W, 1000W system guidance</a>
+      <a href="https://www.tomshardware.com/pc-components/gpus/nvidia-raises-rtx-pro-6000-blackwell-gpu-pricing-to-usd13-250-55-percent-increase-over-msrp-in-a-years-time" target="_blank" rel="noopener noreferrer">RTX PRO 6000 Blackwell 2026 price movement</a>
+      <a href="https://github.com/TheRobotStudio/SO-ARM100" target="_blank" rel="noopener noreferrer">SO-ARM100 / SO-101 sourcing and BOM</a>
+      <a href="https://huggingface.co/docs/lerobot/so101" target="_blank" rel="noopener noreferrer">LeRobot SO-101 assembly and motor requirements</a>
+      <a href="https://shop.luxonis.com/products/oak-d-lite-1" target="_blank" rel="noopener noreferrer">Luxonis OAK-D Lite: about Rs 15k reference (USD 169)</a>
+      <a href="https://shop.luxonis.com/products/oak-d-pro" target="_blank" rel="noopener noreferrer">Luxonis OAK-D Pro: about Rs 39k reference (USD 429)</a>
+      <a href="https://www.slamtec.com/en/lidar/a1" target="_blank" rel="noopener noreferrer">SLAMTEC RPLIDAR A1 specs and order path</a>
+      <a href="https://www.ardusimple.com/product/simplertk2b-basic-starter-kit-ip65/" target="_blank" rel="noopener noreferrer">ArduSimple simpleRTK2B RTK GNSS starter kit</a>
+      <a href="https://docs.px4.io/main/en/assembly/quick_start_pixhawk6c.html" target="_blank" rel="noopener noreferrer">PX4 Pixhawk 6C wiring and peripheral requirements</a>
+      <a href="https://valetudo.cloud/pages/general/supported-robots.html" target="_blank" rel="noopener noreferrer">Valetudo supported robot list</a>
+      <a href="https://github.com/makerspet/oomwoo/blob/main/BOM.md" target="_blank" rel="noopener noreferrer">OOMWOO work-in-progress BOM</a>
+      <a href="https://github.com/ClemensElflein/OpenMower" target="_blank" rel="noopener noreferrer">OpenMower project and RTK mower direction</a>
+      <a href="https://github.com/nasa-jpl/open-source-rover" target="_blank" rel="noopener noreferrer">NASA Open Source Rover reference build</a>
+    </div>
+  </div>
+</section>
+
+<div class="band">
+  <div class="wrap">
+    <div class="q">Buy the shared spine first. Then the builders can make real machines instead of waiting for missing cameras, cables, and storage.</div>
+    <div class="ctas">
+      <a class="btn" href="#buy-now">Review first purchase tranche</a>
+      <a class="btn ghost" href="index.html#projects">Open project roadmap</a>
+    </div>
+  </div>
+</div>
+<script>
+  const THEME_KEY='armature-theme';
+  function applyTheme(theme,persist=true){
+    if(!['light','dark','sepia'].includes(theme)) theme='light';
+    document.documentElement.dataset.theme=theme;
+    document.documentElement.style.colorScheme=theme==='dark'?'dark':'light';
+    document.querySelectorAll('[data-theme-value]').forEach(button=>{
+      button.setAttribute('aria-pressed',String(button.dataset.themeValue===theme));
+    });
+    if(persist) localStorage.setItem(THEME_KEY,theme);
+  }
+  document.querySelectorAll('[data-theme-value]').forEach(button=>{
+    button.addEventListener('click',()=>applyTheme(button.dataset.themeValue));
+  });
+  window.addEventListener('storage',event=>{
+    if(event.key===THEME_KEY && event.newValue) applyTheme(event.newValue,false);
+  });
+  applyTheme(document.documentElement.dataset.theme,false);
+</script>
+</body>
+</html>
