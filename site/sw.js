@@ -1,7 +1,7 @@
 /* armature PWA service worker.
    Static shell: stale-while-revalidate.
    Anything live (booking, availability, registration, APIs): network-first, never served stale. */
-const VERSION = 'armature-v14';
+const VERSION = 'armature-v15';
 const PRECACHE = ['./'];
 const LIVE = [/\/api\//, /book/i, /availability/i, /register/i, /luma/i, /razorpay/i, /calendar/i];
 

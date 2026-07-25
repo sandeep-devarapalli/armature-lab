@@ -2,7 +2,7 @@
 
 Website: [armaturelab.org](https://armaturelab.org)
 
-Current assets as of 14 July 2026.
+Current assets as of 25 July 2026.
 
 ## site/ (deploy to armaturelab.org)
 Upload everything under site/ to the domain root over HTTPS. index.html is the
@@ -13,7 +13,8 @@ on Android/Chrome and iOS (Add to Home Screen).
 - projects/index.html: static /projects redirect into the Projects page
 - procurement.html: procurement board with the same theme control, for the open-project hardware roadmap, sized
   for ten parallel builders with source links and indicative price bands
-- project-images/: project-specific local PNG/WebP assets for the Projects page
+- project-images/: project-specific local PNG/WebP/JPG assets for the Projects
+  page, including visibly credited media from official project pages
 - manifest.webmanifest, sw.js: PWA shell. Booking/availability/registration URLs
   are network-first and never served stale. Bump VERSION in sw.js on every redeploy.
 - icon-192.png, icon-512.png, icon-maskable-512.png, apple-touch-icon.png: monochrome light icons

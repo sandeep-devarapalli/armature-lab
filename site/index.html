@@ -184,8 +184,12 @@
   .project-visual{height:158px;border:1px solid var(--hair-ink);border-radius:11px;background:var(--feature-bg);margin:6px 0 18px;overflow:hidden;position:relative;isolation:isolate}
   .mission-grid.featured .project-visual{height:176px}
   .project-visual img{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.01);filter:saturate(.96) contrast(1.03)}
+  .project-visual.contain img{object-fit:contain;transform:none;filter:none;background:#fff}
   .project-visual::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(255,254,250,0.08),rgba(10,18,32,0.18));pointer-events:none}
   .project-visual::after{content:"";position:absolute;inset:0;z-index:2;border:1px solid rgba(255,254,250,0.36);box-shadow:inset 0 0 0 1px rgba(10,18,32,0.08),inset 0 -36px 58px rgba(10,18,32,0.18);pointer-events:none}
+  .project-credit{position:absolute;right:8px;bottom:8px;z-index:3;font-family:var(--mono);font-size:8.5px;letter-spacing:0.04em;color:#fff;background:rgba(10,18,32,0.76);border-radius:5px;padding:4px 6px;max-width:calc(100% - 16px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .project-credit a{color:inherit;text-decoration:none}
+  .project-credit a:hover{text-decoration:underline}
   .project-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}
   .project-id{display:flex;gap:10px;align-items:center;min-width:0}
   .project-glyph{width:38px;height:38px;border:1px solid var(--hair-ink);border-radius:9px;display:grid;place-items:center;flex:none;background:var(--paper);font-family:var(--mono);font-size:15px;color:var(--saffron-deep)}
@@ -1507,6 +1511,110 @@
       isInfrastructure:false
     },
     {
+      title:'FlexiTac',
+      category:'Tactile Sensors',
+      priority:'P1',
+      status:'Building Soon',
+      shortDescription:'A low-cost, flexible tactile array with open hardware, fast FPC-based fabrication, simulation support, and integrations for grippers, arms, and robot-learning pipelines.',
+      whyItMatters:'Makes touch sensing affordable enough to deploy across several Lab rigs instead of reserving tactile data for one expensive end effector.',
+      recommendedAction:'Reproduce one FlexiTac V2 sensor and reader, characterize repeatability on a simple gripper, then connect the stream to a simulation or imitation-learning dataset before scaling.',
+      tags:['Tactile Sensor','Flexible Array','Open Hardware','Robot Learning','Isaac Sim','Grippers'],
+      repoUrl:'https://github.com/FlexiTac/FlexiTac_Hardware_Repo',
+      projectUrl:'https://flexitac.github.io/',
+      sourceLabel:'View hardware',
+      image:'flexitac-official.jpg',
+      imageFit:'contain',
+      imageAlt:'FlexiTac tactile sensor, reader board, flexible cable, and soft gripper',
+      imageCredit:'FlexiTac · Huang & Li',
+      imageSourceUrl:'https://flexitac.github.io/',
+      hardwareRequired:true,
+      difficulty:'Intermediate',
+      isInfrastructure:false
+    },
+    {
+      title:'9DTact',
+      category:'Tactile Sensors',
+      priority:'P1',
+      status:'Building Soon',
+      shortDescription:'A compact, open vision-based tactile sensor for accurate 3D contact-shape reconstruction and marker-free 6D force estimation.',
+      whyItMatters:'Combines contact geometry and force sensing in a DIY-friendly package that can fit grippers, dexterous hands, and other constrained robot platforms.',
+      recommendedAction:'Fabricate one sensor and gel stack, run camera and depth calibration, reproduce shape reconstruction, and only then evaluate the pretrained 6D-force pipeline on unseen objects.',
+      tags:['Vision Tactile','3D Shape','6D Force','Open Hardware','ROS','Gel Sensor'],
+      repoUrl:'https://github.com/linchangyi1/9DTact',
+      projectUrl:'https://linchangyi1.github.io/9DTact/',
+      sourceLabel:'View hardware',
+      image:'9dtact-official.png',
+      imageFit:'contain',
+      imageAlt:'9DTact sensor and its 3D shape reconstruction and 6D force estimation pipeline',
+      imageCredit:'9DTact · Lin et al.',
+      imageSourceUrl:'https://linchangyi1.github.io/9DTact/',
+      hardwareRequired:true,
+      difficulty:'Advanced',
+      isInfrastructure:false
+    },
+    {
+      title:'ORCA Hand',
+      category:'Robotic Hands',
+      priority:'P1',
+      status:'Building Soon',
+      shortDescription:'An open-source, 17-DoF tendon-driven anthropomorphic robotic hand designed for reliable dexterous learning, fast assembly, and repairable operation.',
+      whyItMatters:'Offers a serious open dexterity platform between low-cost printed hands and expensive proprietary research hardware.',
+      recommendedAction:'Start with the open standard or Lite hardware, assemble one side, validate calibration and tendon tensioning, then connect orca_core. Treat the current orcahand touch sensing module as proprietary.',
+      tags:['Robotic Hand','17 DOF','Tendon Drive','Open Hardware','Imitation Learning','Sim-to-Real'],
+      repoUrl:'https://github.com/orcahand/orcahand_hardware',
+      projectUrl:'https://www.orcahand.com/',
+      sourceLabel:'View hardware',
+      image:'orcahand-official.png',
+      imageAlt:'Three official ORCA robotic hand configurations',
+      imageCredit:'ORCA Dexterity',
+      imageSourceUrl:'https://www.orcahand.com/models',
+      hardwareRequired:true,
+      difficulty:'Advanced',
+      isInfrastructure:false
+    },
+    {
+      title:'OSMO Tactile Glove',
+      category:'Tactile Interfaces',
+      priority:'P2',
+      status:'Research Track',
+      shortDescription:'An open-source glove with 12 three-axis magnetic tactile sensors across the fingertips and palm for collecting human demonstrations and transferring contact-rich skills to robots.',
+      whyItMatters:'Using the same tactile interface on a human and robot reduces the sensing and appearance gap between demonstration collection and policy deployment.',
+      recommendedAction:'Build one USB-C glove, verify synchronized Python or ROS 2 sensor packets, collect a small hand-tracked demonstration set, and test transfer on a compatible robot hand.',
+      tags:['Tactile Glove','Skill Transfer','Magnetic Sensor','Human Demonstration','ROS 2','Hand Tracking'],
+      repoUrl:'https://github.com/jessicayin/osmo_tactile_glove',
+      projectUrl:'https://www.jessicayin.com/osmo_tactile_glove/',
+      sourceLabel:'View hardware',
+      image:'osmo-tactile-glove-official.png',
+      imageFit:'contain',
+      imageAlt:'OSMO glove showing fingertip and palm tactile sensor placement',
+      imageCredit:'OSMO · Yin et al.',
+      imageSourceUrl:'https://www.jessicayin.com/osmo_tactile_glove/',
+      hardwareRequired:true,
+      difficulty:'Advanced',
+      isInfrastructure:false
+    },
+    {
+      title:'MIT STAG',
+      category:'Tactile Interfaces',
+      priority:'P2',
+      status:'Reference',
+      shortDescription:'A scalable tactile glove with 548 piezoresistive sensors used to record 135,000 full-hand tactile frames while interacting with 26 objects.',
+      whyItMatters:'Provides a landmark reference for whole-hand tactile maps, object identification, weight estimation, prosthetics, and human-robot interaction.',
+      recommendedAction:'Use the paper, circuit files, and pressure-only datasets as a research reference. Keep use within the source license and do not treat the archived code repository as a maintained build.',
+      tags:['Tactile Glove','548 Sensors','Piezoresistive','Human Grasp','Dataset','MIT CSAIL'],
+      repoUrl:'https://github.com/Erkil1452/touch',
+      projectUrl:'https://stag.csail.mit.edu/',
+      sourceLabel:'View archived code',
+      image:'stag-tactile-glove-official.png',
+      imageFit:'contain',
+      imageAlt:'MIT STAG tactile glove, readout electronics, dataset, and learning pipeline',
+      imageCredit:'MIT CSAIL · Sundaram et al.',
+      imageSourceUrl:'https://stag.csail.mit.edu/',
+      hardwareRequired:true,
+      difficulty:'Advanced',
+      isInfrastructure:false
+    },
+    {
       title:'AmazingHand',
       category:'Robotic Hands',
       priority:'P2',
@@ -1637,7 +1745,7 @@
 
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-  const glyph=p=>p.isInfrastructure?'DB':p.category.includes('Arm')?'RA':p.category.includes('Drone')?'AV':p.category.includes('Vacuum')?'RV':p.category.includes('Hand')?'HD':p.category.includes('Wear')?'WR':p.category.includes('Outdoor')?'OM':p.category.includes('Mobile')?'MR':'AI';
+  const glyph=p=>p.isInfrastructure?'DB':p.category.includes('Tactile')?'TS':p.category.includes('Arm')?'RA':p.category.includes('Drone')?'AV':p.category.includes('Vacuum')?'RV':p.category.includes('Hand')?'HD':p.category.includes('Wear')?'WR':p.category.includes('Outdoor')?'OM':p.category.includes('Mobile')?'MR':'AI';
   const textBlob=p=>([p.title,p.category,p.status,p.priority,p.shortDescription,p.whyItMatters,p.recommendedAction,...p.tags].join(' ')).toLowerCase();
   function matchesProjectFilter(p,filter){
     const blob=textBlob(p);
@@ -1704,13 +1812,16 @@
       bmc:'network-infra.png',
       network:'network-infra.png'
     };
-    const src='project-images/'+(projectImages[p.title]||categoryImages[k]||categoryImages.arm);
-    return '<figure class="project-visual"><img src="'+esc(src)+'" alt="'+esc(p.title+' project visual')+'" loading="lazy" decoding="async"></figure>';
+    const src='project-images/'+(p.image||projectImages[p.title]||categoryImages[k]||categoryImages.arm);
+    const fit=p.imageFit==='contain'?' contain':'';
+    const credit=p.imageCredit&&p.imageSourceUrl?'<figcaption class="project-credit"><a href="'+esc(p.imageSourceUrl)+'" target="_blank" rel="noopener noreferrer">Image: '+esc(p.imageCredit)+'</a></figcaption>':'';
+    return '<figure class="project-visual'+fit+'"><img src="'+esc(src)+'" alt="'+esc(p.imageAlt||p.title+' project visual')+'" loading="lazy" decoding="async">'+credit+'</figure>';
   }
   function projectCard(p){
     const statusClass='status-'+slug(p.status);
     const tags=p.tags.slice(0,6).map(t=>'<span class="project-tag">'+esc(t)+'</span>').join('');
     const buildGuide=p.buildGuideUrl?'<a href="'+esc(p.buildGuideUrl)+'" target="_blank" rel="noopener noreferrer">Build guide</a>':'';
+    const projectPage=p.projectUrl?'<a href="'+esc(p.projectUrl)+'" target="_blank" rel="noopener noreferrer">Project page</a>':'';
     const flags=[
       p.isInfrastructure?'Infrastructure':null,
       p.hardwareRequired?'Hardware required':'Software first',
@@ -1726,7 +1837,7 @@
       '<div class="project-why"><b>Why it matters</b>'+esc(p.whyItMatters)+'</div>'+
       '<div class="project-tags">'+tags+'</div>'+
       '<div class="project-flags">'+flags+'</div>'+
-      '<div class="project-actions"><a href="'+esc(p.repoUrl)+'" target="_blank" rel="noopener noreferrer">View GitHub</a>'+buildGuide+'<button type="button" aria-expanded="false" onclick="toggleProjectNotes(this)">Build notes</button></div>'+
+      '<div class="project-actions"><a href="'+esc(p.repoUrl)+'" target="_blank" rel="noopener noreferrer">'+esc(p.sourceLabel||'View GitHub')+'</a>'+projectPage+buildGuide+'<button type="button" aria-expanded="false" onclick="toggleProjectNotes(this)">Build notes</button></div>'+
       '<div class="project-notes"><b class="mono" style="color:var(--brick);font-size:10px">Recommended action</b><br>'+esc(p.recommendedAction)+'</div>'+
     '</article>';
   }

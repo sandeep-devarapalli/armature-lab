@@ -17,3 +17,7 @@ of an official Armature lab without permission.
 Project illustrations under `site/project-images/` are supplied for use by the
 Armature website. No separate reuse permission is granted unless a file-specific
 notice states otherwise.
+
+Files with `-official` in their names reproduce credited media from the linked
+third-party project pages. They remain subject to their original owners' terms
+and are not licensed under this repository's Apache-2.0 license.
