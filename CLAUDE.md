@@ -9,6 +9,8 @@ Claude-specific guidance:
 - Do not invent prices, founder names, CTA URLs, or photo assets for existing placeholders.
 - Treat financial numbers as planning estimates, not quotes or advice.
 - Keep the current light, dark, and sepia modes aligned: content, structure, navigation, project data, and calculator logic must remain identical unless the user asks for a real split.
-- Keep edits small and practical; avoid turning this static asset pack into a larger app.
+- Keep edits small and practical within the existing React/Vite/Supabase app.
+- Keep booking and attendance writes atomic and online-only. Preserve RLS and
+  never move staff authority or operational private data into public profiles.
 
 Use the validation checklist in `AGENTS.md` before handing work back.

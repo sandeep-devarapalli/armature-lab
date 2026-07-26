@@ -1,0 +1,166 @@
+import { useEffect, type PropsWithChildren } from "react";
+import {
+  BookOpen,
+  CalendarDays,
+  ClipboardCheck,
+  LogIn,
+  LogOut,
+  Menu,
+  QrCode,
+  UserRound,
+  Wrench
+} from "lucide-react";
+import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { useApp } from "../context/AppContext";
+import { useTheme } from "../context/ThemeContext";
+import type { Theme } from "../types/domain";
+import { BrandMark } from "./BrandMark";
+
+const publicLinks = [
+  ["/", "The lab"],
+  ["/equipment", "Equipment"],
+  ["/membership", "Membership"],
+  ["/services", "Services"],
+  ["/projects", "Projects"],
+  ["/financials", "Financials"],
+  ["/join", "Join"]
+] as const;
+
+const memberLinks = [
+  ["/dashboard", "Dashboard", ClipboardCheck],
+  ["/book", "Book", BookOpen],
+  ["/bookings", "Bookings", CalendarDays],
+  ["/check-in", "Check in", QrCode]
+] as const;
+
+function ThemeSwitch() {
+  const { theme, setTheme } = useTheme();
+  return (
+    <div className="theme-switch" role="group" aria-label="Color theme">
+      {(["light", "dark", "sepia"] as Theme[]).map((option) => (
+        <button
+          key={option}
+          type="button"
+          className={theme === option ? "active" : ""}
+          aria-pressed={theme === option}
+          aria-label={`${option} theme`}
+          title={`${option} theme`}
+          onClick={() => setTheme(option)}
+        >
+          <span className={`theme-swatch ${option}`} />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [pathname]);
+  return null;
+}
+
+export function Shell({ children }: PropsWithChildren) {
+  const { currentMember, isStaff, mode, online, notice, clearNotice, signOut } = useApp();
+
+  return (
+    <div className="app-shell">
+      <ScrollToTop />
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
+      <header className="topbar">
+        <div className="wrap topbar-inner">
+          <Link to="/" className="brand-link">
+            <BrandMark />
+          </Link>
+          <nav className="public-nav" aria-label="Primary navigation">
+            {publicLinks.map(([to, label]) => (
+              <NavLink key={to} to={to} end={to === "/"}>
+                {label}
+              </NavLink>
+            ))}
+          </nav>
+          <div className="topbar-actions">
+            <ThemeSwitch />
+            <Link className="icon-button mobile-menu-link" to="/dashboard" title="Workspace">
+              <Menu aria-hidden="true" />
+              <span className="sr-only">Open workspace</span>
+            </Link>
+            {currentMember ? (
+              <button className="icon-button" type="button" onClick={() => void signOut()} title="Sign out">
+                <LogOut aria-hidden="true" />
+                <span className="sr-only">Sign out</span>
+              </button>
+            ) : (
+              <Link className="icon-button" to="/auth" title="Sign in">
+                <LogIn aria-hidden="true" />
+                <span className="sr-only">Sign in</span>
+              </Link>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {currentMember && (
+        <nav className="workspace-nav" aria-label="Member workspace">
+          <div className="wrap workspace-inner">
+            <div className="workspace-links">
+              {memberLinks.map(([to, label, Icon]) => (
+                <NavLink key={to} to={to}>
+                  <Icon aria-hidden="true" />
+                  {label}
+                </NavLink>
+              ))}
+              <NavLink to="/profile">
+                <UserRound aria-hidden="true" />
+                Profile
+              </NavLink>
+              {isStaff && <NavLink to="/admin/members">
+                <Wrench aria-hidden="true" />
+                Operations
+              </NavLink>}
+            </div>
+            <div className="environment-state mono">
+              <span className={online ? "dot dot-good" : "dot dot-bad"} />
+              {online ? "online" : "read-only offline"} · {mode}
+            </div>
+          </div>
+        </nav>
+      )}
+
+      {notice && (
+        <div className="notice" role="status">
+          <div className="wrap notice-inner">
+            <span>{notice}</span>
+            <button type="button" onClick={clearNotice}>
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
+
+      <main id="main">{children ?? <Outlet />}</main>
+      <footer>
+        <div className="wrap footer-grid">
+          <div>
+            <BrandMark />
+            <p>The Physical AI and Robotics Lab · HSR Layout, Bengaluru</p>
+          </div>
+          <div className="footer-links">
+            <Link to="/members">Members</Link>
+            <Link to="/procurement">Procurement</Link>
+            <Link to="/kiosk">Kiosk</Link>
+            <Link to="/join">Join the floor</Link>
+          </div>
+          <p className="license-note">
+            Code and docs Apache-2.0. Armature name and brand assets reserved.
+            Third-party project media remains subject to its source terms.
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
+}

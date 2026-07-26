@@ -5,11 +5,14 @@ Read `AGENTS.md` first. It is the canonical project guidance for this folder. Fo
 Codex-specific workflow:
 
 - Start complex or multi-step tasks with a short plan.
-- Inspect the folder before editing; this is a static asset pack, not a build-backed app.
+- Inspect the folder before editing; the production surface is a React/Vite PWA
+  backed by Supabase. `site/` is the preserved legacy implementation.
 - Use `rg` / `rg --files` for search.
 - Use `apply_patch` for manual edits.
-- Keep changes scoped and avoid adding features, frameworks, or generated churn.
-- Do not assume git is available; this folder may be a plain asset export.
+- Keep changes scoped and avoid adding frameworks or unrelated generated churn.
+- Preserve RLS, atomic RPCs, network-only transactional traffic, and the
+  light/dark/sepia design system.
 - After any user correction about agent behavior, update `AGENTS.md`.
 
-Before finishing, run the relevant checks from `AGENTS.md` and state honestly if there is no test suite for the touched area.
+Before finishing, run the relevant frontend, database, browser, and PWA checks
+from `AGENTS.md`.
