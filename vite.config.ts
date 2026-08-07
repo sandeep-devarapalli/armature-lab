@@ -1,8 +1,20 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
+import { loadEnv } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "VITE_");
+  const demoModeEnabled = env.VITE_DEMO_MODE === "true";
+  const supabaseConfigured = Boolean(
+    env.VITE_SUPABASE_URL?.trim() &&
+    (env.VITE_SUPABASE_PUBLISHABLE_KEY ?? env.VITE_SUPABASE_ANON_KEY)?.trim()
+  );
+  const memberPlatformAvailable =
+    demoModeEnabled ||
+    (env.VITE_MEMBER_PLATFORM_ENABLED === "true" && supabaseConfigured);
+
+  return {
   build: {
     rollupOptions: {
       output: {
@@ -19,7 +31,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: "prompt",
+      registerType: "autoUpdate",
       manifest: {
         name: "armature - The Physical AI and Robotics Lab",
         short_name: "armature",
@@ -44,7 +56,7 @@ export default defineConfig({
           }
         ],
         shortcuts: [
-          {
+          ...(memberPlatformAvailable ? [{
             name: "Book",
             short_name: "Book",
             url: "/book",
@@ -61,11 +73,19 @@ export default defineConfig({
             short_name: "Check in",
             url: "/check-in",
             icons: [{ src: "/icon-192.png", sizes: "192x192" }]
+          }] : []),
+          {
+            name: "Maker desk",
+            short_name: "Maker desk",
+            url: "/maker-desk",
+            icons: [{ src: "/icon-192.png", sizes: "192x192" }]
           }
         ]
       },
       workbox: {
         navigateFallback: "/index.html",
+        skipWaiting: true,
+        clientsClaim: true,
         globPatterns: [
           "index.html",
           "apple-touch-icon.png",
@@ -84,7 +104,7 @@ export default defineConfig({
           },
           {
             urlPattern:
-              /\/(?:api|functions|rest|auth|availability|booking|bookings|check-in|checkin|calendar)(?:\/|$)/i,
+              /\/(?:api|functions|rest|rpc|auth|availability|booking|bookings|check-in|checkin|calendar|components\/request|component-requests?|inventory|checkout|cabinet|lockers|consumables|toolkits|maker-services|dashboard|profile|admin|kiosk)(?:\/|$)/i,
             handler: "NetworkOnly",
             method: "GET"
           },
@@ -108,4 +128,5 @@ export default defineConfig({
     globals: true,
     exclude: ["tests/frontend/e2e/**", "node_modules/**", "dist/**"]
   }
+  };
 });

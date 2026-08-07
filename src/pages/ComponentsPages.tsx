@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { EmptyState, Metric, PageHeader, Section, Status } from "../components/Primitives";
+import { componentRequestsAvailable } from "../config/release";
 import { useApp } from "../context/AppContext";
 import { useInventory } from "../context/InventoryContext";
 import {
@@ -90,9 +91,11 @@ export function ComponentsPage() {
             <Link className="button button-primary" to="/procurement">
               Procurement board <ArrowRight aria-hidden="true" />
             </Link>
-            <Link className="button button-quiet" to="/components/request">
-              Request a component
-            </Link>
+            {componentRequestsAvailable && (
+              <Link className="button button-quiet" to="/components/request">
+                Request a component
+              </Link>
+            )}
             {selectedProject && (
               <Link className="button button-quiet" to="/components">
                 Clear project filter

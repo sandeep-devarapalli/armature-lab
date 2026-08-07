@@ -1,16 +1,23 @@
-import { useEffect, type PropsWithChildren } from "react";
+import { useEffect, useRef, useState, type PropsWithChildren } from "react";
 import {
   BookOpen,
+  Boxes,
   CalendarDays,
+  ClipboardList,
   ClipboardCheck,
   LogIn,
   LogOut,
   Menu,
+  PackageOpen,
   QrCode,
   UserRound,
   Wrench
 } from "lucide-react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import {
+  componentRequestsAvailable,
+  memberPlatformAvailable
+} from "../config/release";
 import { useApp } from "../context/AppContext";
 import { useTheme } from "../context/ThemeContext";
 import type { Theme } from "../types/domain";
@@ -22,6 +29,8 @@ const publicLinks = [
   ["/membership", "Membership"],
   ["/services", "Services"],
   ["/projects", "Projects"],
+  ["/ecosystem", "Ecosystem"],
+  ["/components", "Components"],
   ["/financials", "Financials"],
   ["/join", "Join"]
 ] as const;
@@ -30,7 +39,10 @@ const memberLinks = [
   ["/dashboard", "Dashboard", ClipboardCheck],
   ["/book", "Book", BookOpen],
   ["/bookings", "Bookings", CalendarDays],
-  ["/check-in", "Check in", QrCode]
+  ["/check-in", "Check in", QrCode],
+  ["/inventory", "Inventory", Boxes],
+  ["/maker-desk", "Maker desk", PackageOpen],
+  ["/component-requests", "Requests", ClipboardList]
 ] as const;
 
 function ThemeSwitch() {
@@ -64,6 +76,16 @@ function ScrollToTop() {
 
 export function Shell({ children }: PropsWithChildren) {
   const { currentMember, isStaff, mode, online, notice, clearNotice, signOut } = useApp();
+  const { pathname } = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const workspaceLinksRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    workspaceLinksRef.current
+      ?.querySelector<HTMLAnchorElement>("a.active")
+      ?.scrollIntoView({ block: "nearest", inline: "center" });
+  }, [pathname, currentMember, isStaff]);
 
   return (
     <div className="app-shell">
@@ -85,11 +107,18 @@ export function Shell({ children }: PropsWithChildren) {
           </nav>
           <div className="topbar-actions">
             <ThemeSwitch />
-            <Link className="icon-button mobile-menu-link" to="/dashboard" title="Workspace">
+            <button
+              className="icon-button mobile-menu-link"
+              type="button"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-public-menu"
+              title="Navigation"
+              onClick={() => setMobileMenuOpen((open) => !open)}
+            >
               <Menu aria-hidden="true" />
-              <span className="sr-only">Open workspace</span>
-            </Link>
-            {currentMember ? (
+              <span className="sr-only">{mobileMenuOpen ? "Close navigation" : "Open navigation"}</span>
+            </button>
+            {memberPlatformAvailable && (currentMember ? (
               <button className="icon-button" type="button" onClick={() => void signOut()} title="Sign out">
                 <LogOut aria-hidden="true" />
                 <span className="sr-only">Sign out</span>
@@ -99,15 +128,34 @@ export function Shell({ children }: PropsWithChildren) {
                 <LogIn aria-hidden="true" />
                 <span className="sr-only">Sign in</span>
               </Link>
-            )}
+            ))}
           </div>
         </div>
+        {mobileMenuOpen && (
+          <nav id="mobile-public-menu" className="mobile-public-menu" aria-label="Mobile navigation">
+            <div className="wrap">
+              {publicLinks.map(([to, label]) => (
+                <NavLink key={to} to={to} end={to === "/"}>
+                  {label}
+                </NavLink>
+              ))}
+              {memberPlatformAvailable && <Link to={currentMember ? "/dashboard" : "/auth"}>
+                {currentMember ? "Member workspace" : "Member sign in"}
+              </Link>}
+              {memberPlatformAvailable && currentMember && (
+                <button type="button" onClick={() => void signOut()}>
+                  Sign out
+                </button>
+              )}
+            </div>
+          </nav>
+        )}
       </header>
 
-      {currentMember && (
+      {memberPlatformAvailable && currentMember && (
         <nav className="workspace-nav" aria-label="Member workspace">
           <div className="wrap workspace-inner">
-            <div className="workspace-links">
+            <div className="workspace-links" ref={workspaceLinksRef}>
               {memberLinks.map(([to, label, Icon]) => (
                 <NavLink key={to} to={to}>
                   <Icon aria-hidden="true" />
@@ -152,7 +200,9 @@ export function Shell({ children }: PropsWithChildren) {
           <div className="footer-links">
             <Link to="/members">Members</Link>
             <Link to="/procurement">Procurement</Link>
-            <Link to="/kiosk">Kiosk</Link>
+            <Link to="/maker-desk">Maker desk</Link>
+            {componentRequestsAvailable && <Link to="/components/request">Request a component</Link>}
+            {memberPlatformAvailable && <Link to="/kiosk">Kiosk</Link>}
             <Link to="/join">Join the floor</Link>
           </div>
           <p className="license-note">

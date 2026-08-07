@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Field, PageHeader, Section, Status } from "../components/Primitives";
+import { memberPlatformAvailable } from "../config/release";
 import { useApp } from "../context/AppContext";
 
 const equipmentRows = [
@@ -65,9 +66,11 @@ export function EquipmentPage() {
         title="Every zone, mapped."
         description="Each zone is mapped to its equipment, power requirement, booking rule, and safety boundary. Heavy loads stay isolated from the clean circuits that electronics and compute depend on."
         actions={<div className="button-row">
-          <Link className="button button-primary" to="/book">
-            Book live resources <ArrowRight aria-hidden="true" />
-          </Link>
+          {memberPlatformAvailable && (
+            <Link className="button button-primary" to="/book">
+              Book live resources <ArrowRight aria-hidden="true" />
+            </Link>
+          )}
           <Link className="button button-quiet" to="/maker-desk">
             Open the maker desk
           </Link>
@@ -96,7 +99,11 @@ export function EquipmentPage() {
                   <span>{resource.capacity} people</span>
                   <span>{resource.hazardous ? "certified use" : "standard access"}</span>
                 </div>
-                <Link to={`/book/${resource.slug}`}>View slots <ArrowRight aria-hidden="true" /></Link>
+                {memberPlatformAvailable ? (
+                  <Link to={`/book/${resource.slug}`}>View slots <ArrowRight aria-hidden="true" /></Link>
+                ) : (
+                  <span className="mono">Bookings opening soon</span>
+                )}
               </div>
             </article>
           ))}
@@ -407,8 +414,10 @@ export function JoinPage() {
             <p>Book arms, benches, the cage, and compute. Complete inductions as the project reaches hazardous equipment.</p>
             {currentMember ? (
               <ApplicationForm onSubmit={submitApplication} />
-            ) : (
+            ) : memberPlatformAvailable ? (
               <Link className="button button-primary" to="/auth">Sign in to apply</Link>
+            ) : (
+              <p className="mono">Membership applications opening soon</p>
             )}
           </article>
           <article>
@@ -482,7 +491,9 @@ export function NotFoundPage() {
       actions={
         <>
           <Link className="button button-primary" to="/">The lab</Link>
-          <Link className="button button-quiet" to="/dashboard">Dashboard</Link>
+          {memberPlatformAvailable && (
+            <Link className="button button-quiet" to="/dashboard">Dashboard</Link>
+          )}
         </>
       }
     />
