@@ -215,6 +215,17 @@ export const projects: Project[] = [
     tags: ["bimanual", "embodied AI"]
   },
   {
+    slug: "low-cost-esp32-drone",
+    title: "Low Cost Drone using ESP32",
+    category: "Drones",
+    priority: "P1",
+    status: "Building Soon",
+    description: "A compact Wi-Fi quadcopter built around an ESP32-WROOM, MPU6050, structural custom PCB, and four coreless motors for supervised flight-control and PID-tuning work in the netted drone cage.",
+    image: "/project-images/esp32-drone-circuit-digest-official.jpg",
+    sourceUrl: "https://github.com/Circuit-Digest/ESP-Drone",
+    tags: ["ESP32-WROOM", "MPU6050", "Wi-Fi control", "custom PCB", "supervised flight"]
+  },
+  {
     slug: "px4",
     title: "PX4 Autopilot",
     category: "Drones",

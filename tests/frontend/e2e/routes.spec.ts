@@ -105,6 +105,33 @@ test("q8bot uses official media and a project-linked build list", async ({ page 
   await expect(page.getByRole("heading", { name: "Protected 14500 1000mAh Li-ion cells" })).toBeVisible();
 });
 
+test("low-cost ESP32 drone uses the documented airframe and build list", async ({ page }) => {
+  await page.goto("/projects");
+  const card = page.locator("#low-cost-esp32-drone");
+
+  await expect(card.getByRole("heading", { name: "Low Cost Drone using ESP32" })).toBeVisible();
+  await expect(card.locator("img")).toHaveAttribute(
+    "src",
+    "/project-images/esp32-drone-circuit-digest-official.jpg"
+  );
+  await expect(card.getByRole("link", { name: "Image: Circuit Digest · ESP-Drone" })).toHaveAttribute(
+    "href",
+    "https://circuitdigest.com/microcontroller-projects/DIY-wifi-controlled-drone"
+  );
+  await expect(card.getByRole("link", { name: "Project source" })).toHaveAttribute(
+    "href",
+    "https://github.com/Circuit-Digest/ESP-Drone"
+  );
+  await expect(card.getByText("7 required")).toBeVisible();
+
+  await card.getByRole("link", { name: "Build components" }).click();
+  await expect(page.getByRole("heading", { name: "Build list for Low Cost Drone using ESP32." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "ESP32-WROOM drone controller set" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "ESP-Drone structural custom PCB" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "ESP-Drone 720 motor and 55mm propeller set" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "ESP-Drone 1S 1300mAh high-discharge LiPo" })).toBeVisible();
+});
+
 test("OpenActuator uses its released LinearVCM hardware and published demo stack", async ({ page }) => {
   await page.goto("/projects");
   const card = page.locator("#openactuator");

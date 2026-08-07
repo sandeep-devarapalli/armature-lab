@@ -38,6 +38,7 @@ const projectMediaCredits: Record<string, readonly [string, string]> = {
   yor: ["YOR project team · yourownrobot.ai", "https://www.yourownrobot.ai/"],
   "rebot-devarm": ["Seeed Studio · reBot DevArm", "https://github.com/Seeed-Projects/reBot-DevArm"],
   openarm: ["OpenArm · Enactic", "https://github.com/enactic/openarm"],
+  "low-cost-esp32-drone": ["Circuit Digest · ESP-Drone", "https://circuitdigest.com/microcontroller-projects/DIY-wifi-controlled-drone"],
   px4: ["PX4 · Holybro / Dronecode", "https://docs.px4.io/main/en/frames_multicopter/holybro_x500v2_pixhawk6c"],
   ardupilot: ["ArduPilot Project", "https://ardupilot.org/"],
   flexitac: ["FlexiTac · Huang & Li", "https://flexitac.github.io/"],
