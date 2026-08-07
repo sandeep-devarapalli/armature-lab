@@ -47,11 +47,6 @@ try {
     .replace("<title>armature · The Physical AI and Robotics Lab</title>", `${hostedIndex}\n    <title>Building Vision · armature</title>`);
   await writeFile(join(visionOutput, "index.html"), buildingVisionIndex);
 
-  await writeFile(
-    join(hostedOutput, "_redirects"),
-    "/building-vision /building-vision/index.html 200\n"
-  );
-
   const [sourceHomepage, hostedHomepage] = await Promise.all([
     readFile(join(legacySite, "index.html")),
     readFile(join(hostedOutput, "index.html"))
