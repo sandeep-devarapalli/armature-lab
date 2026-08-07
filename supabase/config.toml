@@ -1,0 +1,76 @@
+project_id = "armature-lab"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[studio]
+enabled = true
+port = 54323
+api_url = "http://127.0.0.1"
+
+[local_smtp]
+enabled = true
+port = 54324
+
+[storage]
+enabled = true
+file_size_limit = "25MiB"
+
+[auth]
+enabled = true
+site_url = "https://armaturelab.org"
+additional_redirect_urls = [
+  "http://localhost:5173/auth/callback",
+  "http://localhost:4173/auth/callback",
+  "https://codex-member-booking-pwa.armature-lab.pages.dev/auth/callback",
+  "https://armaturelab.org/auth/callback",
+]
+jwt_expiry = 3600
+enable_signup = true
+enable_anonymous_sign_ins = false
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = true
+max_frequency = "1m"
+otp_length = 6
+otp_expiry = 3600
+
+[auth.mfa]
+max_enrolled_factors = 10
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+[auth.external.google]
+enabled = false
+client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
+redirect_uri = ""
+
+[functions.kiosk]
+verify_jwt = false
+
+[functions.calendar-sync]
+verify_jwt = false
+
+[functions.retry-reminders]
+verify_jwt = false
+
+[functions.booking-ics]
+verify_jwt = false

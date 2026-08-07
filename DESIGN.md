@@ -30,7 +30,7 @@ Use the current site as the source of truth.
 
 ## Color System
 
-Use existing `site/index.html` CSS variables unless the user asks for a palette change.
+Use existing `src/styles.css` CSS variables unless the user asks for a palette change.
 
 - Ink: `#0A1220`
 - Ink secondary: `#142036`, `#1F2D48`
@@ -102,8 +102,9 @@ Before handing back a design or visual change:
 - Check that palette, type, spacing, cards, and diagrams still match this file.
 - Check light, dark, and sepia modes at desktop and mobile widths, including persisted selection across pages.
 - Check placeholders are either intentionally preserved or updated from real user-provided values.
-- Open `site/index.html` on macOS for visual changes:
-  `open site/index.html`
-- If service-worker/PWA behavior matters, use localhost:
-  `python3 -m http.server 8000 --directory site`
+- Run `npm run dev` for interaction work or `npm run preview` against a
+  production build for PWA checks.
+- Verify public, member, staff, and kiosk routes at desktop and 390px.
+- Confirm booking and check-in controls communicate their online-only state
+  without changing layout between themes.
 - For calculator or financial copy changes, also check the docs and README for matching numbers.

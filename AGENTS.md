@@ -2,16 +2,22 @@
 
 ## Project Scope
 
-This folder is the armature asset pack: a static site, brand assets, LinkedIn assets, and planning docs for a physical AI and robotics lab in HSR Layout, Bengaluru.
+This folder is the Armature member, booking, and check-in PWA plus the lab's
+brand assets and planning documents.
 
-- `site/`: deployable static PWA for `armaturelab.org`.
+- `src/`: React, Vite, and TypeScript application for `armaturelab.org`.
+- `public/`: PWA icons, route fallback, and project media.
+- `supabase/`: database migrations, RLS/RPC tests, seed data, and Edge Functions.
+- `tests/`: frontend and browser tests.
+- `site/`: preserved legacy static site; do not deploy it over the React app.
 - `brand/`: finalized SVG mark, favicon, and lockups.
 - `linkedin/`: company page logo and banner assets.
 - `docs/`: financial model and phased capex plan.
-- `README.md`: asset inventory, deploy notes, and known open placeholders.
+- `README.md`: application setup, deploy notes, and known open placeholders.
 - `DESIGN.md`: visual system and design consistency rules for site and asset changes.
 
-There is no package manager, build system, or app test suite in this folder unless one is added later.
+Use Node.js 22 and the committed npm lockfile. Supabase is authoritative for
+identity, approvals, resources, bookings, attendance, and integration state.
 
 ## Brand And Naming Rules
 
@@ -23,7 +29,7 @@ There is no package manager, build system, or app test suite in this folder unle
 
 ## Source Of Truth
 
-Keep these facts consistent across `site/index.html`, `docs/`, and `README.md` when any of them change:
+Keep these facts consistent across `src/`, `docs/`, and `README.md` when any of them change:
 
 - 3,500 sq ft lab footprint.
 - Ten zones.
@@ -41,23 +47,34 @@ The financial docs are planning estimates, not quotes or financial advice. Do no
 Known placeholders are intentional until the user supplies final values:
 
 - `Rs [rate]` or `[rate]` pricing on membership, equipment, pods, and certification cards.
-- `[Founder name]` on the Join page.
-- Join CTA links with `href="#"`.
-- Reserved photo slots on the home page.
+- The preserved `site/` implementation still contains legacy founder, photo,
+  and CTA placeholders; they are not part of the React production surface.
 
-Do not invent final prices, founder names, URLs, or photos. If the user supplies real values, update `site/index.html` and then remove or edit the matching placeholder note in `README.md`.
+Do not invent final prices, founder names, URLs, or photos. If the user supplies
+real values, update the React source and then remove or edit the matching
+placeholder note in `README.md`.
 
 ## Editing Rules
 
 - Make small, focused edits. Prefer editing existing files over creating new ones.
 - Read `DESIGN.md` before visual, layout, asset, or site copy changes.
-- Do not introduce a framework, package manager, or build step for simple static-site changes.
-- Preserve the PWA behavior in `site/sw.js`: live booking, availability, registration, API, Luma, Razorpay, and calendar URLs must remain network-first and must not be served stale.
-- Bump `VERSION` in `site/sw.js` on every deployable site change.
+- Keep the existing React/Vite/TypeScript stack. Do not add another framework or
+  state layer for a narrow change.
+- Preserve the PWA rules in `vite.config.ts`: authenticated Supabase, Edge
+  Function, booking, check-in, calendar, and availability traffic must remain
+  network-only and must not be served stale.
+- Never place a service-role key, SMTP credential, Google credential, database
+  password, or kiosk secret in a `VITE_*` variable.
+- Applied Supabase migrations are immutable. Add a new migration for schema
+  changes, keep every exposed table under RLS, and regenerate
+  `src/types/database.ts` after the linked schema changes.
+- Staff authority belongs in `staff_roles`, never editable profile metadata.
 - For procurement or pricing pages, keep INR as the primary displayed currency. Use USD/EUR only in brackets as source or reference pricing.
 - Keep docs and calculator numbers aligned. If a financial assumption changes in one place, check all related site tables, calculator defaults, docs, and README notes.
 - Preserve the current asset filenames unless the user asks for a rename.
-- Keep the site's light, dark, and sepia modes structurally identical. Theme work must use the shared CSS-variable system, persist the visitor's choice, and remain consistent on the home and procurement pages.
+- Keep the site's light, dark, and sepia modes structurally identical. Theme
+  work must use the shared CSS-variable system, persist the visitor's choice,
+  and remain consistent across public, member, staff, and kiosk routes.
 - Avoid unrelated redesign, copy expansion, or cleanup.
 - Before reporting that a hosting, DNS, database, or admin integration is unavailable, check the active plugin and tool registry. Cloudflare and Supabase plugins may be available for programmatic infrastructure work.
 - Namecheap registrar automation can use the personal `namecheap-mcp` skill backed by `johnsorrentino/mcp-namecheap`. Keep nameserver writes disabled by default and require explicit approval before enabling or calling them.
@@ -67,16 +84,15 @@ Do not invent final prices, founder names, URLs, or photos. If the user supplies
 
 Use the narrowest checks that match the edit:
 
-- For `site/manifest.webmanifest`, validate JSON:
-  `python3 -m json.tool site/manifest.webmanifest`
 - For site copy, placeholder, or CTA changes, inspect the known placeholders:
-  `rg -n "\\[rate\\]|\\[Founder name\\]|href=\"#\"" README.md site/index.html`
-- For service-worker changes, confirm `VERSION` changed and live URL patterns are still network-first.
-- For visual or interaction changes, open the static site on macOS:
-  `open site/index.html`
+  `rg -n "\\[rate\\]|\\[Founder name\\]|href=\"#\"" README.md src`
+- For frontend changes, run `npm test` and `npm run build`.
+- For database changes, reset locally, run
+  `supabase test db supabase/tests/database`, and run
+  `supabase/tests/concurrent_booking.sh`.
+- For service-worker changes, inspect the generated `dist/sw.js` and confirm
+  transactional/authenticated traffic is absent from Cache Storage.
+- For visual or interaction changes, run `npm run dev` or `npm run preview`.
 - For design changes, confirm palette, typography, layout, and placeholders still follow `DESIGN.md`.
-- For theme changes, verify light, dark, and sepia modes plus persistence across `site/index.html` and `site/procurement.html`.
-- If service-worker or PWA behavior must be checked, serve the site over localhost:
-  `python3 -m http.server 8000 --directory site`
-
-In final replies, be clear when no automated test suite exists.
+- For theme changes, verify light, dark, and sepia modes at desktop and 390px.
+- For auth, booking, kiosk, or PWA changes, run the relevant Playwright flows.
