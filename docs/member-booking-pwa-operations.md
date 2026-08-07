@@ -12,6 +12,10 @@ only the project URL and publishable key:
 ```text
 VITE_SUPABASE_URL
 VITE_SUPABASE_PUBLISHABLE_KEY
+VITE_SITE_URL=https://armaturelab.org
+VITE_MEMBER_PLATFORM_ENABLED=false
+VITE_COMPONENT_REQUESTS_ENABLED=false
+VITE_GOOGLE_AUTH_ENABLED=false
 ```
 
 Service-role credentials, kiosk enrollment secrets, SMTP credentials, and
@@ -19,14 +23,34 @@ Google credentials belong in Supabase project secrets. Never add them to Vite
 variables, browser storage, GitHub, or Cloudflare Pages environment variables
 that are exposed to the client bundle.
 
+## Public-first release mode
+
+The initial production release publishes the React public site while keeping
+transactional member features closed. Keep `VITE_MEMBER_PLATFORM_ENABLED` and
+`VITE_COMPONENT_REQUESTS_ENABLED` false. Hide sign-in and action entry points;
+direct visits to member, booking, check-in, kiosk, admin, inventory-custody,
+locker, toolkit, and request routes must render the shared opening-soon state.
+
+Public project pages, components, procurement, Maker Desk descriptions,
+anonymous resource availability, the member directory, ecosystem map, and
+Building Vision remain available. A missing Supabase URL or key is a
+configuration error in production, never permission to enter demo mode.
+`VITE_DEMO_MODE=true` is restricted to local and automated test builds.
+
+Migrations `202607260001` through `202607260012` are already applied to the
+linked Supabase project and are immutable. Apply all future corrections through
+new migrations. A frontend rollback never rewinds database history.
+
 ## Provisioning order
 
 1. Create an India-region Supabase preview project.
 2. Link the local repository with `supabase link --project-ref <preview-ref>`.
 3. Apply migrations with `supabase db push`.
-4. Deploy the Edge Functions under `supabase/functions/`.
+4. Deploy the approved kiosk, calendar, reminder, and ICS Edge Functions. Keep
+   `component-request` undeployed until its separate gate below passes.
 5. Add the frontend URL and `/auth/callback` to Supabase Auth redirect URLs.
-6. Configure Google OAuth and passwordless email OTP. Set
+6. Configure passwordless email OTP. Before the member-platform launch,
+   configure Google OAuth and set
    `VITE_GOOGLE_AUTH_ENABLED=true` only after the Google provider is working;
    otherwise the live sign-in screen keeps Google disabled and directs members
    to email OTP.
@@ -76,6 +100,38 @@ bucket policy permits members to write only inside their own folder.
 
 The approved redirect origins should contain only controlled Armature domains
 and explicit local development URLs. Avoid wildcard production redirects.
+
+Google sign-in remains disabled during the public-first release. Enable the
+provider and `VITE_GOOGLE_AUTH_ENABLED` only after callback, account-linking,
+error, and logout flows pass against the production Auth configuration.
+
+## Component requests
+
+Keep `VITE_COMPONENT_REQUESTS_ENABLED=false` and do not deploy the public
+`component-request` function until all of these secrets and controls exist:
+
+```text
+APP_ORIGIN=https://armaturelab.org
+ALLOWED_ORIGINS=https://armaturelab.org
+TURNSTILE_SECRET_KEY
+COMPONENT_REQUEST_FROM_EMAIL
+COMPONENT_REQUEST_EMAIL_PROVIDER
+RESEND_API_KEY or POSTMARK_SERVER_TOKEN
+COMPONENT_REQUEST_RATE_LIMIT
+```
+
+The browser receives only `VITE_TURNSTILE_SITE_KEY`. Before enabling the flow,
+test invalid, expired, replayed, and duplicate verification tokens; Turnstile
+failure; email-provider failure; rate limiting; and requester-email privacy.
+
+## Inventory and Maker Desk operations
+
+Component inventory, lockers, consumables, and toolkit custody remain
+non-transactional in the public-first release. Before enabling them, staff must
+count and label physical stock, assign storage locations, create serialized
+asset or toolkit tags, verify deposits and pricing, and test attendance-exit
+blocking with audited overrides. Schedule private evidence deletion from
+Storage and database rows using each record's `retain_until` value.
 
 ## Kiosk enrollment
 
@@ -130,6 +186,11 @@ before moving the reservation.
 
 Before production promotion:
 
+- Build from an exact reviewed and merged `main` commit with Node.js 22 and
+  `npm ci`; rebuild production after Playwright so `dist/` cannot contain the
+  demo E2E build.
+- Reject production builds with `VITE_DEMO_MODE=true`, missing Supabase public
+  values, or enabled member/request flags before their operational gates pass.
 - SQL/RLS persona tests pass.
 - Concurrent overlapping bookings prove exactly one winner.
 - QR expiry, replay, wrong-kiosk, and duplicate-scan tests pass.
@@ -139,7 +200,18 @@ Before production promotion:
 - Signup, approval, booking, cancellation, check-in/out, kiosk, and staff flows
   pass in Playwright.
 - Cloudflare preview returns the SPA shell for direct route navigation.
+- `/sw.js` revalidates, the legacy service worker hands over cleanly, and no
+  authenticated or transactional response enters Cache Storage.
+- Every `public/project-images/` asset has a current provenance row in
+  `BRAND-ASSETS.md`; entries marked `Verification required` receive explicit
+  maintainer review before promotion.
 - Supabase logs and integration outbox show no unexplained failures.
+
+Promote the verified Cloudflare Pages artifact to `armaturelab.org`, purge stale
+cache, and smoke-test `/`, `/projects`, project details, `/components`,
+`/ecosystem`, `/building-vision`, opening-soon route guards, all three themes,
+and 390px layouts. Keep the previous deployment available until these checks
+and Supabase logs remain clean.
 
 ## Rollback
 

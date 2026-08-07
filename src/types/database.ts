@@ -92,6 +92,90 @@ export type Database = {
           },
         ]
       }
+      asset_units: {
+        Row: {
+          acquired_at: string | null
+          asset_tag: string
+          component_id: string
+          condition_note: string | null
+          created_at: string
+          id: string
+          inventory_location_id: string
+          inventory_lot_id: string | null
+          metadata: Json
+          rfid_epc: string | null
+          serial_number: string | null
+          status: Database["public"]["Enums"]["asset_unit_status"]
+          updated_at: string
+        }
+        Insert: {
+          acquired_at?: string | null
+          asset_tag: string
+          component_id: string
+          condition_note?: string | null
+          created_at?: string
+          id?: string
+          inventory_location_id: string
+          inventory_lot_id?: string | null
+          metadata?: Json
+          rfid_epc?: string | null
+          serial_number?: string | null
+          status?: Database["public"]["Enums"]["asset_unit_status"]
+          updated_at?: string
+        }
+        Update: {
+          acquired_at?: string | null
+          asset_tag?: string
+          component_id?: string
+          condition_note?: string | null
+          created_at?: string
+          id?: string
+          inventory_location_id?: string
+          inventory_lot_id?: string | null
+          metadata?: Json
+          rfid_epc?: string | null
+          serial_number?: string | null
+          status?: Database["public"]["Enums"]["asset_unit_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_units_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "components"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asset_units_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "public_component_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asset_units_inventory_location_id_fkey"
+            columns: ["inventory_location_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asset_units_inventory_location_id_fkey"
+            columns: ["inventory_location_id"]
+            isOneToOne: false
+            referencedRelation: "member_checkout_assets"
+            referencedColumns: ["inventory_location_id"]
+          },
+          {
+            foreignKeyName: "asset_units_inventory_lot_id_fkey"
+            columns: ["inventory_lot_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_lots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       attendance_sessions: {
         Row: {
           booking_id: string | null
@@ -329,6 +413,189 @@ export type Database = {
           },
         ]
       }
+      cabinet_access_intents: {
+        Row: {
+          attendance_session_id: string
+          cabinet_device_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          member_id: string
+          redeemed_at: string | null
+          status: Database["public"]["Enums"]["cabinet_access_intent_status"]
+          token_hash: string
+        }
+        Insert: {
+          attendance_session_id: string
+          cabinet_device_id: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          member_id: string
+          redeemed_at?: string | null
+          status?: Database["public"]["Enums"]["cabinet_access_intent_status"]
+          token_hash: string
+        }
+        Update: {
+          attendance_session_id?: string
+          cabinet_device_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          member_id?: string
+          redeemed_at?: string | null
+          status?: Database["public"]["Enums"]["cabinet_access_intent_status"]
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cabinet_access_intents_attendance_session_id_fkey"
+            columns: ["attendance_session_id"]
+            isOneToOne: false
+            referencedRelation: "attendance_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cabinet_access_intents_cabinet_device_id_fkey"
+            columns: ["cabinet_device_id"]
+            isOneToOne: false
+            referencedRelation: "cabinet_devices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cabinet_access_intents_cabinet_device_id_fkey"
+            columns: ["cabinet_device_id"]
+            isOneToOne: false
+            referencedRelation: "member_active_cabinets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cabinet_devices: {
+        Row: {
+          created_at: string
+          enrolled_at: string | null
+          id: string
+          key_thumbprint: string
+          last_seen_at: string | null
+          location_id: string
+          metadata: Json
+          name: string
+          public_key_jwk: Json
+          revoked_at: string | null
+          status: Database["public"]["Enums"]["cabinet_device_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          enrolled_at?: string | null
+          id?: string
+          key_thumbprint: string
+          last_seen_at?: string | null
+          location_id: string
+          metadata?: Json
+          name: string
+          public_key_jwk: Json
+          revoked_at?: string | null
+          status?: Database["public"]["Enums"]["cabinet_device_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          enrolled_at?: string | null
+          id?: string
+          key_thumbprint?: string
+          last_seen_at?: string | null
+          location_id?: string
+          metadata?: Json
+          name?: string
+          public_key_jwk?: Json
+          revoked_at?: string | null
+          status?: Database["public"]["Enums"]["cabinet_device_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cabinet_devices_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cabinet_events: {
+        Row: {
+          access_intent_id: string | null
+          cabinet_device_id: string
+          checkout_session_id: string | null
+          event_key: string
+          event_kind: Database["public"]["Enums"]["cabinet_event_kind"]
+          id: string
+          occurred_at: string
+          payload: Json
+          received_at: string
+        }
+        Insert: {
+          access_intent_id?: string | null
+          cabinet_device_id: string
+          checkout_session_id?: string | null
+          event_key: string
+          event_kind: Database["public"]["Enums"]["cabinet_event_kind"]
+          id?: string
+          occurred_at: string
+          payload?: Json
+          received_at?: string
+        }
+        Update: {
+          access_intent_id?: string | null
+          cabinet_device_id?: string
+          checkout_session_id?: string | null
+          event_key?: string
+          event_kind?: Database["public"]["Enums"]["cabinet_event_kind"]
+          id?: string
+          occurred_at?: string
+          payload?: Json
+          received_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cabinet_events_access_intent_id_fkey"
+            columns: ["access_intent_id"]
+            isOneToOne: false
+            referencedRelation: "cabinet_access_intents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cabinet_events_cabinet_device_id_fkey"
+            columns: ["cabinet_device_id"]
+            isOneToOne: false
+            referencedRelation: "cabinet_devices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cabinet_events_cabinet_device_id_fkey"
+            columns: ["cabinet_device_id"]
+            isOneToOne: false
+            referencedRelation: "member_active_cabinets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cabinet_events_checkout_session_id_fkey"
+            columns: ["checkout_session_id"]
+            isOneToOne: false
+            referencedRelation: "checkout_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cabinet_events_checkout_session_id_fkey"
+            columns: ["checkout_session_id"]
+            isOneToOne: false
+            referencedRelation: "member_checkout_assets"
+            referencedColumns: ["checkout_session_id"]
+          },
+        ]
+      }
       calendar_links: {
         Row: {
           active: boolean
@@ -521,6 +788,497 @@ export type Database = {
           },
         ]
       }
+      checkout_sessions: {
+        Row: {
+          attendance_session_id: string
+          checked_out_at: string | null
+          created_at: string
+          id: string
+          idempotency_key: string
+          location_id: string
+          member_id: string
+          opened_at: string
+          returned_at: string | null
+          review_reason: string | null
+          status: Database["public"]["Enums"]["checkout_session_status"]
+          updated_at: string
+        }
+        Insert: {
+          attendance_session_id: string
+          checked_out_at?: string | null
+          created_at?: string
+          id?: string
+          idempotency_key: string
+          location_id: string
+          member_id: string
+          opened_at?: string
+          returned_at?: string | null
+          review_reason?: string | null
+          status?: Database["public"]["Enums"]["checkout_session_status"]
+          updated_at?: string
+        }
+        Update: {
+          attendance_session_id?: string
+          checked_out_at?: string | null
+          created_at?: string
+          id?: string
+          idempotency_key?: string
+          location_id?: string
+          member_id?: string
+          opened_at?: string
+          returned_at?: string | null
+          review_reason?: string | null
+          status?: Database["public"]["Enums"]["checkout_session_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checkout_sessions_attendance_session_id_fkey"
+            columns: ["attendance_session_id"]
+            isOneToOne: false
+            referencedRelation: "attendance_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checkout_sessions_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      component_offers: {
+        Row: {
+          active: boolean
+          checked_on: string
+          component_id: string
+          created_at: string
+          customer_rating: number | null
+          customer_rating_count: number | null
+          display_price_inr: number | null
+          gst_rate: number | null
+          id: string
+          is_preferred: boolean
+          manufacturer_part_number: string | null
+          notes: string | null
+          order_url: string
+          price_inr_excluding_gst: number | null
+          price_inr_including_gst: number | null
+          rating_source: string | null
+          requires_validation: boolean
+          sku: string | null
+          stock_status: Database["public"]["Enums"]["component_offer_status"]
+          updated_at: string
+          variant: string
+          vendor_name: string
+          warranty_note: string | null
+        }
+        Insert: {
+          active?: boolean
+          checked_on: string
+          component_id: string
+          created_at?: string
+          customer_rating?: number | null
+          customer_rating_count?: number | null
+          display_price_inr?: number | null
+          gst_rate?: number | null
+          id?: string
+          is_preferred?: boolean
+          manufacturer_part_number?: string | null
+          notes?: string | null
+          order_url: string
+          price_inr_excluding_gst?: number | null
+          price_inr_including_gst?: number | null
+          rating_source?: string | null
+          requires_validation?: boolean
+          sku?: string | null
+          stock_status?: Database["public"]["Enums"]["component_offer_status"]
+          updated_at?: string
+          variant?: string
+          vendor_name: string
+          warranty_note?: string | null
+        }
+        Update: {
+          active?: boolean
+          checked_on?: string
+          component_id?: string
+          created_at?: string
+          customer_rating?: number | null
+          customer_rating_count?: number | null
+          display_price_inr?: number | null
+          gst_rate?: number | null
+          id?: string
+          is_preferred?: boolean
+          manufacturer_part_number?: string | null
+          notes?: string | null
+          order_url?: string
+          price_inr_excluding_gst?: number | null
+          price_inr_including_gst?: number | null
+          rating_source?: string | null
+          requires_validation?: boolean
+          sku?: string | null
+          stock_status?: Database["public"]["Enums"]["component_offer_status"]
+          updated_at?: string
+          variant?: string
+          vendor_name?: string
+          warranty_note?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "component_offers_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "components"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "component_offers_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "public_component_catalog"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      component_request_rate_limits: {
+        Row: {
+          key_hash: string
+          request_count: number
+          updated_at: string
+          window_started_at: string
+        }
+        Insert: {
+          key_hash: string
+          request_count?: number
+          updated_at?: string
+          window_started_at?: string
+        }
+        Update: {
+          key_hash?: string
+          request_count?: number
+          updated_at?: string
+          window_started_at?: string
+        }
+        Relationships: []
+      }
+      component_request_votes: {
+        Row: {
+          created_at: string
+          member_id: string
+          request_id: string
+        }
+        Insert: {
+          created_at?: string
+          member_id: string
+          request_id: string
+        }
+        Update: {
+          created_at?: string
+          member_id?: string
+          request_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "component_request_votes_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "component_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "component_request_votes_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "public_component_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      component_requests: {
+        Row: {
+          budget_band: Database["public"]["Enums"]["component_request_budget"]
+          component_name: string
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          id: string
+          is_published: boolean
+          notes: string | null
+          project_use_case: string
+          requested_quantity: number
+          requester_email: string
+          requester_user_id: string | null
+          status: Database["public"]["Enums"]["component_request_status"]
+          updated_at: string
+          urgency: Database["public"]["Enums"]["component_request_urgency"]
+          vendor_url: string | null
+          verification_expires_at: string | null
+          verification_token_hash: string | null
+          verified_at: string | null
+        }
+        Insert: {
+          budget_band?: Database["public"]["Enums"]["component_request_budget"]
+          component_name: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          id?: string
+          is_published?: boolean
+          notes?: string | null
+          project_use_case: string
+          requested_quantity?: number
+          requester_email: string
+          requester_user_id?: string | null
+          status?: Database["public"]["Enums"]["component_request_status"]
+          updated_at?: string
+          urgency?: Database["public"]["Enums"]["component_request_urgency"]
+          vendor_url?: string | null
+          verification_expires_at?: string | null
+          verification_token_hash?: string | null
+          verified_at?: string | null
+        }
+        Update: {
+          budget_band?: Database["public"]["Enums"]["component_request_budget"]
+          component_name?: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          id?: string
+          is_published?: boolean
+          notes?: string | null
+          project_use_case?: string
+          requested_quantity?: number
+          requester_email?: string
+          requester_user_id?: string | null
+          status?: Database["public"]["Enums"]["component_request_status"]
+          updated_at?: string
+          urgency?: Database["public"]["Enums"]["component_request_urgency"]
+          vendor_url?: string | null
+          verification_expires_at?: string | null
+          verification_token_hash?: string | null
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
+      components: {
+        Row: {
+          active: boolean
+          category: string
+          created_at: string
+          description: string
+          id: string
+          inventory_kind: Database["public"]["Enums"]["component_inventory_kind"]
+          metadata: Json
+          name: string
+          reorder_threshold: number
+          safety_notes: string | null
+          slug: string
+          target_quantity: number
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category: string
+          created_at?: string
+          description?: string
+          id?: string
+          inventory_kind: Database["public"]["Enums"]["component_inventory_kind"]
+          metadata?: Json
+          name: string
+          reorder_threshold?: number
+          safety_notes?: string | null
+          slug: string
+          target_quantity?: number
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          inventory_kind?: Database["public"]["Enums"]["component_inventory_kind"]
+          metadata?: Json
+          name?: string
+          reorder_threshold?: number
+          safety_notes?: string | null
+          slug?: string
+          target_quantity?: number
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      consumable_order_items: {
+        Row: {
+          consumable_sku_id: string
+          created_at: string
+          order_id: string
+          quantity: number
+          reference_unit_price_inr_including_gst: number | null
+          updated_at: string
+        }
+        Insert: {
+          consumable_sku_id: string
+          created_at?: string
+          order_id: string
+          quantity: number
+          reference_unit_price_inr_including_gst?: number | null
+          updated_at?: string
+        }
+        Update: {
+          consumable_sku_id?: string
+          created_at?: string
+          order_id?: string
+          quantity?: number
+          reference_unit_price_inr_including_gst?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consumable_order_items_consumable_sku_id_fkey"
+            columns: ["consumable_sku_id"]
+            isOneToOne: false
+            referencedRelation: "consumable_skus"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consumable_order_items_consumable_sku_id_fkey"
+            columns: ["consumable_sku_id"]
+            isOneToOne: false
+            referencedRelation: "public_consumable_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consumable_order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "consumable_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      consumable_orders: {
+        Row: {
+          collection_method: string
+          created_at: string
+          fulfilled_at: string | null
+          fulfilled_by: string | null
+          id: string
+          idempotency_key: string
+          member_id: string
+          member_notes: string | null
+          staff_notes: string | null
+          status: Database["public"]["Enums"]["consumable_order_status"]
+          submitted_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          collection_method?: string
+          created_at?: string
+          fulfilled_at?: string | null
+          fulfilled_by?: string | null
+          id?: string
+          idempotency_key: string
+          member_id: string
+          member_notes?: string | null
+          staff_notes?: string | null
+          status?: Database["public"]["Enums"]["consumable_order_status"]
+          submitted_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          collection_method?: string
+          created_at?: string
+          fulfilled_at?: string | null
+          fulfilled_by?: string | null
+          id?: string
+          idempotency_key?: string
+          member_id?: string
+          member_notes?: string | null
+          staff_notes?: string | null
+          status?: Database["public"]["Enums"]["consumable_order_status"]
+          submitted_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      consumable_skus: {
+        Row: {
+          active: boolean
+          component_id: string
+          created_at: string
+          description: string
+          id: string
+          inventory_lot_id: string | null
+          metadata: Json
+          name: string
+          order_unit: string
+          quantity_per_order_unit: number
+          reference_price_inr_including_gst: number | null
+          sku_code: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          component_id: string
+          created_at?: string
+          description?: string
+          id?: string
+          inventory_lot_id?: string | null
+          metadata?: Json
+          name: string
+          order_unit?: string
+          quantity_per_order_unit?: number
+          reference_price_inr_including_gst?: number | null
+          sku_code: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          component_id?: string
+          created_at?: string
+          description?: string
+          id?: string
+          inventory_lot_id?: string | null
+          metadata?: Json
+          name?: string
+          order_unit?: string
+          quantity_per_order_unit?: number
+          reference_price_inr_including_gst?: number | null
+          sku_code?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consumable_skus_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "components"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consumable_skus_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "public_component_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consumable_skus_inventory_lot_id_fkey"
+            columns: ["inventory_lot_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_lots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       integration_outbox: {
         Row: {
           action: Database["public"]["Enums"]["outbox_action"]
@@ -574,6 +1332,320 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      inventory_evidence: {
+        Row: {
+          captured_at: string
+          checkout_session_id: string
+          created_at: string
+          evidence_kind: Database["public"]["Enums"]["inventory_evidence_kind"]
+          id: string
+          inventory_movement_id: string | null
+          metadata: Json
+          retain_until: string
+          retention_class: Database["public"]["Enums"]["inventory_evidence_retention"]
+          storage_path: string
+          uploaded_by: string
+        }
+        Insert: {
+          captured_at?: string
+          checkout_session_id: string
+          created_at?: string
+          evidence_kind: Database["public"]["Enums"]["inventory_evidence_kind"]
+          id?: string
+          inventory_movement_id?: string | null
+          metadata?: Json
+          retain_until: string
+          retention_class?: Database["public"]["Enums"]["inventory_evidence_retention"]
+          storage_path: string
+          uploaded_by: string
+        }
+        Update: {
+          captured_at?: string
+          checkout_session_id?: string
+          created_at?: string
+          evidence_kind?: Database["public"]["Enums"]["inventory_evidence_kind"]
+          id?: string
+          inventory_movement_id?: string | null
+          metadata?: Json
+          retain_until?: string
+          retention_class?: Database["public"]["Enums"]["inventory_evidence_retention"]
+          storage_path?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_evidence_checkout_session_id_fkey"
+            columns: ["checkout_session_id"]
+            isOneToOne: false
+            referencedRelation: "checkout_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_evidence_checkout_session_id_fkey"
+            columns: ["checkout_session_id"]
+            isOneToOne: false
+            referencedRelation: "member_checkout_assets"
+            referencedColumns: ["checkout_session_id"]
+          },
+          {
+            foreignKeyName: "inventory_evidence_inventory_movement_id_fkey"
+            columns: ["inventory_movement_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_movements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_evidence_inventory_movement_id_fkey"
+            columns: ["inventory_movement_id"]
+            isOneToOne: false
+            referencedRelation: "member_checkout_assets"
+            referencedColumns: ["movement_id"]
+          },
+        ]
+      }
+      inventory_locations: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          lab_location_id: string | null
+          member_visible: boolean
+          metadata: Json
+          name: string
+          parent_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          lab_location_id?: string | null
+          member_visible?: boolean
+          metadata?: Json
+          name: string
+          parent_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          lab_location_id?: string | null
+          member_visible?: boolean
+          metadata?: Json
+          name?: string
+          parent_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_locations_lab_location_id_fkey"
+            columns: ["lab_location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_locations_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_locations_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "member_checkout_assets"
+            referencedColumns: ["inventory_location_id"]
+          },
+        ]
+      }
+      inventory_lots: {
+        Row: {
+          component_id: string
+          component_offer_id: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          inventory_location_id: string
+          lot_code: string
+          metadata: Json
+          quantity_on_hand: number
+          received_at: string | null
+          unit_cost_inr: number | null
+          updated_at: string
+        }
+        Insert: {
+          component_id: string
+          component_offer_id?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          inventory_location_id: string
+          lot_code: string
+          metadata?: Json
+          quantity_on_hand?: number
+          received_at?: string | null
+          unit_cost_inr?: number | null
+          updated_at?: string
+        }
+        Update: {
+          component_id?: string
+          component_offer_id?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          inventory_location_id?: string
+          lot_code?: string
+          metadata?: Json
+          quantity_on_hand?: number
+          received_at?: string | null
+          unit_cost_inr?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_lots_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "components"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_lots_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "public_component_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_lots_component_offer_id_fkey"
+            columns: ["component_offer_id"]
+            isOneToOne: false
+            referencedRelation: "component_offers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_lots_inventory_location_id_fkey"
+            columns: ["inventory_location_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_lots_inventory_location_id_fkey"
+            columns: ["inventory_location_id"]
+            isOneToOne: false
+            referencedRelation: "member_checkout_assets"
+            referencedColumns: ["inventory_location_id"]
+          },
+        ]
+      }
+      inventory_movements: {
+        Row: {
+          actor_user_id: string | null
+          asset_unit_id: string | null
+          checkout_session_id: string | null
+          closed_at: string | null
+          component_id: string
+          id: string
+          inventory_lot_id: string | null
+          metadata: Json
+          movement_kind: Database["public"]["Enums"]["inventory_movement_kind"]
+          notes: string | null
+          occurred_at: string
+          quantity_delta: number | null
+          source: string
+        }
+        Insert: {
+          actor_user_id?: string | null
+          asset_unit_id?: string | null
+          checkout_session_id?: string | null
+          closed_at?: string | null
+          component_id: string
+          id?: string
+          inventory_lot_id?: string | null
+          metadata?: Json
+          movement_kind: Database["public"]["Enums"]["inventory_movement_kind"]
+          notes?: string | null
+          occurred_at?: string
+          quantity_delta?: number | null
+          source?: string
+        }
+        Update: {
+          actor_user_id?: string | null
+          asset_unit_id?: string | null
+          checkout_session_id?: string | null
+          closed_at?: string | null
+          component_id?: string
+          id?: string
+          inventory_lot_id?: string | null
+          metadata?: Json
+          movement_kind?: Database["public"]["Enums"]["inventory_movement_kind"]
+          notes?: string | null
+          occurred_at?: string
+          quantity_delta?: number | null
+          source?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_movements_asset_unit_id_fkey"
+            columns: ["asset_unit_id"]
+            isOneToOne: false
+            referencedRelation: "asset_units"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_movements_asset_unit_id_fkey"
+            columns: ["asset_unit_id"]
+            isOneToOne: false
+            referencedRelation: "member_checkout_assets"
+            referencedColumns: ["asset_unit_id"]
+          },
+          {
+            foreignKeyName: "inventory_movements_checkout_session_id_fkey"
+            columns: ["checkout_session_id"]
+            isOneToOne: false
+            referencedRelation: "checkout_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_movements_checkout_session_id_fkey"
+            columns: ["checkout_session_id"]
+            isOneToOne: false
+            referencedRelation: "member_checkout_assets"
+            referencedColumns: ["checkout_session_id"]
+          },
+          {
+            foreignKeyName: "inventory_movements_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "components"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_movements_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "public_component_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_movements_inventory_lot_id_fkey"
+            columns: ["inventory_lot_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_lots"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       kiosk_devices: {
         Row: {
@@ -743,6 +1815,180 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      locker_assignments: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          assignment_period: unknown
+          created_at: string
+          ends_at: string
+          id: string
+          idempotency_key: string
+          last_extended_at: string | null
+          locker_id: string | null
+          locker_plan_id: string
+          member_id: string
+          member_notes: string | null
+          release_reason: string | null
+          released_at: string | null
+          staff_notes: string | null
+          starts_at: string
+          status: Database["public"]["Enums"]["locker_assignment_status"]
+          updated_at: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          assignment_period?: unknown
+          created_at?: string
+          ends_at: string
+          id?: string
+          idempotency_key: string
+          last_extended_at?: string | null
+          locker_id?: string | null
+          locker_plan_id: string
+          member_id: string
+          member_notes?: string | null
+          release_reason?: string | null
+          released_at?: string | null
+          staff_notes?: string | null
+          starts_at: string
+          status?: Database["public"]["Enums"]["locker_assignment_status"]
+          updated_at?: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          assignment_period?: unknown
+          created_at?: string
+          ends_at?: string
+          id?: string
+          idempotency_key?: string
+          last_extended_at?: string | null
+          locker_id?: string | null
+          locker_plan_id?: string
+          member_id?: string
+          member_notes?: string | null
+          release_reason?: string | null
+          released_at?: string | null
+          staff_notes?: string | null
+          starts_at?: string
+          status?: Database["public"]["Enums"]["locker_assignment_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "locker_assignments_locker_id_fkey"
+            columns: ["locker_id"]
+            isOneToOne: false
+            referencedRelation: "lockers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "locker_assignments_locker_plan_id_fkey"
+            columns: ["locker_plan_id"]
+            isOneToOne: false
+            referencedRelation: "locker_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "locker_assignments_locker_plan_id_fkey"
+            columns: ["locker_plan_id"]
+            isOneToOne: false
+            referencedRelation: "public_locker_catalog"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      locker_plans: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string
+          duration: string
+          id: string
+          name: string
+          offering_slug: string
+          period: Database["public"]["Enums"]["locker_plan_period"]
+          price_inr_including_gst: number | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          duration: string
+          id?: string
+          name: string
+          offering_slug: string
+          period: Database["public"]["Enums"]["locker_plan_period"]
+          price_inr_including_gst?: number | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          duration?: string
+          id?: string
+          name?: string
+          offering_slug?: string
+          period?: Database["public"]["Enums"]["locker_plan_period"]
+          price_inr_including_gst?: number | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      lockers: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          location_id: string
+          maintenance_note: string | null
+          metadata: Json
+          size_label: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          location_id: string
+          maintenance_note?: string | null
+          metadata?: Json
+          size_label?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          location_id?: string
+          maintenance_note?: string | null
+          metadata?: Json
+          size_label?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lockers_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       member_certifications: {
         Row: {
@@ -928,6 +2174,48 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      project_components: {
+        Row: {
+          component_id: string
+          created_at: string
+          notes: string | null
+          project_slug: string
+          quantity_per_build: number | null
+          requirement_kind: Database["public"]["Enums"]["component_requirement_kind"]
+        }
+        Insert: {
+          component_id: string
+          created_at?: string
+          notes?: string | null
+          project_slug: string
+          quantity_per_build?: number | null
+          requirement_kind: Database["public"]["Enums"]["component_requirement_kind"]
+        }
+        Update: {
+          component_id?: string
+          created_at?: string
+          notes?: string | null
+          project_slug?: string
+          quantity_per_build?: number | null
+          requirement_kind?: Database["public"]["Enums"]["component_requirement_kind"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_components_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "components"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_components_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "public_component_catalog"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reminder_deliveries: {
         Row: {
@@ -1299,8 +2587,528 @@ export type Database = {
         }
         Relationships: []
       }
+      toolkit_condition_evidence: {
+        Row: {
+          captured_at: string
+          created_at: string
+          evidence_phase: Database["public"]["Enums"]["toolkit_evidence_phase"]
+          id: string
+          metadata: Json
+          retain_until: string
+          retention_class: Database["public"]["Enums"]["inventory_evidence_retention"]
+          storage_path: string
+          toolkit_item_id: string | null
+          toolkit_rental_session_id: string
+          uploaded_by: string
+        }
+        Insert: {
+          captured_at?: string
+          created_at?: string
+          evidence_phase: Database["public"]["Enums"]["toolkit_evidence_phase"]
+          id?: string
+          metadata?: Json
+          retain_until: string
+          retention_class?: Database["public"]["Enums"]["inventory_evidence_retention"]
+          storage_path: string
+          toolkit_item_id?: string | null
+          toolkit_rental_session_id: string
+          uploaded_by: string
+        }
+        Update: {
+          captured_at?: string
+          created_at?: string
+          evidence_phase?: Database["public"]["Enums"]["toolkit_evidence_phase"]
+          id?: string
+          metadata?: Json
+          retain_until?: string
+          retention_class?: Database["public"]["Enums"]["inventory_evidence_retention"]
+          storage_path?: string
+          toolkit_item_id?: string | null
+          toolkit_rental_session_id?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "toolkit_condition_evidence_toolkit_item_id_fkey"
+            columns: ["toolkit_item_id"]
+            isOneToOne: false
+            referencedRelation: "toolkit_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "toolkit_condition_evidence_toolkit_rental_session_id_fkey"
+            columns: ["toolkit_rental_session_id"]
+            isOneToOne: false
+            referencedRelation: "toolkit_rental_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      toolkit_items: {
+        Row: {
+          condition_note: string | null
+          created_at: string
+          id: string
+          item_tag: string
+          metadata: Json
+          name: string
+          required: boolean
+          serial_number: string | null
+          status: Database["public"]["Enums"]["toolkit_item_status"]
+          template_item_id: string | null
+          toolkit_kit_id: string
+          updated_at: string
+        }
+        Insert: {
+          condition_note?: string | null
+          created_at?: string
+          id?: string
+          item_tag: string
+          metadata?: Json
+          name: string
+          required?: boolean
+          serial_number?: string | null
+          status?: Database["public"]["Enums"]["toolkit_item_status"]
+          template_item_id?: string | null
+          toolkit_kit_id: string
+          updated_at?: string
+        }
+        Update: {
+          condition_note?: string | null
+          created_at?: string
+          id?: string
+          item_tag?: string
+          metadata?: Json
+          name?: string
+          required?: boolean
+          serial_number?: string | null
+          status?: Database["public"]["Enums"]["toolkit_item_status"]
+          template_item_id?: string | null
+          toolkit_kit_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "toolkit_items_template_item_id_fkey"
+            columns: ["template_item_id"]
+            isOneToOne: false
+            referencedRelation: "toolkit_template_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "toolkit_items_toolkit_kit_id_fkey"
+            columns: ["toolkit_kit_id"]
+            isOneToOne: false
+            referencedRelation: "toolkit_kits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      toolkit_kits: {
+        Row: {
+          condition_note: string | null
+          created_at: string
+          id: string
+          inventory_location_id: string
+          kit_tag: string
+          metadata: Json
+          status: Database["public"]["Enums"]["toolkit_kit_status"]
+          toolkit_template_id: string
+          updated_at: string
+        }
+        Insert: {
+          condition_note?: string | null
+          created_at?: string
+          id?: string
+          inventory_location_id: string
+          kit_tag: string
+          metadata?: Json
+          status?: Database["public"]["Enums"]["toolkit_kit_status"]
+          toolkit_template_id: string
+          updated_at?: string
+        }
+        Update: {
+          condition_note?: string | null
+          created_at?: string
+          id?: string
+          inventory_location_id?: string
+          kit_tag?: string
+          metadata?: Json
+          status?: Database["public"]["Enums"]["toolkit_kit_status"]
+          toolkit_template_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "toolkit_kits_inventory_location_id_fkey"
+            columns: ["inventory_location_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "toolkit_kits_inventory_location_id_fkey"
+            columns: ["inventory_location_id"]
+            isOneToOne: false
+            referencedRelation: "member_checkout_assets"
+            referencedColumns: ["inventory_location_id"]
+          },
+          {
+            foreignKeyName: "toolkit_kits_toolkit_template_id_fkey"
+            columns: ["toolkit_template_id"]
+            isOneToOne: false
+            referencedRelation: "public_toolkit_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "toolkit_kits_toolkit_template_id_fkey"
+            columns: ["toolkit_template_id"]
+            isOneToOne: false
+            referencedRelation: "toolkit_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      toolkit_rental_items: {
+        Row: {
+          checked_out_at: string
+          checkout_condition_note: string | null
+          created_at: string
+          return_condition_note: string | null
+          returned_at: string | null
+          toolkit_item_id: string
+          toolkit_rental_session_id: string
+          updated_at: string
+        }
+        Insert: {
+          checked_out_at?: string
+          checkout_condition_note?: string | null
+          created_at?: string
+          return_condition_note?: string | null
+          returned_at?: string | null
+          toolkit_item_id: string
+          toolkit_rental_session_id: string
+          updated_at?: string
+        }
+        Update: {
+          checked_out_at?: string
+          checkout_condition_note?: string | null
+          created_at?: string
+          return_condition_note?: string | null
+          returned_at?: string | null
+          toolkit_item_id?: string
+          toolkit_rental_session_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "toolkit_rental_items_toolkit_item_id_fkey"
+            columns: ["toolkit_item_id"]
+            isOneToOne: false
+            referencedRelation: "toolkit_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "toolkit_rental_items_toolkit_rental_session_id_fkey"
+            columns: ["toolkit_rental_session_id"]
+            isOneToOne: false
+            referencedRelation: "toolkit_rental_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      toolkit_rental_sessions: {
+        Row: {
+          attendance_session_id: string
+          checked_out_at: string | null
+          checkout_condition_note: string | null
+          created_at: string
+          id: string
+          idempotency_key: string
+          member_id: string
+          opened_at: string
+          requested_period: string
+          return_condition_note: string | null
+          returned_at: string | null
+          review_reason: string | null
+          status: Database["public"]["Enums"]["toolkit_rental_status"]
+          toolkit_kit_id: string
+          updated_at: string
+        }
+        Insert: {
+          attendance_session_id: string
+          checked_out_at?: string | null
+          checkout_condition_note?: string | null
+          created_at?: string
+          id?: string
+          idempotency_key: string
+          member_id: string
+          opened_at?: string
+          requested_period: string
+          return_condition_note?: string | null
+          returned_at?: string | null
+          review_reason?: string | null
+          status?: Database["public"]["Enums"]["toolkit_rental_status"]
+          toolkit_kit_id: string
+          updated_at?: string
+        }
+        Update: {
+          attendance_session_id?: string
+          checked_out_at?: string | null
+          checkout_condition_note?: string | null
+          created_at?: string
+          id?: string
+          idempotency_key?: string
+          member_id?: string
+          opened_at?: string
+          requested_period?: string
+          return_condition_note?: string | null
+          returned_at?: string | null
+          review_reason?: string | null
+          status?: Database["public"]["Enums"]["toolkit_rental_status"]
+          toolkit_kit_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "toolkit_rental_sessions_attendance_session_id_fkey"
+            columns: ["attendance_session_id"]
+            isOneToOne: false
+            referencedRelation: "attendance_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "toolkit_rental_sessions_toolkit_kit_id_fkey"
+            columns: ["toolkit_kit_id"]
+            isOneToOne: false
+            referencedRelation: "toolkit_kits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      toolkit_template_items: {
+        Row: {
+          component_id: string | null
+          created_at: string
+          display_order: number
+          id: string
+          item_name: string
+          notes: string | null
+          quantity: number
+          required: boolean
+          toolkit_template_id: string
+        }
+        Insert: {
+          component_id?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          item_name: string
+          notes?: string | null
+          quantity?: number
+          required?: boolean
+          toolkit_template_id: string
+        }
+        Update: {
+          component_id?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          item_name?: string
+          notes?: string | null
+          quantity?: number
+          required?: boolean
+          toolkit_template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "toolkit_template_items_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "components"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "toolkit_template_items_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "public_component_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "toolkit_template_items_toolkit_template_id_fkey"
+            columns: ["toolkit_template_id"]
+            isOneToOne: false
+            referencedRelation: "public_toolkit_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "toolkit_template_items_toolkit_template_id_fkey"
+            columns: ["toolkit_template_id"]
+            isOneToOne: false
+            referencedRelation: "toolkit_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      toolkit_templates: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string
+          id: string
+          name: string
+          safety_notes: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          id?: string
+          name: string
+          safety_notes?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          id?: string
+          name?: string
+          safety_notes?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
+      member_active_cabinets: {
+        Row: {
+          id: string | null
+          last_seen_at: string | null
+          location_id: string | null
+          location_name: string | null
+          name: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cabinet_devices_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      member_checkout_assets: {
+        Row: {
+          asset_status: Database["public"]["Enums"]["asset_unit_status"] | null
+          asset_tag: string | null
+          asset_unit_id: string | null
+          checked_out_at: string | null
+          checkout_session_id: string | null
+          checkout_status:
+            | Database["public"]["Enums"]["checkout_session_status"]
+            | null
+          closed_at: string | null
+          component_name: string | null
+          component_slug: string | null
+          condition_note: string | null
+          inventory_location_id: string | null
+          location_code: string | null
+          location_name: string | null
+          member_id: string | null
+          movement_id: string | null
+          occurred_at: string | null
+          opened_at: string | null
+          returned_at: string | null
+        }
+        Relationships: []
+      }
+      member_component_inventory: {
+        Row: {
+          available_quantity: number | null
+          component_id: string | null
+          inventory_kind:
+            | Database["public"]["Enums"]["component_inventory_kind"]
+            | null
+          inventory_location_id: string | null
+          location_code: string | null
+          location_name: string | null
+          name: string | null
+          slug: string | null
+          unit: string | null
+        }
+        Relationships: []
+      }
+      public_component_catalog: {
+        Row: {
+          category: string | null
+          description: string | null
+          id: string | null
+          inventory_kind:
+            | Database["public"]["Enums"]["component_inventory_kind"]
+            | null
+          name: string | null
+          slug: string | null
+          stock_status: string | null
+          target_quantity: number | null
+          unit: string | null
+        }
+        Relationships: []
+      }
+      public_component_requests: {
+        Row: {
+          budget_band:
+            | Database["public"]["Enums"]["component_request_budget"]
+            | null
+          component_name: string | null
+          created_at: string | null
+          id: string | null
+          notes: string | null
+          project_use_case: string | null
+          requested_quantity: number | null
+          status: Database["public"]["Enums"]["component_request_status"] | null
+          urgency:
+            | Database["public"]["Enums"]["component_request_urgency"]
+            | null
+          vendor_url: string | null
+          verified_at: string | null
+          vote_count: number | null
+        }
+        Relationships: []
+      }
+      public_consumable_catalog: {
+        Row: {
+          availability_status: string | null
+          description: string | null
+          id: string | null
+          name: string | null
+          order_unit: string | null
+          quantity_per_order_unit: number | null
+          reference_price_inr_including_gst: number | null
+          sku_code: string | null
+        }
+        Relationships: []
+      }
+      public_locker_catalog: {
+        Row: {
+          availability_status: string | null
+          description: string | null
+          duration: string | null
+          id: string | null
+          name: string | null
+          offering_slug: string | null
+          period: Database["public"]["Enums"]["locker_plan_period"] | null
+          price_inr_including_gst: number | null
+          slug: string | null
+        }
+        Relationships: []
+      }
       public_member_profiles: {
         Row: {
           avatar_url: string | null
@@ -1390,8 +3198,44 @@ export type Database = {
         }
         Relationships: []
       }
+      public_toolkit_catalog: {
+        Row: {
+          availability_status: string | null
+          description: string | null
+          id: string | null
+          items: Json | null
+          name: string | null
+          safety_notes: string | null
+          slug: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      add_toolkit_rental_item: {
+        Args: {
+          p_checkout_condition_note?: string
+          p_item_tag: string
+          p_toolkit_rental_session_id: string
+        }
+        Returns: string
+      }
+      adjust_inventory_stock: {
+        Args: {
+          p_inventory_lot_id: string
+          p_quantity_delta: number
+          p_reason: string
+        }
+        Returns: number
+      }
+      assign_locker_subscription: {
+        Args: { p_assignment_id: string; p_locker_unit_id: string }
+        Returns: string
+      }
+      begin_inventory_checkout: {
+        Args: { p_attendance_session_id: string; p_idempotency_key: string }
+        Returns: string
+      }
       cancel_booking: {
         Args: { p_booking_id: string; p_reason?: string }
         Returns: string
@@ -1447,7 +3291,23 @@ export type Database = {
         Args: { p_id: string }
         Returns: undefined
       }
+      complete_inventory_checkout: {
+        Args: { p_checkout_session_id: string }
+        Returns: string
+      }
       complete_reminder: { Args: { p_id: string }; Returns: undefined }
+      complete_toolkit_rental: {
+        Args: { p_toolkit_rental_session_id: string }
+        Returns: string
+      }
+      consume_component_request_rate_limit: {
+        Args: {
+          p_key_hash: string
+          p_limit?: number
+          p_window_seconds?: number
+        }
+        Returns: boolean
+      }
       create_booking: {
         Args: {
           p_ends_at: string
@@ -1459,12 +3319,21 @@ export type Database = {
         }
         Returns: string
       }
+      create_cabinet_access_intent: {
+        Args: { p_cabinet_device_id: string }
+        Returns: Json
+      }
       create_checkin_intent: {
         Args: {
           p_action?: Database["public"]["Enums"]["checkin_action"]
           p_booking_id?: string
         }
         Returns: Json
+      }
+      create_consumable_order: { Args: { p_lines: Json }; Returns: string }
+      create_consumable_order_draft: {
+        Args: { p_idempotency_key: string; p_member_notes?: string }
+        Returns: string
       }
       create_kiosk_enrollment: {
         Args: {
@@ -1475,6 +3344,20 @@ export type Database = {
           p_token_hash_hex: string
         }
         Returns: string
+      }
+      create_public_component_request: {
+        Args: {
+          p_budget_band: Database["public"]["Enums"]["component_request_budget"]
+          p_component_name: string
+          p_notes?: string
+          p_project_use_case: string
+          p_requested_quantity: number
+          p_requester_email: string
+          p_requester_user_id?: string
+          p_urgency: Database["public"]["Enums"]["component_request_urgency"]
+          p_vendor_url: string
+        }
+        Returns: Json
       }
       create_resource_block: {
         Args: {
@@ -1494,6 +3377,13 @@ export type Database = {
         }
         Returns: string
       }
+      extend_locker_subscription: {
+        Args: {
+          p_assignment_id: string
+          p_plan_term: Database["public"]["Enums"]["locker_plan_period"]
+        }
+        Returns: string
+      }
       fail_integration_outbox: {
         Args: { p_error: string; p_id: string }
         Returns: undefined
@@ -1501,6 +3391,10 @@ export type Database = {
       fail_reminder: {
         Args: { p_error: string; p_id: string }
         Returns: undefined
+      }
+      fulfill_consumable_order: {
+        Args: { p_order_id: string; p_staff_notes?: string }
+        Returns: string
       }
       has_staff_role: {
         Args: { p_roles?: Database["public"]["Enums"]["staff_role"][] }
@@ -1530,6 +3424,26 @@ export type Database = {
           starts_at: string
         }[]
       }
+      record_cabinet_event: {
+        Args: {
+          p_access_intent_id?: string
+          p_cabinet_device_id: string
+          p_checkout_session_id?: string
+          p_event_key: string
+          p_event_kind: Database["public"]["Enums"]["cabinet_event_kind"]
+          p_occurred_at: string
+          p_payload?: Json
+        }
+        Returns: string
+      }
+      redeem_cabinet_access_intent: {
+        Args: {
+          p_cabinet_device_id: string
+          p_event_key: string
+          p_token_hash_hex: string
+        }
+        Returns: Json
+      }
       redeem_checkin_intent: {
         Args: { p_device_id: string; p_token_hash_hex: string }
         Returns: Json
@@ -1542,6 +3456,17 @@ export type Database = {
         }
         Returns: Json
       }
+      release_locker_subscription: {
+        Args: { p_assignment_id: string }
+        Returns: string
+      }
+      request_locker_subscription: {
+        Args: {
+          p_locker_offering_slug: string
+          p_plan_term: Database["public"]["Enums"]["locker_plan_period"]
+        }
+        Returns: string
+      }
       reschedule_booking: {
         Args: {
           p_booking_id: string
@@ -1551,7 +3476,46 @@ export type Database = {
         }
         Returns: string
       }
+      return_inventory_asset: {
+        Args: {
+          p_asset_tag: string
+          p_checkout_session_id: string
+          p_condition_note?: string
+        }
+        Returns: string
+      }
+      return_toolkit_rental: {
+        Args: { p_condition_note?: string; p_rental_id: string }
+        Returns: string
+      }
       run_attendance_maintenance: { Args: never; Returns: Json }
+      scan_checkout_asset: {
+        Args: { p_asset_tag: string; p_checkout_session_id: string }
+        Returns: string
+      }
+      set_component_request_status: {
+        Args: {
+          p_decision_note?: string
+          p_request_id: string
+          p_status: Database["public"]["Enums"]["component_request_status"]
+        }
+        Returns: Database["public"]["Enums"]["component_request_status"]
+      }
+      set_consumable_order_item: {
+        Args: {
+          p_consumable_sku_id: string
+          p_order_id: string
+          p_quantity: number
+        }
+        Returns: string
+      }
+      set_consumable_order_status: {
+        Args: {
+          p_order_id: string
+          p_status: Database["public"]["Enums"]["consumable_order_status"]
+        }
+        Returns: string
+      }
       set_resource_hours: {
         Args: {
           p_closes_at?: string
@@ -1578,6 +3542,10 @@ export type Database = {
         }
         Returns: string
       }
+      start_toolkit_rental: {
+        Args: { p_period: string; p_toolkit_template_slug: string }
+        Returns: string
+      }
       submit_application: {
         Args: {
           p_applicant_notes?: string
@@ -1593,6 +3561,15 @@ export type Database = {
         }
         Returns: string
       }
+      submit_consumable_order: { Args: { p_order_id: string }; Returns: string }
+      verify_component_request: {
+        Args: { p_request_id: string; p_verification_token: string }
+        Returns: string
+      }
+      vote_component_request: {
+        Args: { p_enabled?: boolean; p_request_id: string }
+        Returns: number
+      }
     }
     Enums: {
       access_event_type:
@@ -1603,6 +3580,12 @@ export type Database = {
         | "staff_override"
         | "kiosk_enrolled"
         | "kiosk_revoked"
+      asset_unit_status:
+        | "available"
+        | "checked_out"
+        | "maintenance"
+        | "retired"
+        | "lost"
       attendance_status: "active" | "closed" | "auto_closed" | "review"
       audit_actor_type: "member" | "staff" | "kiosk" | "system"
       booking_status:
@@ -1611,12 +3594,87 @@ export type Database = {
         | "cancelled"
         | "completed"
         | "no_show"
+      cabinet_access_intent_status:
+        | "pending"
+        | "redeemed"
+        | "expired"
+        | "cancelled"
+      cabinet_device_status: "pending" | "active" | "revoked"
+      cabinet_event_kind:
+        | "access_granted"
+        | "access_denied"
+        | "door_opened"
+        | "door_closed"
+        | "rfid_observed"
+        | "weight_observed"
+        | "evidence_captured"
+        | "reconciliation_required"
       calendar_provider: "google"
       calendar_sync_status: "pending" | "synced" | "failed" | "deleted"
       certification_status: "active" | "revoked"
       checkin_action: "check_in" | "check_out"
       checkin_intent_status: "pending" | "redeemed" | "expired" | "cancelled"
+      checkout_session_status:
+        | "open"
+        | "checked_out"
+        | "returned"
+        | "cancelled"
+        | "review"
+      component_inventory_kind:
+        | "fixed_bookable"
+        | "serialized_reusable"
+        | "reusable_tray"
+        | "consumable"
+      component_offer_status:
+        | "in_stock"
+        | "limited"
+        | "out_of_stock"
+        | "validate_before_po"
+        | "unknown"
+      component_request_budget:
+        | "under_2500"
+        | "2500_to_10000"
+        | "10000_to_50000"
+        | "over_50000"
+        | "unknown"
+      component_request_status:
+        | "submitted"
+        | "under_review"
+        | "approved"
+        | "ordered"
+        | "available"
+        | "declined"
+      component_request_urgency:
+        | "nice_to_have"
+        | "soon"
+        | "project_blocking"
+        | "safety"
+      component_requirement_kind: "required" | "optional" | "alternative"
+      consumable_order_status:
+        | "draft"
+        | "submitted"
+        | "approved"
+        | "ready"
+        | "fulfilled"
+        | "declined"
+        | "cancelled"
+      inventory_evidence_kind: "checkout" | "return" | "cabinet" | "discrepancy"
+      inventory_evidence_retention: "routine" | "flagged"
+      inventory_movement_kind:
+        | "stock_adjustment"
+        | "checkout"
+        | "return"
+        | "cabinet_observation"
+        | "correction"
       kiosk_device_status: "pending" | "active" | "revoked"
+      locker_assignment_status:
+        | "requested"
+        | "reserved"
+        | "active"
+        | "released"
+        | "expired"
+        | "cancelled"
+      locker_plan_period: "week" | "month" | "year"
       membership_application_status:
         | "pending"
         | "approved"
@@ -1648,6 +3706,25 @@ export type Database = {
         | "other"
       resource_risk: "low" | "controlled" | "hazardous"
       staff_role: "operations" | "safety" | "admin" | "super_admin"
+      toolkit_evidence_phase: "checkout" | "return" | "discrepancy"
+      toolkit_item_status:
+        | "available"
+        | "checked_out"
+        | "maintenance"
+        | "retired"
+        | "missing"
+      toolkit_kit_status:
+        | "available"
+        | "reserved"
+        | "rented"
+        | "maintenance"
+        | "retired"
+      toolkit_rental_status:
+        | "open"
+        | "checked_out"
+        | "returned"
+        | "cancelled"
+        | "review"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2332,6 +4409,13 @@ export const Constants = {
         "kiosk_enrolled",
         "kiosk_revoked",
       ],
+      asset_unit_status: [
+        "available",
+        "checked_out",
+        "maintenance",
+        "retired",
+        "lost",
+      ],
       attendance_status: ["active", "closed", "auto_closed", "review"],
       audit_actor_type: ["member", "staff", "kiosk", "system"],
       booking_status: [
@@ -2341,12 +4425,98 @@ export const Constants = {
         "completed",
         "no_show",
       ],
+      cabinet_access_intent_status: [
+        "pending",
+        "redeemed",
+        "expired",
+        "cancelled",
+      ],
+      cabinet_device_status: ["pending", "active", "revoked"],
+      cabinet_event_kind: [
+        "access_granted",
+        "access_denied",
+        "door_opened",
+        "door_closed",
+        "rfid_observed",
+        "weight_observed",
+        "evidence_captured",
+        "reconciliation_required",
+      ],
       calendar_provider: ["google"],
       calendar_sync_status: ["pending", "synced", "failed", "deleted"],
       certification_status: ["active", "revoked"],
       checkin_action: ["check_in", "check_out"],
       checkin_intent_status: ["pending", "redeemed", "expired", "cancelled"],
+      checkout_session_status: [
+        "open",
+        "checked_out",
+        "returned",
+        "cancelled",
+        "review",
+      ],
+      component_inventory_kind: [
+        "fixed_bookable",
+        "serialized_reusable",
+        "reusable_tray",
+        "consumable",
+      ],
+      component_offer_status: [
+        "in_stock",
+        "limited",
+        "out_of_stock",
+        "validate_before_po",
+        "unknown",
+      ],
+      component_request_budget: [
+        "under_2500",
+        "2500_to_10000",
+        "10000_to_50000",
+        "over_50000",
+        "unknown",
+      ],
+      component_request_status: [
+        "submitted",
+        "under_review",
+        "approved",
+        "ordered",
+        "available",
+        "declined",
+      ],
+      component_request_urgency: [
+        "nice_to_have",
+        "soon",
+        "project_blocking",
+        "safety",
+      ],
+      component_requirement_kind: ["required", "optional", "alternative"],
+      consumable_order_status: [
+        "draft",
+        "submitted",
+        "approved",
+        "ready",
+        "fulfilled",
+        "declined",
+        "cancelled",
+      ],
+      inventory_evidence_kind: ["checkout", "return", "cabinet", "discrepancy"],
+      inventory_evidence_retention: ["routine", "flagged"],
+      inventory_movement_kind: [
+        "stock_adjustment",
+        "checkout",
+        "return",
+        "cabinet_observation",
+        "correction",
+      ],
       kiosk_device_status: ["pending", "active", "revoked"],
+      locker_assignment_status: [
+        "requested",
+        "reserved",
+        "active",
+        "released",
+        "expired",
+        "cancelled",
+      ],
+      locker_plan_period: ["week", "month", "year"],
       membership_application_status: [
         "pending",
         "approved",
@@ -2382,6 +4552,28 @@ export const Constants = {
       ],
       resource_risk: ["low", "controlled", "hazardous"],
       staff_role: ["operations", "safety", "admin", "super_admin"],
+      toolkit_evidence_phase: ["checkout", "return", "discrepancy"],
+      toolkit_item_status: [
+        "available",
+        "checked_out",
+        "maintenance",
+        "retired",
+        "missing",
+      ],
+      toolkit_kit_status: [
+        "available",
+        "reserved",
+        "rented",
+        "maintenance",
+        "retired",
+      ],
+      toolkit_rental_status: [
+        "open",
+        "checked_out",
+        "returned",
+        "cancelled",
+        "review",
+      ],
     },
   },
   storage: {

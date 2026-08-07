@@ -74,3 +74,6 @@ verify_jwt = false
 
 [functions.booking-ics]
 verify_jwt = false
+
+[functions.component-request]
+verify_jwt = false
