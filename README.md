@@ -77,6 +77,9 @@ for provisioning, kiosk, Google Workspace, release, and rollback procedures.
 - Production builds materialize React shell files for the historical
   `/projects/` and `/building-vision/` directory URLs so a Direct Upload
   replaces their legacy static objects as well as serving the SPA fallback.
+- The React entrypoint removes the preserved static site's `armature-v16`
+  Cache Storage entry so returning visitors cannot retain legacy pages after
+  reaching the new application.
 - Production promotion requires frontend, SQL/RLS, concurrency, PWA-cache,
   direct-route, responsive-theme, and live smoke checks. The previous
   Cloudflare Pages deployment remains the rollback target until those checks
