@@ -102,6 +102,10 @@ and the full revenue stream set (memberships, pods, tenants, workshops,
 programs, data centre builds, on-prem services). Matches the calculator on the
 site's Financials page. Planning estimates, not quotes.
 
+The [Circuit Digest electronics project index](docs/circuit-digest-electronics-project-index.md)
+is a dated, source-linked catalog for discovering lab builds by practical lane,
+platform signal, and minimum safety review gate.
+
 ## Placeholders still open
 
 - Rs [rate] pricing on membership, certification, locker, consumable, toolkit,
