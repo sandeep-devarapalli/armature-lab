@@ -8,7 +8,7 @@ export const projects: Project[] = [
     priority: "P0",
     status: "Build Now",
     description: "A durable local home for robotics video, CAD, logs, datasets, and checkpoints before any compute expansion.",
-    image: "/project-images/truenas-openzfs-dvc.png",
+    image: "/project-images/local-dataset-nas.png",
     sourceUrl: "https://www.truenas.com/",
     infrastructure: true,
     tags: ["NAS", "ZFS", "datasets"]
@@ -49,6 +49,28 @@ export const projects: Project[] = [
     tags: ["LLM", "fine-tuning", "evaluation"]
   },
   {
+    slug: "esp32-ai",
+    title: "ESP32-AI",
+    category: "Embedded AI",
+    priority: "P1",
+    status: "Research Track",
+    description: "A research reproduction of a 28.9M stored-parameter TinyStories model running fully offline on an ESP32-S3 N16R8 at roughly 9.5 tokens per second.",
+    image: "/project-images/esp32-ai-official.png",
+    sourceUrl: "https://github.com/slvDev/esp32-ai",
+    tags: ["ESP32-S3", "TinyLM", "4-bit", "Per-Layer Embeddings", "offline AI"]
+  },
+  {
+    slug: "recamera",
+    title: "reCamera",
+    category: "Vision AI",
+    priority: "P1",
+    status: "Building Soon",
+    description: "An open modular RISC-V AI camera for local object detection, robot perception, low-code vision pipelines, and controllable camera experiments.",
+    image: "/project-images/recamera-official.jpg",
+    sourceUrl: "https://github.com/Seeed-Studio/OSHW-reCamera-Series",
+    tags: ["open hardware", "RISC-V", "1 TOPS", "Node-RED", "edge vision"]
+  },
+  {
     slug: "lerobot-so-arm101",
     title: "LeRobot + SO-ARM101",
     category: "Robot Arms",
@@ -82,6 +104,29 @@ export const projects: Project[] = [
     tags: ["manipulation", "open hardware"]
   },
   {
+    slug: "openactuator",
+    title: "OpenActuator",
+    category: "Actuator Design",
+    priority: "P2",
+    status: "Research Track",
+    description: "Open reference projects for designing, simulating, fabricating, and testing small electromagnetic actuators, anchored by a 3D-printed linear voice-coil motor.",
+    image: "/project-images/openactuator-linear-vcm-official.jpg",
+    sourceUrl: "https://solenoid.or.kr/index_eng.html",
+    tags: ["LinearVCM", "electromagnetics", "FreeCAD", "open hardware"]
+  },
+  {
+    slug: "electrofluidic-fiber-muscles",
+    title: "Electrofluidic Fiber Muscles",
+    category: "Soft Robotics",
+    priority: "P1",
+    status: "Research Track",
+    description: "Millimeter-scale artificial muscles that pair embedded electrohydrodynamic pumps with thin McKibben actuators for silent, compliant, modular linear actuation.",
+    image: "/project-images/electrofluidic-fiber-muscles-official.png",
+    sourceUrl: "https://www.media.mit.edu/projects/electrofluidicmuscle/overview/",
+    detailPath: "/projects/electrofluidic-fiber-muscles",
+    tags: ["artificial muscles", "EHD pumps", "McKibben actuators", "soft robotics", "high voltage"]
+  },
+  {
     slug: "valetudo",
     title: "Valetudo",
     category: "Mobile Robots",
@@ -113,6 +158,39 @@ export const projects: Project[] = [
     image: "/project-images/openmower-official.jpg",
     sourceUrl: "https://openmower.de/",
     tags: ["RTK", "outdoors", "ROS"]
+  },
+  {
+    slug: "q8bot",
+    title: "Q8bot",
+    category: "Mobile Robots",
+    priority: "P1",
+    status: "Building Soon",
+    description: "A palm-sized open quadruped with eight smart servos, a cable-free center PCB, wireless control, and printable mechanics for dynamic locomotion and swarm-robotics experiments.",
+    image: "/project-images/q8bot-official.jpg",
+    sourceUrl: "https://github.com/EricYufengWu/q8bot",
+    tags: ["quadruped", "DYNAMIXEL", "ESP-NOW", "3D printing", "v2.5"]
+  },
+  {
+    slug: "solo12-odri",
+    title: "Solo 12 · ODRI",
+    category: "Quadruped Robots",
+    priority: "P1",
+    status: "Research Track",
+    description: "A 12-DoF torque-controlled quadruped built from modular brushless belt-drive actuators, custom motor-control electronics, an IMU, and predominantly printed mechanics.",
+    image: "/project-images/solo12-odri-official.jpg",
+    sourceUrl: "https://open-dynamic-robot-initiative.github.io/",
+    tags: ["torque control", "brushless actuators", "Solo 12", "BSD-3-Clause"]
+  },
+  {
+    slug: "yor",
+    title: "YOR",
+    category: "Mobile Robots",
+    priority: "P1",
+    status: "Research Track",
+    description: "A fully open-source mobile manipulator with an omnidirectional base, adjustable lift, and two compliant 6-DoF arms for bimanual household-task research.",
+    image: "/project-images/yor-official.jpeg",
+    sourceUrl: "https://www.yourownrobot.ai/",
+    tags: ["mobile manipulation", "bimanual", "6-DoF arms", "MuJoCo", "open source"]
   },
   {
     slug: "rebot-devarm",
@@ -201,6 +279,17 @@ export const projects: Project[] = [
     image: "/project-images/osmo-tactile-glove-official.png",
     sourceUrl: "https://www.jessicayin.com/osmo_tactile_glove/",
     tags: ["tactile glove", "skill transfer", "ROS 2", "hand tracking"]
+  },
+  {
+    slug: "opentouch-glove",
+    title: "OpenTouch Glove",
+    category: "Tactile Interfaces",
+    priority: "P1",
+    status: "Building Soon",
+    description: "A personalized FPCB tactile glove for untethered full-hand relative-force mapping, WiReSens recording, and dexterous demonstration capture.",
+    image: "/project-images/opentouch-glove-official.jpg",
+    sourceUrl: "https://wiresens-gloves.vercel.app/",
+    tags: ["tactile glove", "FPCB", "ESP-NOW", "WiReSens", "research prototype"]
   },
   {
     slug: "stag",

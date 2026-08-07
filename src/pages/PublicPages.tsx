@@ -9,7 +9,6 @@ import {
   Cpu,
   ExternalLink,
   Gauge,
-  HardDrive,
   Radio,
   ShieldCheck,
   Sparkles,
@@ -21,13 +20,41 @@ import { Field, PageHeader, Section, Status } from "../components/Primitives";
 import { useApp } from "../context/AppContext";
 
 const equipmentRows = [
-  ["Robot arm cell", "6-axis industrial arm, safety PLC, light curtains", "3-phase 415V · interlocked", "Hazard"],
-  ["Drone cage", "PX4 flight rigs, nets, spotter station, markers", "Dedicated single-phase", "Hazard"],
-  ["Rapid prototyping", "3D printers, laser cutter, hand finishing", "Isolated extraction", "Fabrication"],
-  ["Machine shop", "CNC, grinder, drill, metrology", "3-phase 415V", "Hazard"],
-  ["Electronics", "ESD benches, scopes, supplies, soldering", "Clean grounded circuits", "Bench"],
-  ["Compute", "GPU nodes, DGX Spark, Jetsons, NAS, NVR", "UPS-backed circuits", "Infrastructure"]
+  ["Robot arm cell", "6-axis industrial arm, controller, safety PLC, light curtains", "3-phase 415V · dedicated · interlocked", "DB-A"],
+  ["Machine shop", "CNC router, grinder, drill press, metrology, extraction", "3-phase 415V + extraction", "DB-A"],
+  ["Rapid prototyping", "FDM and resin printers, laser cutter, hand finishing", "1-phase 230V · four 16A circuits", "DB-B"],
+  ["Drone cage", "PX4 flight rigs, charging, cage lighting, spotter station", "1-phase 230V · dedicated charging", "DB-B"],
+  ["Storage + batteries", "Fire-rated LiPo charging cabinet, shelving, safe bags", "1-phase 230V · dedicated charging", "DB-B"],
+  ["Electronics + assembly", "ESD benches, scopes, supplies, soldering", "1-phase 230V · clean isolated ground", "DB-C"],
+  ["Compute + control", "GPU nodes, DGX Spark, Jetsons, NAS, NVR, networking", "1-phase 230V · UPS-backed", "DB-C"],
+  ["Builder pods", "Sixteen desks, lockers, monitors, clean power", "1-phase 230V · general circuits", "DB-D"],
+  ["Demo floor", "Floor boxes, AV, reconfigurable rigs", "1-phase 230V · floor outlets", "DB-D"],
+  ["Entry, HVAC, lighting", "HVAC, lighting, access control", "Mixed · main feed", "Main"]
 ];
+
+const distributionBoards = [
+  [ShieldCheck, "Main", "Incomer + master", "Utility incomer, metering, main breaker, and the master E-stop for hazard zones."],
+  [Wrench, "DB-A", "Heavy / 3-phase", "Robot arm cell and machine shop, interlocked with the safety perimeter."],
+  [BatteryCharging, "DB-B", "Prototyping + batteries", "Printing, drone charging, and the battery cabinet on separated circuits."],
+  [Cpu, "DB-C", "Clean / UPS", "Isolated grounded power for electronics, compute, networking, and NVR."],
+  [Users, "DB-D", "General / demo / pods", "Demo-floor outlets, builder pods, general sockets, lighting, and HVAC."]
+] as const;
+
+const workstationChoices = [
+  [Box, "Dedicated builder pod", "Your own desk with a locker, monitor, clean power, and approved extended access.", "Rs [rate] / month"],
+  [Wrench, "Robotic arm bay", "The guarded 6-axis arm cell and controller. Current safety certification is required.", "From Rs [rate] / hour"],
+  [Cable, "Electronics bench", "An ESD-safe bench with soldering, oscilloscope, and bench supplies.", "From Rs [rate] / hour"],
+  [Sparkles, "Prototyping station", "3D printers, laser cutter, or CNC by the hour; materials are additional.", "From Rs [rate] / hour"],
+  [Radio, "Drone cage slot", "The netted flight cage, booked in supervised slots for safe indoor testing.", "From Rs [rate] / slot"],
+  [Cpu, "GPU and edge compute", "On-site GPU workstations and edge AI kits for training, inference, and data runs.", "From Rs [rate] / hour"],
+  [Users, "Day pass + membership", "A full day on the floor, or monthly access with member booking priority.", "Day pass · monthly tiers"]
+] as const;
+
+const edgeAiWorkshops = [
+  [Camera, "Vision on Jetson", "Half-day camera capture, model deployment, and embedded inference on Jetson Orin Nano kits."],
+  [Cpu, "A day on the DGX", "A full day running, tuning, and serving models on DGX Spark while learning what local AI operation requires."],
+  [Sparkles, "Build an AI prototype", "Small-batch robot arm, drone autonomy, and sensor builds that finish with a working demonstration."]
+] as const;
 
 export function EquipmentPage() {
   const { state } = useApp();
@@ -37,11 +64,14 @@ export function EquipmentPage() {
         meta="Equipment · power · safety"
         title="Every zone, mapped."
         description="Each zone is mapped to its equipment, power requirement, booking rule, and safety boundary. Heavy loads stay isolated from the clean circuits that electronics and compute depend on."
-        actions={
+        actions={<div className="button-row">
           <Link className="button button-primary" to="/book">
             Book live resources <ArrowRight aria-hidden="true" />
           </Link>
-        }
+          <Link className="button button-quiet" to="/maker-desk">
+            Open the maker desk
+          </Link>
+        </div>}
       />
       <Section number="01" title="Live resource board" lede="Availability shown here follows the same resource records used by booking.">
         <div className="resource-grid">
@@ -75,19 +105,53 @@ export function EquipmentPage() {
       <Section number="02" title="Zone by zone" dark>
         <div className="table-wrap">
           <table>
-            <thead><tr><th>Zone</th><th>Key equipment</th><th>Power</th><th>Class</th></tr></thead>
+            <thead><tr><th>Zone</th><th>Key equipment</th><th>Power</th><th>Board</th></tr></thead>
             <tbody>
               {equipmentRows.map((row) => (
                 <tr key={row[0]}>
                   <th>{row[0]}</th>
                   <td>{row[1]}</td>
                   <td>{row[2]}</td>
-                  <td><Status tone={row[3] === "Hazard" ? "bad" : "neutral"}>{row[3]}</Status></td>
+                  <td><span className="mono">{row[3]}</span></td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+      </Section>
+      <Section number="03" title="Distribution boards" lede="Five boards separate hazardous loads, batteries, clean electronics, compute, pods, and general floor power.">
+        <div className="service-grid">
+          {distributionBoards.map(([Icon, board, title, copy]) => (
+            <article className="service-card" key={board}>
+              <Icon aria-hidden="true" />
+              <span className="mono">{board}</span>
+              <h3>{title}</h3>
+              <p>{copy}</p>
+            </article>
+          ))}
+        </div>
+      </Section>
+      <Section number="04" title="One-line power topology" dark>
+        <div className="power-topology" aria-label="Power distribution from the utility incomer through Main to four separated distribution boards">
+          <div className="power-main">
+            <span className="mono">BESCOM incomer</span>
+            <ArrowRight aria-hidden="true" />
+            <div>
+              <strong>Main</strong>
+              <span>Metering · master E-stop</span>
+            </div>
+          </div>
+          <div className="power-branch-grid">
+            {distributionBoards.slice(1).map(([, board, title, copy]) => (
+              <article key={board}>
+                <span className="mono">{board}</span>
+                <h3>{title}</h3>
+                <p>{copy}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+        <p className="lede">Heavy machinery, battery charging, clean UPS loads, and general floor power remain electrically separated.</p>
       </Section>
     </>
   );
@@ -118,7 +182,62 @@ export function MembershipPage() {
           ))}
         </div>
       </Section>
-      <Section number="02" title="Approval and safe access" dark>
+      <Section number="02" title="Workstation choices" lede="Members reserve the floor they need instead of owning every machine. Final rates remain placeholders until the operating tariff is approved.">
+        <div className="service-grid">
+          {workstationChoices.map(([Icon, title, copy, rate]) => (
+            <article className="service-card" key={title}>
+              <Icon aria-hidden="true" />
+              <h3>{title}</h3>
+              <p>{copy}</p>
+              <span className="mono">{rate}</span>
+            </article>
+          ))}
+        </div>
+      </Section>
+      <Section number="03" title="Edge AI invention workshops" lede="Challenge-led formats use Jetson Orin Nano kits, cameras, sensors, robots, and DGX Spark." dark>
+        <div className="service-grid">
+          {edgeAiWorkshops.map(([Icon, title, copy]) => (
+            <article className="service-card" key={title}>
+              <Icon aria-hidden="true" />
+              <h3>{title}</h3>
+              <p>{copy}</p>
+            </article>
+          ))}
+        </div>
+        <p className="lede">Indicative planning range: Rs 5,000-10,000 per seat, 12-15 seats per batch. Corporate editions are planned on request; these are estimates, not quotes.</p>
+      </Section>
+      <Section number="04" title="Storage and tool add-ons">
+        <div className="plan-list">
+          {[
+            ["Small parts locker", "Controllers, sensors, hand tools, and project boxes.", "Rs [rate] / week, month, or year", "Secure storage"],
+            ["Project locker", "Robot subassemblies, cases, and labelled work in progress.", "Rs [rate] / week, month, or year", "Medium or tall"],
+            ["Portable toolkit", "A checked electronics, mechanical, soldering, precision, or diagnostics case.", "Rs [rate] / session", "Lab-only rental"]
+          ].map(([name, copy, rate, note]) => (
+            <article className="plan-row" key={name}>
+              <div><span className="mono">{note}</span><h3>{name}</h3></div>
+              <p>{copy}</p>
+              <strong>{rate}</strong>
+            </article>
+          ))}
+        </div>
+        <div className="section-actions">
+          <Link className="button button-quiet" to="/maker-desk">See the maker desk <ArrowRight aria-hidden="true" /></Link>
+        </div>
+      </Section>
+      <Section number="05" title="Access and use flow">
+        <div className="process-list">
+          {[
+            ["01", "Apply", "Create an account, submit the build plan, and complete the one-time floor induction."],
+            ["02", "Book", "Reserve the workstation or equipment unit online for the time needed."],
+            ["03", "Check in", "Use the one-time member QR at the lab kiosk; access and attendance are recorded."],
+            ["04", "Build", "Use the booked floor with staff, shared tools, and the room available around the work."],
+            ["05", "Check out", "Return toolkits and checked-out parts, close attendance, and leave the resource ready."]
+          ].map(([number, title, copy]) => (
+            <div className="process-row" key={number}><span className="mono">{number}</span><h3>{title}</h3><p>{copy}</p></div>
+          ))}
+        </div>
+      </Section>
+      <Section number="06" title="Approval and safe access" dark>
         <div className="feature-grid">
           <article><Users aria-hidden="true" /><h3>Member approval</h3><p>New accounts remain pending until staff review what they intend to build and how they will use the floor.</p></article>
           <article><ShieldCheck aria-hidden="true" /><h3>Equipment certification</h3><p>Hazardous resources unlock only after the relevant induction is issued and remains current.</p></article>
@@ -130,24 +249,36 @@ export function MembershipPage() {
 }
 
 export function ServicesPage() {
-  const services = [
-    [Box, "Prototyping as a service", "Brief in, working prototype out: engineering, printers, CNC, electronics, and test equipment.", "Rs 2-15 L per project"],
-    [Camera, "Commissioned datasets", "Manipulation, vision, and site-specific datasets collected on lab rigs and annotated to a clear spec.", "per project"],
-    [Cpu, "Local AI data centres", "PCIe-rich GPU systems specified, assembled, burn-tested, networked, and installed on your premises.", "hardware + engineering"],
-    [Radio, "On-prem physical AI", "Private camera analytics, local assistants, and site-specific models that keep data inside the building.", "assessment + managed service"],
-    [Wrench, "Equipment with operator", "The arm, drone cage, or camera rigs with a lab engineer driving the test and safety process.", "day rate"],
-    [Sparkles, "Research residencies", "Bench, equipment, and collaboration for research professionals and corporate R&D teams.", "monthly residency"]
+  const talentServices = [
+    [Users, "Hackathon-based hiring", "Run an invention challenge on the lab floor with a real problem statement, arms, sensors, Jetsons, and GPUs; assess candidates through working prototypes.", "Planning estimate · Rs 2-5 L per edition + per-hire fee"],
+    [Gauge, "Employee training", "Private invention-lab cohorts covering edge AI, embedded systems, Jetson vision, local LLMs, and robotics fundamentals, ending in a demonstration.", "Planning estimate · Rs 1.5-4 L per cohort"],
+    [Sparkles, "Student research programs", "Semester-long, industry-linked edge AI and physical AI projects supervised in the lab with colleges and companies.", "Per student · per batch"],
+    [ShieldCheck, "Edge AI invention sprints", "Four-week evening programs using Jetsons, cameras, sensors, and DGX Spark, ending in a certified capstone build.", "Rs [rate] per seat"],
+    [Camera, "Public workshops", "One-day hands-on formats for small batches. The workstation and workshop choices remain visible on the Membership page.", "Planning estimate · Rs 5,000-10,000 per seat"],
+    [Radio, "Demo days and meetups", "Use the demo floor, AV, and working equipment as the setting for launches, meetups, and live demonstrations.", "Planning estimate · Rs 25,000-75,000 per evening"]
   ] as const;
+
+  const buildServices = [
+    [Box, "Prototyping as a service", "Brief in, working prototype out: engineering, printers, CNC, electronics, and test equipment.", "Planning estimate · Rs 2-15 L per project"],
+    [Camera, "Commissioned datasets", "Manipulation, vision, and site-specific datasets collected on lab rigs and annotated to a defined specification.", "Per project"],
+    [Sparkles, "Research residencies", "Bench, equipment, and collaboration for research professionals and corporate R&D teams.", "Monthly residency"],
+    [Wrench, "Equipment with operator", "The arm, drone cage, or camera rigs with a lab engineer operating the test and safety process.", "Day rate"],
+    [Cable, "Member maker desk", "Secure project lockers, build-sized consumables, and complete portable toolkits for everyday fabrication work.", "Member pickup + rental"],
+    [Gauge, "Hardware sourcing and BOM", "Component specification, vendor comparison, imports, compliance checks, and assembly planning so teams can start building.", "Fee + approved procurement margin"],
+    [Radio, "Zone sponsorships", "Hardware brands can support a bench, the cage, or a workshop series used by the builder community.", "Annual plan"]
+  ] as const;
+
   return (
     <>
       <PageHeader
         meta="Services · deployments · research"
         title="Build here, or bring the lab to the site."
         description="Armature combines a bookable robotics floor with engineering services for organizations that need working hardware, private AI infrastructure, or credible physical datasets."
+        actions={<Link className="button button-primary" to="/join">Request an assessment <ArrowRight aria-hidden="true" /></Link>}
       />
-      <Section number="01" title="Build and research services">
+      <Section number="01" title="Talent and training" lede="The fastest way to find, grow, and test hardware talent is to watch it build. Armature runs that room.">
         <div className="service-grid">
-          {services.map(([Icon, title, copy, rate]) => (
+          {talentServices.map(([Icon, title, copy, rate]) => (
             <article className="service-card" key={title}>
               <Icon aria-hidden="true" />
               <h3>{title}</h3>
@@ -156,18 +287,103 @@ export function ServicesPage() {
             </article>
           ))}
         </div>
+        <p className="lede">All figures are INR-first planning estimates, not quotes. Final scope, cohort size, hardware, and staffing determine each proposal.</p>
       </Section>
-      <Section number="02" title="A local AI deployment, end to end" dark>
+      <Section number="02" title="Build and research services" lede="Hand over a brief or bring researchers to the benches; the same floor that trains builders also does commissioned work." dark>
+        <div className="service-grid">
+          {buildServices.map(([Icon, title, copy, rate]) => (
+            <article className="service-card" key={title}>
+              <Icon aria-hidden="true" />
+              <h3>{title}</h3>
+              <p>{copy}</p>
+              <span className="mono">{rate}</span>
+            </article>
+          ))}
+        </div>
+        <div className="section-actions">
+          <Link className="button button-quiet" to="/maker-desk">Open the maker desk <ArrowRight aria-hidden="true" /></Link>
+          <Link className="button button-quiet" to="/membership">See member workstations <ArrowRight aria-hidden="true" /></Link>
+        </div>
+      </Section>
+      <Section number="03" title="Design, build, and run a local AI data centre" lede="For organizations that want GPUs on their own premises, Armature can take a deployment from workload sizing and bill of materials through burn-in and ongoing operation.">
+        <div className="service-grid">
+          {([
+            [Gauge, "Design", "Size the GPU, storage, networking, power, and cooling for the workload and budget, from a two-GPU workstation to a larger rack."],
+            [Wrench, "Build", "Assemble and burn-test the system in the lab; validate PCIe topology, firmware, drivers, thermals, and sustained training or inference."],
+            [Cpu, "Run", "Install on the customer network with monitoring, recovery procedures, updates, and optional managed capacity planning."]
+          ] as const).map(([Icon, title, copy]) => (
+            <article className="service-card" key={title}>
+              <Icon aria-hidden="true" />
+              <h3>{title}</h3>
+              <p>{copy}</p>
+            </article>
+          ))}
+        </div>
+        <div className="section-actions">
+          <a className="button button-quiet" href="https://github.com/autonomous-ai/autonomous-computer" target="_blank" rel="noreferrer">
+            Open build reference <ExternalLink aria-hidden="true" />
+          </a>
+        </div>
+        <p className="lede">Hardware, engineering, and managed-operation costs are scoped separately in INR after a current bill of materials and site-power review.</p>
+      </Section>
+      <Section number="04" title="Why on-prem physical AI" lede="Continuous camera and sensor workloads need predictable latency, a controlled data boundary, and infrastructure that can serve more than one local use case." dark>
         <div className="process-list">
           {[
-            ["01", "Assess", "Cameras, workloads, privacy constraints, network, power, and operating outcomes."],
-            ["02", "Pilot", "One bounded use case on-site, with a measurable acceptance test."],
-            ["03", "Build", "GPU, storage, networking, models, monitoring, and recovery procedures."],
-            ["04", "Operate", "Updates, capacity planning, incident review, and a path back to the working lab."]
+            ["01", "Continuous video stays local", "An on-site GPU processes camera streams in real time without round-the-clock cloud transfer."],
+            ["02", "Footage remains inside", "Sensitive video, documents, and model queries stay within the organization's premises and access policies."],
+            ["03", "One stack serves many jobs", "The same local compute can support safety analytics, dashboards, document search, assistants, and site-specific models."],
+            ["04", "The lab remains behind it", "Armature specifies, deploys, tests, and maintains the system as workloads and operational needs change."]
           ].map(([number, title, copy]) => (
             <div className="process-row" key={number}><span className="mono">{number}</span><h3>{title}</h3><p>{copy}</p></div>
           ))}
         </div>
+        <div className="service-grid">
+          {([
+            [Camera, "Existing cameras + sensors", "CCTV and site sensors remain the operational inputs."],
+            [Radio, "Jetson-class edge boxes", "Local ingest, filtering, and bounded low-latency inference near the source."],
+            [Cpu, "On-prem GPU server", "Private model serving, video analytics, storage, and local LLM workloads."],
+            [Sparkles, "Alerts + local applications", "Dashboards, safety events, search, and assistants stay available on the customer network."]
+          ] as const).map(([Icon, title, copy]) => (
+            <article className="service-card" key={title}>
+              <Icon aria-hidden="true" />
+              <h3>{title}</h3>
+              <p>{copy}</p>
+            </article>
+          ))}
+        </div>
+        <p className="lede">Architecture: cameras and sensors to edge boxes to the on-prem GPU server to local alerts, dashboards, and LLM applications. Operational data does not need to leave the site.</p>
+      </Section>
+      <Section number="05" title="Who it is for">
+        <div className="service-grid">
+          {([
+            [ShieldCheck, "Hospitals", "Patient-area monitoring, fall or restricted-zone alerts, and hygiene workflows under hospital-controlled data policies."],
+            [Users, "Malls + hotels", "Footfall, crowd flow, queue analytics, incident detection, and guest-safety operations across public spaces."],
+            [Wrench, "Factories", "PPE and safety signals, intrusion alerts, line monitoring, and visual inspection around existing equipment."],
+            [Camera, "Schools + institutes", "Entry, perimeter, attendance signals, and after-hours anomaly review under campus control."],
+            [Cpu, "Private knowledge teams", "Local assistants, document search, and reporting on the same on-prem GPU infrastructure."],
+            [Sparkles, "Teams learning physical AI", "Hands-on workshops using Jetsons, DGX Spark, sensors, cameras, and robotics equipment in the lab."]
+          ] as const).map(([Icon, title, copy]) => (
+            <article className="service-card" key={title}>
+              <Icon aria-hidden="true" />
+              <h3>{title}</h3>
+              <p>{copy}</p>
+            </article>
+          ))}
+        </div>
+      </Section>
+      <Section number="06" title="How an engagement runs" dark>
+        <div className="process-list">
+          {[
+            ["01", "Assess", "Review cameras, workloads, footfall, privacy constraints, network, power, and intended operating outcomes."],
+            ["02", "Pilot", "Prove one bounded use case in one zone, with measurable acceptance criteria agreed before deployment."],
+            ["03", "Deploy", "Install edge boxes, GPU, storage, networking, models, monitoring, and recovery procedures on site."],
+            ["04", "Operate", "Monitor the system, review incidents, update models, and plan capacity through a managed-service period."],
+            ["05", "Expand", "Add zones, cameras, models, and local LLM workloads on the same controlled architecture."]
+          ].map(([number, title, copy]) => (
+            <div className="process-row" key={number}><span className="mono">{number}</span><h3>{title}</h3><p>{copy}</p></div>
+          ))}
+        </div>
+        <p className="lede">Commercial planning separates the one-time assessment and pilot, deployment hardware, and any monthly managed service. Final INR pricing follows a site assessment and current vendor quotes.</p>
       </Section>
     </>
   );
@@ -272,56 +488,3 @@ export function NotFoundPage() {
     />
   );
 }
-
-export const procurementGroups = [
-  {
-    title: "Shared compute and storage",
-    icon: HardDrive,
-    rows: [
-      ["Primary NAS / ZFS storage node", "1", "Rs 6L-10L", "Datasets, video, CAD, checkpoints, DVC", "TrueNAS", "https://www.truenas.com/"],
-      ["Backup NAS / offline set", "1", "Rs 3L-6L", "Dataset survivability and recovery", "OpenZFS", "https://openzfs.org/"],
-      ["10GbE switch + NIC links", "1 + 8-12", "Rs 1.5L-4L", "Shared ingest and GPU/NAS traffic", "MikroTik", "https://mikrotik.com/products/group/switches"],
-      ["2-GPU autonomous workstation", "1", "Rs 9L-24L", "Training, vision, simulation, local inference", "Build notes", "https://www.shikhar.gg/blog/gpu-pc-build"],
-      ["NVIDIA DGX Spark", "1", "Rs 4.5L-6L", "Shared local AI and robotics software", "NVIDIA", "https://www.nvidia.com/en-us/products/workstations/dgx-spark/"],
-      ["RTX 5090 32GB", "2", "Rs 3.4L-5L+ each", "Primary CUDA training and inference", "NVIDIA", "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/"],
-      ["RTX PRO 6000 Blackwell 96GB", "1 optional", "About Rs 11.9L before landing", "High-VRAM funded workloads", "NVIDIA", "https://www.nvidia.com/en-us/design-visualization/rtx-pro-6000/"]
-    ]
-  },
-  {
-    title: "Robot and edge-compute stations",
-    icon: Cpu,
-    rows: [
-      ["Jetson Orin Nano Super", "6", "Rs 25k-45k each", "Edge AI and camera stations", "NVIDIA", "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/"],
-      ["Jetson AGX Thor", "1 pilot", "Rs 3.2L-4.5L landed", "High-end multi-camera physical AI", "NVIDIA", "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-thor/"],
-      ["SO-ARM101 leader/follower sets", "5 + 10 spare servos", "Rs 21k+ per set", "Ten builders working in pairs", "SO-ARM BOM", "https://github.com/TheRobotStudio/SO-ARM100"],
-      ["Raspberry Pi 5 kits", "10", "Rs 11k+ board reference", "Rovers, vacuum, logging, controllers", "Raspberry Pi", "https://www.raspberrypi.com/products/raspberry-pi-5/"],
-      ["Microcontroller and motor-control drawer", "30 ESP32 + 10 STM32/Arduino", "Rs 75k-1.5L", "Fast controls and sensor work", "Robu", "https://robu.in/"],
-      ["Pixhawk 6C-class autopilot sets", "2", "Quote in INR", "Rovers first, drones after cage readiness", "PX4 guide", "https://docs.px4.io/main/en/assembly/quick_start_pixhawk6c.html"]
-    ]
-  },
-  {
-    title: "Cameras and navigation sensors",
-    icon: Camera,
-    rows: [
-      ["USB C920 / Brio-class cameras", "20", "Rs 3k-18k each", "Two views per arm station and spares", "Logitech", "https://www.logitech.com/en-in/products/webcams.html"],
-      ["Luxonis OAK-D Lite", "6", "About Rs 15k before landing", "Stereo depth and onboard AI", "Luxonis", "https://shop.luxonis.com/products/oak-d-lite-1"],
-      ["Luxonis OAK-D Pro", "4", "About Rs 39k before landing", "Active stereo and low-light tests", "Luxonis", "https://shop.luxonis.com/products/oak-d-pro"],
-      ["RealSense D455-class pair", "2", "Quote current stock", "RGB-D compatibility for project pipelines", "RealSense", "https://www.realsenseai.com/products/depth-camera-d455/"],
-      ["RPLIDAR A1/C1", "4", "Rs 9k-18k each", "Rovers and indoor mapping", "SLAMTEC", "https://www.slamtec.com/en/lidar/a1"],
-      ["RTK GNSS base + rover", "2 pairs", "Rs 20k-50k+ per kit", "OpenMower and outdoor autonomy", "ArduSimple", "https://www.ardusimple.com/product/simplertk2b-basic-starter-kit-ip65/"],
-      ["AprilTag / Charuco boards", "10 sets", "Rs 20k-60k total", "Calibration, pose, and data collection", "AprilTag", "https://github.com/AprilRobotics/apriltag"]
-    ]
-  },
-  {
-    title: "Bench, motion, and safety stock",
-    icon: ShieldCheck,
-    rows: [
-      ["Electronics bench tooling", "10 mats + 5 solder stations", "Rs 3L-6L", "Ten builders without tool bottlenecks", "element14 India", "https://in.element14.com/"],
-      ["Force / torque and load-cell starter kits", "2", "Rs 50k-3L", "Gripper force and manipulation safety", "Mouser India", "https://www.mouser.in/"],
-      ["LiPo batteries, chargers, safe bags", "Shared safety set", "Rs 1L-2L", "Drones, rovers, and mobile robots", "Robu", "https://robu.in/"],
-      ["RC transmitter + receiver", "2", "Rs 15k-45k each", "Manual control and safety fallback", "Holybro", "https://holybro.com/"],
-      ["Spare servos, belts, bearings, fasteners", "15% motion spares", "Rs 1L-2L initial", "Keep active builds moving", "Robu", "https://robu.in/"],
-      ["Emergency stops, barriers, extinguishers", "Per hazard zone", "Rs 1L-2.5L", "Guarded commissioning and incident response", "Local safety supplier", "https://bis.gov.in/"]
-    ]
-  }
-];

@@ -4,13 +4,14 @@ export function PageHeader({
   title,
   description,
   meta,
-  actions
-}: {
+  actions,
+  children
+}: PropsWithChildren<{
   title: string;
   description: string;
   meta?: string;
   actions?: ReactNode;
-}) {
+}>) {
   return (
     <header className="page-hero">
       <div className="wrap">
@@ -18,6 +19,7 @@ export function PageHeader({
         <h1>{title}</h1>
         <p className="hero-copy">{description}</p>
         {actions && <div className="button-row">{actions}</div>}
+        {children}
       </div>
     </header>
   );

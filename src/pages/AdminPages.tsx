@@ -1,12 +1,16 @@
-import { useState, type FormEvent, type PropsWithChildren } from "react";
+import { useEffect, useRef, useState, type FormEvent, type PropsWithChildren } from "react";
 import {
   AlertTriangle,
+  Archive,
   ArrowRight,
   BadgeCheck,
   CalendarClock,
   CalendarSync,
+  CircuitBoard,
+  ClipboardList,
   DoorOpen,
   ListChecks,
+  PackageOpen,
   Radio,
   ServerCog,
   UserCheck,
@@ -14,7 +18,7 @@ import {
   Wrench
 } from "lucide-react";
 import { format, parseISO } from "date-fns";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { EmptyState, Metric, PageHeader, Section, Status } from "../components/Primitives";
 import { MemberAvatar } from "../components/MemberAvatar";
 import { resourceFor, useApp } from "../context/AppContext";
@@ -24,11 +28,25 @@ const adminLinks = [
   ["/admin/resources", "Resources", Wrench],
   ["/admin/bookings", "Bookings", CalendarClock],
   ["/admin/attendance", "Attendance", DoorOpen],
+  ["/admin/components", "Components", CircuitBoard],
+  ["/admin/inventory", "Inventory", Archive],
+  ["/admin/component-requests", "Requests", ClipboardList],
+  ["/admin/cabinets", "Cabinets", Radio],
+  ["/admin/maker-services", "Maker desk", PackageOpen],
   ["/admin/integrations", "Integrations", ServerCog]
 ] as const;
 
-function OperationsHeader({ children }: PropsWithChildren) {
+export function OperationsHeader({ children }: PropsWithChildren) {
   const { mode } = useApp();
+  const { pathname } = useLocation();
+  const navRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    navRef.current
+      ?.querySelector<HTMLAnchorElement>("a.active")
+      ?.scrollIntoView({ block: "nearest", inline: "center" });
+  }, [pathname]);
+
   return (
     <>
       <header className="operations-header">
@@ -38,7 +56,7 @@ function OperationsHeader({ children }: PropsWithChildren) {
         </div>
       </header>
       <nav className="admin-nav" aria-label="Operations sections">
-        <div className="wrap">
+        <div className="wrap" ref={navRef}>
           {adminLinks.map(([to, label, Icon]) => <NavLink key={to} to={to}><Icon aria-hidden="true" />{label}</NavLink>)}
         </div>
       </nav>
