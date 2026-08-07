@@ -415,8 +415,8 @@
 }
 
 .building-vision-copy-button:hover {
-  background: var(--paper);
-  border-color: var(--paper);
+  background: var(--feature-text);
+  border-color: var(--feature-text);
 }
 
 .building-vision-copy-button:focus-visible {

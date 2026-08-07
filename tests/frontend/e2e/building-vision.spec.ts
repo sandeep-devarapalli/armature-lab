@@ -66,6 +66,9 @@ test("building vision presents all views and filters without overflow", async ({
   await expect(page.getByText("First describe the proposed change in words. Do not edit files until I approve.", { exact: false })).toBeVisible();
   await page.getByRole("button", { name: "Copy prompt" }).click();
   await expect(page.getByRole("button", { name: "Copied" })).toBeVisible();
+  await expect.poll(() => page.getByRole("button", { name: "Copied" }).evaluate((button) =>
+    getComputedStyle(button).backgroundColor
+  )).toBe("rgb(242, 230, 204)");
   await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain(
     "Please propose a revision to the Building Vision page."
   );

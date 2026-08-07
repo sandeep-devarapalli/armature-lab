@@ -2,7 +2,10 @@ import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
+const buildingVisionStandalone = process.env.BUILDING_VISION_STANDALONE === "1";
+
 export default defineConfig({
+  base: buildingVisionStandalone ? "/building-vision/" : "/",
   build: {
     rollupOptions: {
       output: {
@@ -17,6 +20,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      disable: buildingVisionStandalone,
       registerType: "prompt",
       manifest: {
         name: "armature - The Physical AI and Robotics Lab",

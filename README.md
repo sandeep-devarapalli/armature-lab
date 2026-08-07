@@ -36,10 +36,17 @@ Useful checks:
 ```bash
 npm test
 npm run build
+npm run build:hosted
 supabase start
 supabase test db supabase/tests/database
 supabase/tests/concurrent_booking.sh
 ```
+
+`npm run build:hosted` creates the transitional Cloudflare Pages artifact in
+`tmp/hosted-site`: the current legacy homepage is copied byte-for-byte from
+`site/`, while the React Building Vision presentation is mounted at
+`/building-vision`. Use this combined output only until the React PWA becomes
+the production root application.
 
 See [member-booking-pwa-operations.md](docs/member-booking-pwa-operations.md)
 for provisioning, kiosk, Google Workspace, release, and rollback procedures.
