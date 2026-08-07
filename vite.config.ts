@@ -9,7 +9,9 @@ export default defineConfig({
         manualChunks: {
           react: ["react", "react-dom", "react-router-dom"],
           supabase: ["@supabase/supabase-js"],
-          scanner: ["@zxing/browser", "qrcode"]
+          maplibre: ["maplibre-gl"],
+          qrcode: ["qrcode"],
+          scanner: ["@zxing/browser"]
         }
       }
     }
@@ -22,7 +24,7 @@ export default defineConfig({
         name: "armature - The Physical AI and Robotics Lab",
         short_name: "armature",
         description:
-          "Book robotics, fabrication, and GPU resources at armature in HSR Layout, Bengaluru.",
+          "Explore robotics, fabrication, compute, and lab projects at armature in HSR Layout, Bengaluru.",
         id: "/",
         start_url: "/",
         scope: "/",
@@ -64,7 +66,15 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: "/index.html",
-        globPatterns: ["**/*.{js,css,html,png,jpg,jpeg,webp,svg,woff2}"],
+        globPatterns: [
+          "index.html",
+          "apple-touch-icon.png",
+          "assets/index-*.js",
+          "assets/index-*.css",
+          "assets/react-*.js",
+          "assets/supabase-*.js",
+          "assets/workbox-window.*.js"
+        ],
         cleanupOutdatedCaches: true,
         runtimeCaching: [
           {

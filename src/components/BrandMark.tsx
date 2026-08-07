@@ -1,4 +1,10 @@
-export function BrandMark({ compact = false }: { compact?: boolean }) {
+export function BrandMark({
+  compact = false,
+  animated = false
+}: {
+  compact?: boolean;
+  animated?: boolean;
+}) {
   return (
     <span className="brand-lockup" aria-label="armature">
       <svg
@@ -7,11 +13,17 @@ export function BrandMark({ compact = false }: { compact?: boolean }) {
         role="img"
         aria-label="Exploded A mark"
       >
-        <circle cx="16" cy="5.5" r="2.8" />
-        <circle className="mark-cutout" cx="16" cy="5.5" r="1" />
-        <line x1="14.5" y1="12.5" x2="9.8" y2="27" />
-        <line x1="17.5" y1="12.5" x2="22.2" y2="27" />
-        <line x1="12.4" y1="20.5" x2="19.6" y2="20.5" />
+        <g className={animated ? "brand-mark-apex" : undefined}>
+          <circle cx="16" cy="5.5" r="2.8" />
+          <circle className="mark-cutout" cx="16" cy="5.5" r="1" />
+        </g>
+        <g className={animated ? "brand-mark-legs" : undefined}>
+          <line x1="14.5" y1="12.5" x2="9.8" y2="27" />
+          <line x1="17.5" y1="12.5" x2="22.2" y2="27" />
+        </g>
+        <g className={animated ? "brand-mark-bar" : undefined}>
+          <line x1="12.4" y1="20.5" x2="19.6" y2="20.5" />
+        </g>
       </svg>
       {!compact && <span>armature</span>}
     </span>

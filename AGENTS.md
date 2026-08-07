@@ -57,6 +57,13 @@ placeholder note in `README.md`.
 ## Editing Rules
 
 - Make small, focused edits. Prefer editing existing files over creating new ones.
+- In the building-vision presentation, the photos previously labelled `Main café hall`, `Café flex room`, and `Lower stair landing` show the basement or basement access and must stay excluded unless the user explicitly restores basement scope. Do not infer floor labels from image appearance when the user has supplied the floor mapping.
+- In the building-vision presentation, photo `18` is the first room inside the main entrance on the ground floor. Treat it as reception, visitor check-in, and a compact Armature goodies store—not as a second-floor meeting room—and keep it immediately after the frontage in presentation order.
+- In the building-vision frontage concept, provide shaded outdoor café seating with freestanding, weighted umbrellas only. Keep the entrance route, stairs, gate, trees, drainage and cycle parking clear; do not imply fixed shade structures or structural work.
+- In the wide building-vision street approach, use a shallow illuminated lightbox reading `HSR FOUNDERS` / `CLUB` on the existing boundary wall, plus a separate slim programmable LED information strip. Keep both signs modest, within the existing wall profile, clear of the gate and footpath, and do not turn either into a billboard, pylon or structural wall addition. The closer frontage view may retain the separate armature entrance identity.
+- In building-vision rooms where the existing photograph shows marble flooring, retain the marble and its border pattern, showing repair, cleaning and polishing only. This specifically includes `Window café lounge` and `Existing kitchen`. Do not replace it visually or in copy with LVT, vinyl, terrazzo, tile or another floor finish unless the user explicitly asks.
+- Keep every visible staircase in the building-vision concepts white or a very pale warm grey, including treads, risers, sides and undersides. Do not add rainbow risers or adjacent decorative colour blocks; retain the existing railing geometry and finish unless the user explicitly asks for a change.
+- Keep the building-vision contributor section practical: include the verified public GitHub repository, direct links to `AGENTS.md` and `DESIGN.md`, the relevant local source paths, and an accessible copy-prompt control with visible success or failure feedback. Verify the links and clipboard interaction before handoff.
 - Read `DESIGN.md` before visual, layout, asset, or site copy changes.
 - Keep the existing React/Vite/TypeScript stack. Do not add another framework or
   state layer for a narrow change.
@@ -72,9 +79,18 @@ placeholder note in `README.md`.
 - For procurement or pricing pages, keep INR as the primary displayed currency. Use USD/EUR only in brackets as source or reference pricing.
 - Keep docs and calculator numbers aligned. If a financial assumption changes in one place, check all related site tables, calculator defaults, docs, and README notes.
 - Preserve the current asset filenames unless the user asks for a rename.
+- Do not reuse one project-card cover for different projects unless the shared
+  system is the subject of both cards. Prefer distinct official media, then a
+  clearly attributed Armature reference illustration.
 - Keep the site's light, dark, and sepia modes structurally identical. Theme
   work must use the shared CSS-variable system, persist the visitor's choice,
   and remain consistent across public, member, staff, and kiosk routes.
+- Preserve the home hero's animated canvas kernel wavefront and subtle exploded-A
+  motion. Verify the canvas changes over time unless reduced motion is requested.
+- When migrating or substantially editing a public page, compare it with the
+  preserved `site/` version first. Keep useful operational sections, diagrams,
+  workflows, attribution, and revenue context unless they are intentionally
+  superseded or documented as legacy-only.
 - Avoid unrelated redesign, copy expansion, or cleanup.
 - Before reporting that a hosting, DNS, database, or admin integration is unavailable, check the active plugin and tool registry. Cloudflare and Supabase plugins may be available for programmatic infrastructure work.
 - Namecheap registrar automation can use the personal `namecheap-mcp` skill backed by `johnsorrentino/mcp-namecheap`. Keep nameserver writes disabled by default and require explicit approval before enabling or calling them.

@@ -1,0 +1,2407 @@
+import type {
+  CatalogComponent,
+  ComponentAvailability,
+  ComponentOffer,
+  ProcurementGroup,
+  ProjectComponentLink,
+  ProjectComponentRole
+} from "../types/domain";
+
+export const COMPONENT_AUDIT_DATE = "2026-07-26";
+export const OFFER_STALE_AFTER_DAYS = 30;
+
+export const components: CatalogComponent[] = [
+  {
+    slug: "so101-pair",
+    name: "SO-101 leader / follower pair",
+    category: "Robot systems",
+    description: "An assembled teleoperation pair for LeRobot data collection and imitation-learning stations.",
+    inventoryClass: "serialized_asset",
+    availability: "low_stock",
+    validationState: "validate_before_po",
+    quantityTarget: 5,
+    quantityUnit: "paired sets",
+    tags: ["LeRobot", "arm", "teleoperation"],
+    validationNotes: ["Standardize either 7.4V or 12V across the lab before ordering spares.", "Camera is not included."]
+  },
+  {
+    slug: "so101-g-clamp",
+    name: "SO-101 G clamp",
+    category: "Fabrication",
+    description: "Bench clamp for mounting SO-101 stations without permanently modifying shared worktops.",
+    inventoryClass: "reusable_tray",
+    availability: "available",
+    validationState: "ready",
+    quantityTarget: 10,
+    quantityUnit: "clamps",
+    tags: ["mounting", "bench", "SO-101"],
+    validationNotes: ["Confirm the bench adapter plate and fasteners required for each station."]
+  },
+  {
+    slug: "ab-so-bot",
+    name: "AB-SO-BOT",
+    category: "Robot systems",
+    description: "An assembled bimanual SO-series platform for comparative manipulation experiments.",
+    inventoryClass: "serialized_asset",
+    availability: "available",
+    validationState: "validate_before_po",
+    quantityTarget: 1,
+    quantityUnit: "system",
+    tags: ["bimanual", "manipulation"],
+    validationNotes: ["Adjacent research platform; it is not an OpenArm bill of materials."]
+  },
+  {
+    slug: "elrobot",
+    name: "ElRobot",
+    category: "Robot systems",
+    description: "An assembled manipulator for comparative LeRobot, GEM, and development-arm work.",
+    inventoryClass: "serialized_asset",
+    availability: "available",
+    validationState: "validate_before_po",
+    quantityTarget: 1,
+    quantityUnit: "system",
+    tags: ["manipulation", "LeRobot"],
+    validationNotes: ["Validate software compatibility and replacement-part availability before purchase."]
+  },
+  {
+    slug: "xlerobot",
+    name: "XLeRobot",
+    category: "Robot systems",
+    description: "A mobile bimanual research platform for embodied-AI and mobile-manipulation trials.",
+    inventoryClass: "serialized_asset",
+    availability: "available",
+    validationState: "validate_before_po",
+    quantityTarget: 1,
+    quantityUnit: "system",
+    tags: ["mobile manipulation", "bimanual"],
+    validationNotes: ["Battery, Raspberry Pi, and camera are not included."]
+  },
+  {
+    slug: "lekiwi",
+    name: "LeKiwi mobile robot with arm",
+    category: "Robot systems",
+    description: "An assembled mobile-manipulation bridge for LeRobot and open mobile-robot projects.",
+    inventoryClass: "serialized_asset",
+    availability: "available",
+    validationState: "validate_before_po",
+    quantityTarget: 1,
+    quantityUnit: "system",
+    tags: ["mobile robot", "arm", "LeRobot"],
+    validationNotes: ["Camera is not included."]
+  },
+  {
+    slug: "lelamp",
+    name: "LeLamp",
+    category: "Robot systems",
+    description: "An interactive servo and ESP32 teaching platform for human-robot interaction experiments.",
+    inventoryClass: "serialized_asset",
+    availability: "available",
+    validationState: "validate_before_po",
+    quantityTarget: 1,
+    quantityUnit: "system",
+    tags: ["HRI", "ESP32", "servo"],
+    validationNotes: ["Optional teaching platform with no direct current roadmap dependency."]
+  },
+  {
+    slug: "jetson-orin-nano",
+    name: "NVIDIA Jetson Orin Nano",
+    category: "Edge compute",
+    description: "Shared edge-inference computer for mobile robots, tactile vision, robot arms, and autopilot companions.",
+    inventoryClass: "serialized_asset",
+    availability: "available",
+    validationState: "validate_before_po",
+    quantityTarget: 6,
+    quantityUnit: "developer kits",
+    tags: ["NVIDIA", "CUDA", "edge AI"],
+    validationNotes: ["GetSet listing contains conflicting memory-capacity signals; confirm the NVIDIA part number."]
+  },
+  {
+    slug: "jetson-agx-orin",
+    name: "NVIDIA Jetson AGX Orin",
+    category: "Edge compute",
+    description: "High-memory edge computer for multi-camera and dexterous manipulation experiments.",
+    inventoryClass: "serialized_asset",
+    availability: "low_stock",
+    validationState: "validate_before_po",
+    quantityTarget: 1,
+    quantityUnit: "developer kit",
+    tags: ["NVIDIA", "multi-camera", "edge AI"],
+    validationNotes: ["The vendor title says AGX Orin Nano while its copy mixes AGX Orin 64GB and Orin Nano. Obtain the exact part number."]
+  },
+  {
+    slug: "jetson-thor",
+    name: "NVIDIA Jetson Thor",
+    category: "Edge compute",
+    description: "Future high-end physical-AI edge node; not a substitute for the central training workstation.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "validate_before_po",
+    quantityTarget: 1,
+    quantityUnit: "developer kit",
+    tags: ["NVIDIA", "physical AI", "edge AI"],
+    validationNotes: ["Hold until stock, exact SKU, workload need, and landed support terms are confirmed."]
+  },
+  {
+    slug: "raspberry-pi-5",
+    name: "Raspberry Pi 5",
+    category: "Controllers",
+    description: "General-purpose single-board computer for mobile robots, logging, cameras, and lab infrastructure.",
+    inventoryClass: "serialized_asset",
+    availability: "available",
+    validationState: "ready",
+    quantityTarget: 12,
+    quantityUnit: "8GB boards",
+    tags: ["SBC", "Linux", "ROS 2"],
+    validationNotes: ["Budget power supply, active cooling, storage, and the correct camera cable separately."]
+  },
+  {
+    slug: "arduino-uno-r4-wifi",
+    name: "Arduino UNO R4 WiFi",
+    category: "Controllers",
+    description: "A 5V-compatible control board with Wi-Fi, Bluetooth, CAN, ADC, DAC, and broad shield compatibility.",
+    inventoryClass: "serialized_asset",
+    availability: "available",
+    validationState: "ready",
+    quantityTarget: 12,
+    quantityUnit: "boards",
+    tags: ["Arduino", "CAN", "bench control"],
+    validationNotes: ["Keep a shared drawer of USB-C cables and protected test leads."]
+  },
+  {
+    slug: "esp32-c6",
+    name: "DFRobot FireBeetle 2 ESP32-C6",
+    category: "Controllers",
+    description: "Low-power wireless controller with Wi-Fi 6, Bluetooth 5, Zigbee, and Thread.",
+    inventoryClass: "serialized_asset",
+    availability: "available",
+    validationState: "ready",
+    quantityTarget: 20,
+    quantityUnit: "boards",
+    tags: ["ESP32", "wireless", "IoT"],
+    validationNotes: ["Treat 3.3V I/O and battery wiring as part of bench induction."]
+  },
+  {
+    slug: "esp32-s3-n16r8",
+    name: "ESP32-S3 N16R8 development board",
+    category: "Controllers",
+    description: "The required ESP32-S3 carrier with 16MB flash and 8MB octal PSRAM for the ESP32-AI model partition and runtime.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 12,
+    quantityUnit: "boards",
+    tags: ["ESP32-S3", "N16R8", "embedded AI", "PSRAM"],
+    validationNotes: [
+      "The upstream project specifies the N16R8 memory configuration but does not identify the tested carrier-board manufacturer or full SKU.",
+      "Do not substitute an N8R8 board: its 8MB flash cannot hold the approximately 14.9MB exported model.",
+      "Verify 16MB quad-SPI flash, 8MB octal PSRAM, native USB/CDC, exposed display GPIOs, and the upstream boot diagnostics before PO."
+    ]
+  },
+  {
+    slug: "esp32-ai-sh1106-oled",
+    name: "1.3-inch SH1106 128x64 I2C OLED",
+    category: "Controllers",
+    description: "The default on-device text display configured by ESP32-AI for a standalone story-generation demo.",
+    inventoryClass: "reusable_tray",
+    availability: "unavailable",
+    validationState: "validate_before_po",
+    quantityTarget: 6,
+    quantityUnit: "displays",
+    tags: ["ESP32-AI", "SH1106", "OLED", "I2C"],
+    validationNotes: [
+      "Verify a four-wire I2C module, controller type, 0x3C or 0x3D address, and 3.3V compatibility.",
+      "Upstream wiring uses SDA on GPIO18 and SCL on GPIO46."
+    ]
+  },
+  {
+    slug: "esp32-ai-ssd1306-oled",
+    name: "0.96-inch SSD1306 128x64 I2C OLED",
+    category: "Controllers",
+    description: "A code-supported compact OLED alternative for the ESP32-AI output display.",
+    inventoryClass: "reusable_tray",
+    availability: "unavailable",
+    validationState: "validate_before_po",
+    quantityTarget: 3,
+    quantityUnit: "displays",
+    tags: ["ESP32-AI", "SSD1306", "OLED", "I2C"],
+    validationNotes: [
+      "Select the SSD1306 controller in firmware and verify the module address before wiring.",
+      "Do not assume visually similar SH1106 and SSD1306 modules use the same controller."
+    ]
+  },
+  {
+    slug: "esp32-ai-st7789-tft",
+    name: "GMT020-02-7P 2-inch ST7789 SPI TFT",
+    category: "Controllers",
+    description: "The exact color-display class supported by ESP32-AI for a larger 240x320 standalone output.",
+    inventoryClass: "reusable_tray",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 2,
+    quantityUnit: "displays",
+    tags: ["ESP32-AI", "ST7789", "TFT", "SPI"],
+    validationNotes: [
+      "Validate the exact GMT020-02-7P pinout before PO; generic ST7789 modules are not automatically drop-in compatible.",
+      "Upstream wiring uses CS10, DC7, RST6, SCK12, and MOSI11."
+    ]
+  },
+  {
+    slug: "adafruit-huzzah32",
+    name: "Adafruit HUZZAH32 ESP32 Feather",
+    category: "Controllers",
+    description: "The exact ESP32 Feather named by OpenTouch for wireless glove transmission and the USB-connected ESP-NOW receiver.",
+    inventoryClass: "serialized_asset",
+    availability: "low_stock",
+    validationState: "validate_before_po",
+    quantityTarget: 12,
+    quantityUnit: "boards",
+    tags: ["ESP32", "ESP-NOW", "OpenTouch", "Feather"],
+    validationNotes: [
+      "Budget two boards per wireless glove station: one transmitter and one receiver.",
+      "Do not treat the existing ESP32-C6 stock as a drop-in replacement; validate firmware, pin mapping, ADC behavior, and the LiPo interface before any substitution.",
+      "Confirm an India-stocked variant, headers, USB cables, and 3.7V LiPo compatibility before PO."
+    ]
+  },
+  {
+    slug: "opentouch-readout-pcba",
+    name: "OpenTouch zero-potential scanning readout PCBA",
+    category: "Controllers",
+    description: "The assembled scanning board that reads one glove's distributed resistive sensing matrix.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 6,
+    quantityUnit: "assembled boards",
+    tags: ["OpenTouch", "PCBA", "tactile sensing", "readout"],
+    validationNotes: [
+      "One assembled readout board is required per glove.",
+      "Order only after reconciling the official Gerbers, BOM, CPL, connectors, and board revision with the WiReSens firmware.",
+      "Obtain an INR landed quote including assembly, components, freight, duty, and GST."
+    ]
+  },
+  {
+    slug: "opentouch-interconnect-set",
+    name: "OpenTouch 16-pin FFC and header set",
+    category: "Controllers",
+    description: "The matched flex cables and headers connecting one glove's two FPCB layers to its readout electronics.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 6,
+    quantityUnit: "glove sets",
+    tags: ["OpenTouch", "FFC", "0.5 mm pitch", "headers"],
+    validationNotes: [
+      "Budget two 16-pin, 0.5 mm-pitch flex cables and the documented 2.54 mm headers per glove.",
+      "Validate contact orientation, cable length, bend radius, connector footprint, and strain relief against the current board revision."
+    ]
+  },
+  {
+    slug: "q8bot-v25-pcba",
+    name: "Q8bot v2.5 assembled center PCB",
+    category: "Controllers",
+    description: "The custom cable-free control and power board at the center of the Q8bot quadruped.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 2,
+    quantityUnit: "assembled boards",
+    tags: ["Q8bot", "PCBA", "ESP32-C3"],
+    validationNotes: [
+      "Order against the upstream hw-v2.5 release and verify the PCBWay assembly revision before payment.",
+      "Confirm landed GST, lead time, battery clips, headers, and the second XIAO ESP32-C3 separately."
+    ]
+  },
+  {
+    slug: "xiao-esp32c3",
+    name: "Seeed Studio XIAO ESP32-C3",
+    category: "Controllers",
+    description: "Compact wireless controller used by Q8bot for its ESP-NOW robot and host communication path.",
+    inventoryClass: "serialized_asset",
+    availability: "available",
+    validationState: "source_required",
+    quantityTarget: 12,
+    quantityUnit: "boards",
+    tags: ["ESP32-C3", "ESP-NOW", "Q8bot"],
+    validationNotes: [
+      "Q8bot uses a second XIAO ESP32-C3 for wireless communication in addition to the controller included on the assembled PCB.",
+      "The upstream sourcing guide names XIAO ESP32-C3, while the current controller PlatformIO target is Adafruit QT Py ESP32-C3; validate board and pin compatibility before PO.",
+      "Confirm antenna variant, USB-C cable, 3.3V I/O, and Indian landed support before PO."
+    ]
+  },
+  {
+    slug: "openactuator-linear-vcm-core",
+    name: "OpenActuator LinearVCM core",
+    category: "Motion",
+    description: "The published 32-ohm voice-coil actuator with a ring magnet, ring steel washer, and supplied 3D-printable FreeCAD structure.",
+    inventoryClass: "reusable_tray",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "reference actuator set",
+    tags: ["OpenActuator", "LinearVCM", "voice coil", "FreeCAD"],
+    validationNotes: [
+      "The official sources do not specify the magnet dimensions or grade, washer dimensions, coil wire gauge or turns, fasteners, tolerances, or print settings.",
+      "The published 10 mm displacement and 2 N magnetic-force figures are reference-prototype results, not a procurement guarantee."
+    ]
+  },
+  {
+    slug: "openactuator-arduino-uno",
+    name: "Arduino UNO for OpenActuator demo",
+    category: "Controllers",
+    description: "The controller named in the published LinearVCM demonstration system.",
+    inventoryClass: "reusable_tray",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 2,
+    quantityUnit: "boards",
+    tags: ["OpenActuator", "Arduino UNO", "actuator control"],
+    validationNotes: [
+      "The upstream documentation says Arduino UNO but does not identify a board revision; validate the current sketch, voltage, pinout, and USB driver before purchase.",
+      "Do not silently substitute the catalog's UNO R4 WiFi without confirming compatibility."
+    ]
+  },
+  {
+    slug: "openactuator-l9110-h-bridge",
+    name: "L9110 H-bridge driver",
+    category: "Motion",
+    description: "The bidirectional motor driver specified for the published LinearVCM demonstration.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 3,
+    quantityUnit: "driver boards",
+    tags: ["OpenActuator", "L9110", "H-bridge"],
+    validationNotes: [
+      "Confirm the exact L9110 board, continuous and peak current, thermal behavior, connector layout, and logic compatibility against the actuator coil.",
+      "Bench-test current limiting and temperature before closed-loop operation."
+    ]
+  },
+  {
+    slug: "openactuator-wsh136-hall-sensor",
+    name: "WSH136 Hall position sensor",
+    category: "Motion",
+    description: "The Hall sensor named for LinearVCM position feedback in the official demonstration.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 3,
+    quantityUnit: "sensors",
+    tags: ["OpenActuator", "WSH136", "Hall sensor", "position feedback"],
+    validationNotes: [
+      "Verify the exact package, transfer characteristic, supply range, pinout, and current availability; visually similar Hall sensors are not equivalent.",
+      "Calibrate the installed sensor against the actuator's actual stroke before using closed-loop limits."
+    ]
+  },
+  {
+    slug: "openactuator-coil-winder-v12",
+    name: "OpenActuator Coil Winder v1.2",
+    category: "Fabrication",
+    description: "Optional Arduino-controlled companion machine for winding repeatable small actuator coils.",
+    inventoryClass: "fixed_equipment",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "prototype machine",
+    tags: ["OpenActuator", "coil winding", "Arduino Nano", "17HS2408"],
+    validationNotes: [
+      "The published build names an Arduino Nano, 17HS2408 rotating motor, unspecified slider motor, L9110 drivers, LM2596 converter, printed mechanics, and PC serial software.",
+      "The project authors report inadequate rotating-motor power plus slider centering and friction problems; treat this as a research prototype, not production tooling."
+    ]
+  },
+  {
+    slug: "efm-fiber-winding-fixture",
+    name: "Electrofluidic fiber winding and inspection fixture",
+    category: "Fabrication",
+    description: "A controlled rotating and translating fixture for producing repeatable helical fiber-pump specimens and inspecting their geometry before filling.",
+    inventoryClass: "fixed_equipment",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "research fixture",
+    tags: ["electrofluidic muscle", "fiber winding", "inspection", "soft robotics"],
+    validationNotes: [
+      "Derive geometry, tolerances, electrode placement, insulation, and process controls from the current paper, preprint, and dataset before releasing fixture CAD.",
+      "Commission the fixture with dry, unenergized samples and retain microscopy or dimensional evidence for every process revision."
+    ]
+  },
+  {
+    slug: "efm-fiber-pump-materials",
+    name: "Electrohydrodynamic fiber-pump materials set",
+    category: "Motion",
+    description: "Research stock for the pump's conductor, insulating structure, encapsulation, terminations, and specimen preparation.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "validated material batch",
+    tags: ["EHD pump", "electrodes", "insulation", "specimen batch"],
+    validationNotes: [
+      "This is a source-reconciliation record, not a substitute recipe. Resolve the exact current material specifications and fabrication sequence from the 2026 publication package before procurement.",
+      "Record lot, dimensions, supplier data, compatibility, and inspection evidence for every material that enters an energized specimen."
+    ]
+  },
+  {
+    slug: "efm-mckibben-materials",
+    name: "Thin McKibben actuator materials set",
+    category: "Motion",
+    description: "Tubing, braid, end fittings, seals, and witness specimens for validating the fluidic muscle independently of its embedded pump.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "validated material batch",
+    tags: ["McKibben", "braided actuator", "soft robotics", "fluidics"],
+    validationNotes: [
+      "Extract the exact construction and dimensions from the current publication package; generic pneumatic-muscle materials are not automatically equivalent.",
+      "Validate pressure, leakage, contraction, force, end retention, and cycle behavior with a regulated conventional source before pump integration."
+    ]
+  },
+  {
+    slug: "efm-dielectric-working-fluid",
+    name: "Electrofluidic dielectric working-fluid batch",
+    category: "Power and safety",
+    description: "The electrically insulating working fluid for controlled compatibility, pump, and closed-loop actuator tests.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "approved test batch",
+    tags: ["dielectric fluid", "EHD", "chemical safety", "fluid handling"],
+    validationNotes: [
+      "Select only after reconciling the current publication and obtaining the exact product data, SDS, viscosity, dielectric properties, material compatibility, storage, spill, and disposal requirements.",
+      "Do not receive or use the fluid until the lab chemical review and waste route are approved."
+    ]
+  },
+  {
+    slug: "efm-interlocked-hv-test-cell",
+    name: "Interlocked high-voltage electrofluidic test cell",
+    category: "Power and safety",
+    description: "A guarded, current-limited, remotely observed enclosure for controlled pump and actuator characterization with verified discharge state.",
+    inventoryClass: "fixed_equipment",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "certified research cell",
+    tags: ["high voltage", "interlock", "guarding", "remote operation"],
+    validationNotes: [
+      "Treat published voltages as experimental context, not a purchasing specification. A qualified electrical-safety review must define supply, current limiting, insulation, creepage, interlocks, grounding, emergency isolation, discharge verification, and access control.",
+      "No open-bench or human-contact operation is permitted for the initial replication."
+    ]
+  },
+  {
+    slug: "efm-fluidic-instrumentation",
+    name: "Electrofluidic pressure and flow instrumentation",
+    category: "Motion",
+    description: "Low-volume pressure, flow, temperature, filling, degassing, and leak-test instrumentation for pump and closed-loop characterization.",
+    inventoryClass: "reusable_tray",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "instrument set",
+    tags: ["pressure", "flow", "temperature", "leak test"],
+    validationNotes: [
+      "Define ranges, fluid compatibility, dead volume, response time, electrical isolation, calibration, and over-pressure protection from the planned experiments before requesting quotes.",
+      "Use the same calibrated reference chain for the stand-alone pump, actuator coupon, and antagonistic loop."
+    ]
+  },
+  {
+    slug: "efm-force-displacement-rig",
+    name: "Electrofluidic force and displacement test rig",
+    category: "Fabrication",
+    description: "A guarded mechanical rig for synchronized force, stroke, response-time, current, and temperature measurements.",
+    inventoryClass: "fixed_equipment",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "instrumented rig",
+    tags: ["load cell", "displacement", "cycle test", "characterization"],
+    validationNotes: [
+      "Size and calibrate the load cell, displacement sensor, frame, sampling chain, guarding, and travel stops before testing an energized specimen.",
+      "Record synchronized raw data and specimen revision so isolated motion is never mistaken for a repeatable result."
+    ]
+  },
+  {
+    slug: "solo12-actuator-core-v11",
+    name: "Solo 12 actuator core v1.1",
+    category: "Motion",
+    description: "The modular brushless belt-drive actuator used twelve times in the published Solo 12 robot.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 12,
+    quantityUnit: "actuator modules",
+    tags: ["Solo 12", "ODRI", "brushless motor", "belt drive", "encoder"],
+    validationNotes: [
+      "For twelve modules, the published nested BOM specifies twelve PWB ODRI encoder kits, twelve T-Motor Antigravity 4004 300kV motors, twelve 150 mm AT3 belts, twelve 201 mm AT3 belts, and the documented bearing and pulley sets.",
+      "Revalidate every custom board, motor, belt, bearing, fastener, tolerance, and fabrication process against the current actuator v1.1 files before procurement."
+    ]
+  },
+  {
+    slug: "solo12-micro-driver-v2",
+    name: "ODRI Micro Driver v2",
+    category: "Controllers",
+    description: "The custom dual-joint brushless motor-control board used six times in Solo 12.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 6,
+    quantityUnit: "assembled boards",
+    tags: ["Solo 12", "ODRI", "BLDC", "motor control"],
+    validationNotes: [
+      "Fabricate only from the official electronics release and reconcile PCB revision, BOM, firmware, programmer, heat sinking, connectors, and current limits before assembly.",
+      "Each board drives two joints; commission unloaded and current-limited before connecting a leg."
+    ]
+  },
+  {
+    slug: "solo12-master-board-v2",
+    name: "ODRI Master Board v2",
+    category: "Controllers",
+    description: "The Ethernet-connected central interface board coordinating Solo 12's six Micro Drivers.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "assembled board",
+    tags: ["Solo 12", "ODRI", "Ethernet", "real-time control"],
+    validationNotes: [
+      "The Master Board is a separately maintained BSD-2-Clause project; match its hardware, firmware, cable pinout, and host software releases before fabrication.",
+      "Budget the required programmer, Ethernet interface, connectors, and spare cabling."
+    ]
+  },
+  {
+    slug: "solo12-microstrain-imu",
+    name: "Lord MicroStrain 3DM-CX5-25 IMU",
+    category: "Navigation",
+    description: "The extended-range inertial sensor identified in the published Solo 12 hardware documentation.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "IMU",
+    tags: ["Solo 12", "ODRI", "IMU", "state estimation"],
+    validationNotes: [
+      "Confirm the exact 3DM-CX5-25 revision, extended-range configuration, interface cable, mounting, calibration, software support, India availability, and landed GST.",
+      "Do not replace it with the catalog BNO055 without validating the control stack and estimator."
+    ]
+  },
+  {
+    slug: "solo12-mechanical-set",
+    name: "Solo 12 mechanical and printed-parts set",
+    category: "Fabrication",
+    description: "The four 3-DoF legs, robot body, bearings, pulleys, shells, lower legs, supports, spacers, and fasteners from the official CAD hierarchy.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "robot set",
+    tags: ["Solo 12", "ODRI", "3D printing", "robot mechanics"],
+    validationNotes: [
+      "Generate the actual fabrication schedule from the current Solo 12, 3-DoF leg, and actuator-core documentation; choose one published lower-leg and tensioner variant rather than buying every alternative.",
+      "The transmission pulleys and rollers call for precision additive processes such as SLA, PolyJet, or MultiJet; routine FDM stock alone is not an equivalent substitute."
+    ]
+  },
+  {
+    slug: "solo12-wiring-set",
+    name: "Solo 12 wiring and connector set",
+    category: "Power and safety",
+    description: "Motor-phase, encoder, SPI, power, Ethernet, Hirose DF13, XT30 or banana, heat-shrink, and cable-sleeve stock for one robot.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "robot harness set",
+    tags: ["Solo 12", "ODRI", "wiring", "connectors"],
+    validationNotes: [
+      "Build from the official harness drawings and pinouts; verify conductor gauge, polarity, strain relief, current capacity, bend clearance, and connector keying before energizing.",
+      "Add labelled spares for high-motion cables and keep the tethered base build separate from the optional battery harness."
+    ]
+  },
+  {
+    slug: "solo12-real-time-control-host",
+    name: "Solo 12 real-time control host",
+    category: "Compute and storage",
+    description: "An Ethernet-connected Ubuntu workstation configured for the low-latency control loop required by the ODRI software stack.",
+    inventoryClass: "fixed_equipment",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "control host",
+    tags: ["Solo 12", "ODRI", "Ubuntu", "PREEMPT_RT", "Ethernet"],
+    validationNotes: [
+      "Validate the supported Ubuntu and ODRI software release, dedicated Ethernet interface, BIOS settings, and low-latency or PREEMPT_RT kernel before robot commissioning.",
+      "The published base build does not require a Jetson, camera, LiDAR, or GPU."
+    ]
+  },
+  {
+    slug: "solo12-autonomy-upgrade",
+    name: "Solo 12 autonomy power upgrade",
+    category: "Power and safety",
+    description: "Optional battery-autonomy set with the project power board, two 3S packs, switches, emergency stop, LED ring, and revised printed body parts.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "upgrade set",
+    tags: ["Solo 12", "ODRI", "battery", "emergency stop", "autonomy"],
+    validationNotes: [
+      "The official autonomy documentation says the custom power board was still under development and warns against operating the LiPo batteries without power management.",
+      "Do not procure or operate this upgrade until the current board status, cell availability, BMS behavior, charging, containment, fusing, emergency stop, and lab battery SOP are independently approved."
+    ]
+  },
+  {
+    slug: "yor-agilex-piper-arm",
+    name: "AgileX Piper 6-DoF arm",
+    category: "Robot systems",
+    description: "The compliant six-axis manipulator used twice on YOR for bimanual mobile-manipulation work.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 2,
+    quantityUnit: "arms",
+    tags: ["YOR", "Piper", "6-DoF", "CAN"],
+    validationNotes: [
+      "One YOR build requires two Piper arms; confirm the exact arm revision and included grippers against the current YOR BOM.",
+      "Obtain an India landed quote covering GST, freight, warranty, replacement joints, CAN cabling, and emergency-stop behavior before PO."
+    ]
+  },
+  {
+    slug: "yor-dynamixel-xl430-w250-t",
+    name: "DYNAMIXEL XL430-W250-T",
+    category: "Motion",
+    description: "Smart actuator specified twice in YOR's published arm and end-effector hardware stack.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 3,
+    quantityUnit: "servos",
+    tags: ["YOR", "DYNAMIXEL", "smart servo"],
+    validationNotes: [
+      "One YOR build requires two XL430-W250-T units; the target includes one motion spare.",
+      "Confirm the exact W250-T model, connector hardware, operating voltage, import duty, and local warranty before PO."
+    ]
+  },
+  {
+    slug: "yor-dynamixel-u2d2",
+    name: "ROBOTIS U2D2 USB interface",
+    category: "Controllers",
+    description: "USB communication adapter for configuring and controlling YOR's DYNAMIXEL devices.",
+    inventoryClass: "reusable_tray",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 2,
+    quantityUnit: "adapters",
+    tags: ["YOR", "DYNAMIXEL", "USB"],
+    validationNotes: [
+      "The published YOR BOM requires one U2D2; the second unit is a shared recovery spare.",
+      "Order the U2D2 Power Hub Board separately and verify the required cables and connectors."
+    ]
+  },
+  {
+    slug: "yor-dynamixel-u2d2-power-hub",
+    name: "ROBOTIS U2D2 Power Hub Board",
+    category: "Controllers",
+    description: "The separate power-distribution companion board specified for YOR's DYNAMIXEL interface.",
+    inventoryClass: "reusable_tray",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 2,
+    quantityUnit: "boards",
+    tags: ["YOR", "DYNAMIXEL", "power hub"],
+    validationNotes: [
+      "The published YOR BOM requires one board; keep one recovery spare for the shared robot platform.",
+      "Verify input voltage, current capacity, connectors, fuse protection, and U2D2 compatibility before PO."
+    ]
+  },
+  {
+    slug: "yor-rev-maxswerve",
+    name: "REV 3-inch MAXSwerve module",
+    category: "Motion",
+    description: "Compact steer-and-drive module used four at a time for YOR's omnidirectional mobile base.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 5,
+    quantityUnit: "modules",
+    tags: ["YOR", "swerve", "mobile base"],
+    validationNotes: [
+      "One YOR build requires four modules; the target includes one motion spare.",
+      "Confirm motor-controller inclusion, wheel ratio, CAN topology, fasteners, and Indian serviceability before PO."
+    ]
+  },
+  {
+    slug: "yor-flexispot-e6-lift",
+    name: "FLEXISPOT E6 telescopic lift",
+    category: "Motion",
+    description: "Standing-desk lift assembly adapted by YOR to adjust the bimanual work height.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "lift assembly",
+    tags: ["YOR", "telescopic lift", "height adjustment"],
+    validationNotes: [
+      "Validate the exact E6 revision, stroke, rated load, supply voltage, mounting geometry, and controller interface against the current CAD before PO.",
+      "The published control stack also calls for a BTS7960 driver, Raspberry Pi Pico, Pico breakout, and cable carrier."
+    ]
+  },
+  {
+    slug: "raspberry-pi-pico",
+    name: "Raspberry Pi Pico",
+    category: "Controllers",
+    description: "Low-cost microcontroller used by YOR's lift-control subsystem and suitable for general lab mechanisms.",
+    inventoryClass: "reusable_tray",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 12,
+    quantityUnit: "boards",
+    tags: ["YOR", "RP2040", "lift control"],
+    validationNotes: [
+      "Confirm the original Pico variant and the matching breakout board used by the current YOR build.",
+      "Stock protected USB cables, 3.3V-safe test leads, and one spare per active control bench."
+    ]
+  },
+  {
+    slug: "yor-24v-20ah-battery",
+    name: "YOR 24V 20Ah battery and charger",
+    category: "Power and safety",
+    description: "The 24V mobile power pack and matched charger specified for one complete YOR platform.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "battery set",
+    tags: ["YOR", "24V", "battery", "charger"],
+    validationNotes: [
+      "The upstream BOM names an Aegis 24V 20Ah NMC pack; confirm legal India shipping, cell documentation, BMS, connector, charger input, and warranty.",
+      "Do not receive, charge, or store this pack until the lab battery SOP, fire containment, isolation, and inspection process are active."
+    ]
+  },
+  {
+    slug: "yor-raspberry-pi-5-16gb",
+    name: "Raspberry Pi 5 16GB",
+    category: "Controllers",
+    description: "The exact memory-capacity variant named as YOR's required onboard compute controller.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "board",
+    tags: ["YOR", "Raspberry Pi 5", "16GB", "Linux"],
+    validationNotes: [
+      "Do not silently substitute the lab's planned 8GB Raspberry Pi 5 stock for this 16GB project requirement.",
+      "Budget the active cooler, power supply, storage, case, and USB hub separately; confirm India availability and landed GST before PO."
+    ]
+  },
+  {
+    slug: "yor-24v-power-stack",
+    name: "YOR 24V power and emergency-stop stack",
+    category: "Power and safety",
+    description: "The published set of 24V regulators, 5V and 12V converters, distribution board, CAN module, wiring, and emergency stop.",
+    inventoryClass: "reusable_tray",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "validated stack",
+    tags: ["YOR", "power distribution", "CAN", "emergency stop"],
+    validationNotes: [
+      "Resolve this grouped record into exact rated SKUs from the current YOR spreadsheet before purchase.",
+      "Bench-test fusing, grounding, converter thermal load, cable gauge, connector polarity, fault isolation, and emergency-stop behavior before the mobile base moves."
+    ]
+  },
+  {
+    slug: "yor-frame-and-hardware",
+    name: "YOR frame, attachment plate, and hardware set",
+    category: "Fabrication",
+    description: "Aluminum extrusions, brackets, connectors, arm attachment plate, cable routing, fasteners, and wiring required by the published CAD.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "robot set",
+    tags: ["YOR", "aluminum extrusion", "CAD", "fabrication"],
+    validationNotes: [
+      "Generate a cut list and fastener schedule from the current official CAD rather than buying generic extrusion lengths.",
+      "Confirm arm-plate thickness, thread standards, cable-carrier bend radius, guarding, center of mass, and tip stability before fabrication."
+    ]
+  },
+  {
+    slug: "yor-recomputer-robotics-j4012",
+    name: "Seeed reComputer Robotics J4012",
+    category: "Edge compute",
+    description: "The optional Jetson Orin NX robotics computer named by YOR for onboard SLAM workloads.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "validate_before_po",
+    quantityTarget: 1,
+    quantityUnit: "computer",
+    tags: ["YOR", "Jetson Orin NX", "SLAM", "CUDA"],
+    validationNotes: [
+      "Optional for YOR's SLAM configuration; it is not required for the base Raspberry Pi control build.",
+      "Confirm the exact J4012 memory and storage variant, JetPack release, power budget, India delivery, landed GST, and warranty before PO."
+    ]
+  },
+  {
+    slug: "yor-zed-2i",
+    name: "Stereolabs ZED 2i stereo camera",
+    category: "Vision",
+    description: "The optional rugged stereo camera named by YOR for visual-inertial SLAM and navigation experiments.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "validate_before_po",
+    quantityTarget: 1,
+    quantityUnit: "camera",
+    tags: ["YOR", "stereo vision", "SLAM", "depth"],
+    validationNotes: [
+      "Optional for YOR's SLAM configuration; pair it with the validated reComputer and ZED SDK versions.",
+      "Confirm lens and cable options, mounting, indoor depth needs, India delivery, landed GST, and warranty before PO."
+    ]
+  },
+  {
+    slug: "cytron-mdd3a",
+    name: "Cytron MDD3A dual motor driver",
+    category: "Motion",
+    description: "Compact dual-channel brushed-DC driver for rovers, teaching rigs, and mobile mechanisms.",
+    inventoryClass: "reusable_tray",
+    availability: "available",
+    validationState: "ready",
+    quantityTarget: 12,
+    quantityUnit: "drivers",
+    tags: ["DC motor", "driver", "rover"],
+    validationNotes: ["Match motor stall current and add fusing before use."]
+  },
+  {
+    slug: "pca9685-servo-driver",
+    name: "PCA9685 16-channel servo driver",
+    category: "Motion",
+    description: "I2C PWM controller for multi-servo prototypes and robotic hands.",
+    inventoryClass: "reusable_tray",
+    availability: "available",
+    validationState: "ready",
+    quantityTarget: 12,
+    quantityUnit: "boards",
+    tags: ["PWM", "servo", "I2C"],
+    validationNotes: ["Use a separate fused servo supply; do not power large servo banks from the controller rail."]
+  },
+  {
+    slug: "sg90-servo",
+    name: "SG90 micro servo",
+    category: "Motion",
+    description: "Inexpensive micro servo for teaching, mechanisms, and low-load prototypes.",
+    inventoryClass: "consumable",
+    availability: "available",
+    validationState: "ready",
+    quantityTarget: 30,
+    quantityUnit: "servos",
+    tags: ["servo", "micro", "spares"],
+    validationNotes: ["Target includes approximately 15% motion spares."]
+  },
+  {
+    slug: "mg995-servo",
+    name: "MG995 metal-gear servo",
+    category: "Motion",
+    description: "Standard-size metal-gear servo retained as a reference and emergency replacement option.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "validate_before_po",
+    quantityTarget: 12,
+    quantityUnit: "servos",
+    tags: ["servo", "metal gear", "spares"],
+    validationNotes: ["Thingbits listing was sold out; validate authenticity, torque, and an equivalent stocked model."]
+  },
+  {
+    slug: "dynamixel-xl330-m077-t",
+    name: "DYNAMIXEL XL330-M077-T",
+    category: "Motion",
+    description: "Compact smart servo used eight at a time for Q8bot's dynamic quadruped locomotion.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 10,
+    quantityUnit: "servos",
+    tags: ["DYNAMIXEL", "smart servo", "quadruped"],
+    validationNotes: [
+      "One Q8bot requires eight XL330-M077-T servos; the target includes two recovery spares.",
+      "Confirm the exact M077-T variant, connector standard, self-tapping hardware, import duty, and warranty."
+    ]
+  },
+  {
+    slug: "brushed-geared-motor",
+    name: "24V brushed DC geared motor",
+    category: "Motion",
+    description: "Medium-power geared motor reference for mobile bases and automation fixtures.",
+    inventoryClass: "reusable_tray",
+    availability: "unavailable",
+    validationState: "validate_before_po",
+    quantityTarget: 12,
+    quantityUnit: "motors",
+    tags: ["DC motor", "gearbox", "mobile robot"],
+    validationNotes: ["Reference offer was sold out; choose ratios from project load and speed calculations."]
+  },
+  {
+    slug: "bno055-imu",
+    name: "Adafruit BNO055 9-DOF IMU",
+    category: "Navigation",
+    description: "Absolute-orientation sensor for robot pose, wearable, rover, and calibration experiments.",
+    inventoryClass: "reusable_tray",
+    availability: "available",
+    validationState: "ready",
+    quantityTarget: 12,
+    quantityUnit: "breakouts",
+    tags: ["IMU", "orientation", "I2C"],
+    validationNotes: ["Keep magnetometer calibration and magnetic-interference notes with each build."]
+  },
+  {
+    slug: "raspberry-pi-camera-v2",
+    name: "Raspberry Pi Camera V2",
+    category: "Vision",
+    description: "Compact 8MP IMX219 camera for robot observation, inspection, and tactile-sensing prototypes.",
+    inventoryClass: "reusable_tray",
+    availability: "available",
+    validationState: "ready",
+    quantityTarget: 12,
+    quantityUnit: "cameras",
+    tags: ["IMX219", "CSI", "camera"],
+    validationNotes: ["Standardize visible-light versus NoIR variants and stock compatible Pi 5 cables."]
+  },
+  {
+    slug: "recamera-2002w-8gb",
+    name: "Seeed Studio reCamera 2002w 8GB",
+    category: "Vision",
+    description: "The complete wireless SG2002 camera platform with a RISC-V core, 5MP OV5647 sensor board, and USB-C / Ethernet base board.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "validate_before_po",
+    quantityTarget: 6,
+    quantityUnit: "camera kits",
+    tags: ["reCamera", "RISC-V", "1 TOPS", "Node-RED"],
+    validationNotes: [
+      "Use the complete 2002w kit rather than ordering an unmatched core, sensor, and base board for the first lab stations.",
+      "Standardize 8GB or 64GB eMMC before purchase and record the exact Seeed SKU on every asset.",
+      "Confirm India delivery, landed GST, warranty support, USB-C power supplies, Ethernet cables, and storage cards before PO."
+    ]
+  },
+  {
+    slug: "recamera-gimbal-2002w",
+    name: "Seeed Studio reCamera Gimbal 2002w",
+    category: "Vision",
+    description: "A two-axis brushless pan-and-tilt reCamera system for tracking, active perception, and low-code robot-vision experiments.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "validate_before_po",
+    quantityTarget: 2,
+    quantityUnit: "gimbal kits",
+    tags: ["reCamera", "gimbal", "YOLO", "active perception"],
+    validationNotes: [
+      "Pilot two gimbals before expanding; the fixed reCamera kit remains the default shared vision station.",
+      "Confirm the 8GB or 64GB variant, India-compatible 12V power adapter, USB cable, landed GST, and warranty before PO."
+    ]
+  },
+  {
+    slug: "recamera-sc130gs-sensor",
+    name: "reCamera S3 SC130GS global-shutter sensor board",
+    category: "Vision",
+    description: "An open 1.3MP global-shutter sensor-board design for high-speed robot motion, fiducials, and machine-vision experiments.",
+    inventoryClass: "reusable_tray",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 3,
+    quantityUnit: "sensor boards",
+    tags: ["reCamera", "global shutter", "SC130GS", "high speed"],
+    validationNotes: [
+      "The upstream repository labels this board a demo test version that has not been rigorously validated; treat it as a research build.",
+      "Review the latest design files, core-board compatibility, optics, fabrication outputs, and sensor sourcing before ordering PCBs."
+    ]
+  },
+  {
+    slug: "tof-8x8",
+    name: "8x8 matrix ToF distance sensor",
+    category: "Vision",
+    description: "Compact 3D ranging array for proximity maps, gestures, collision detection, and fixtures.",
+    inventoryClass: "reusable_tray",
+    availability: "available",
+    validationState: "ready",
+    quantityTarget: 6,
+    quantityUnit: "sensors",
+    tags: ["ToF", "depth", "proximity"],
+    validationNotes: ["Validate field of view, enclosure reflections, and multi-sensor interference."]
+  },
+  {
+    slug: "oak-d-lite",
+    name: "Luxonis OAK-D Lite",
+    category: "Vision",
+    description: "Stereo depth and onboard-AI camera for arm stations and mobile robots.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 6,
+    quantityUnit: "cameras",
+    tags: ["stereo", "depth", "AI"],
+    validationNotes: ["Specialist-vendor gap: confirm Indian stock, landed GST, cable, and warranty."]
+  },
+  {
+    slug: "oak-d-pro",
+    name: "Luxonis OAK-D Pro",
+    category: "Vision",
+    description: "Active-stereo depth camera for low-light and more demanding robot-perception trials.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 4,
+    quantityUnit: "cameras",
+    tags: ["active stereo", "depth", "low light"],
+    validationNotes: ["Specialist-vendor gap: obtain an INR quote with warranty and landed cost."]
+  },
+  {
+    slug: "realsense-d455",
+    name: "RealSense D455-class camera",
+    category: "Vision",
+    description: "RGB-D compatibility camera for projects and research pipelines built around RealSense.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 2,
+    quantityUnit: "cameras",
+    tags: ["RGB-D", "depth", "RealSense"],
+    validationNotes: ["Specialist-vendor gap: validate currently supported model and Indian warranty."]
+  },
+  {
+    slug: "rplidar-a1-c1",
+    name: "RPLIDAR A1 / C1",
+    category: "Navigation",
+    description: "2D scanning LiDAR for indoor rovers, robot vacuums, maps, and SLAM exercises.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 4,
+    quantityUnit: "scanners",
+    tags: ["LiDAR", "SLAM", "mapping"],
+    validationNotes: ["Specialist-vendor gap: select A1 or C1 after checking range, sunlight tolerance, and driver support."]
+  },
+  {
+    slug: "rtk-gnss",
+    name: "RTK GNSS base and rover",
+    category: "Navigation",
+    description: "Centimetre-class outdoor positioning pair for OpenMower and field-robot autonomy.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 2,
+    quantityUnit: "base / rover pairs",
+    tags: ["RTK", "GNSS", "outdoor"],
+    validationNotes: ["Specialist-vendor gap: include antennas, correction link, enclosure, and India-compatible bands."]
+  },
+  {
+    slug: "pixhawk-6c",
+    name: "Pixhawk 6C-class autopilot",
+    category: "Controllers",
+    description: "Current-generation flight and rover controller for PX4 and ArduPilot projects.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 2,
+    quantityUnit: "autopilot sets",
+    tags: ["PX4", "ArduPilot", "autopilot"],
+    validationNotes: ["Source a modern 6C-class set from a specialist vendor.", "Thingbits Pixhawk 2.4.8 is a sold-out legacy alternative only."]
+  },
+  {
+    slug: "sts3215-servo",
+    name: "STS3215 serial servo spares",
+    category: "Motion",
+    description: "Matched serial-servo stock for SO-series arm maintenance and rapid recovery.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 10,
+    quantityUnit: "servos",
+    tags: ["serial servo", "SO-101", "spares"],
+    validationNotes: ["Specialist-vendor gap: match voltage, gearing, firmware, horn, and connector to the selected SO-101 standard."]
+  },
+  {
+    slug: "force-torque-starter",
+    name: "Force, torque, and load-cell starter set",
+    category: "Tactile sensing",
+    description: "Shared measurement hardware for gripper force, manipulation safety, and fixture validation.",
+    inventoryClass: "reusable_tray",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 2,
+    quantityUnit: "kits",
+    tags: ["force", "torque", "load cell"],
+    validationNotes: ["Specialist-vendor gap: define force ranges and calibration requirements before quoting."]
+  },
+  {
+    slug: "tactile-materials",
+    name: "Tactile sensor materials kit",
+    category: "Tactile sensing",
+    description: "Optical gels, elastomers, magnets, films, lighting, and fabrication stock for tactile projects.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 5,
+    quantityUnit: "project kits",
+    tags: ["elastomer", "optical tactile", "magnets"],
+    validationNotes: ["Specialist-vendor gap: derive consumables from each official project BOM before purchase."]
+  },
+  {
+    slug: "opentouch-fpcb-pair",
+    name: "OpenTouch personalized FPCB sensor pair",
+    category: "Tactile sensing",
+    description: "Wearer-specific palm and back-of-hand flexible PCBs that form one glove's full-hand resistive sensing surface.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 6,
+    quantityUnit: "top / bottom pairs",
+    tags: ["OpenTouch", "FPCB", "resistive sensing", "custom fit"],
+    validationNotes: [
+      "One glove requires two personalized FPCBs: a palm layer and a back-of-hand layer.",
+      "Generate and manually review the wearer-specific footprints before ordering.",
+      "Validate the official 0.08 mm two-layer stack, rolled-annealed copper, adhesive region, bare-copper finish, connectors, and landed INR quote with the fabricator."
+    ]
+  },
+  {
+    slug: "opentouch-glove-materials",
+    name: "OpenTouch glove sensor materials set",
+    category: "Tactile sensing",
+    description: "The pressure-sensitive and wearable layers used to assemble one FPCB sensing glove.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 6,
+    quantityUnit: "glove sets",
+    tags: ["Velostat", "silicone", "anti-slip glove", "wearable"],
+    validationNotes: [
+      "Each set needs pressure-sensitive conductive sheet, two adhesive-backed silicone layers, an anti-slip glove, a Velcro wrist strap, and compatible adhesive.",
+      "The official docs identify McMaster 9010K51 silicone; verify an India-available equivalent by thickness, adhesive, flexibility, and skin-contact suitability.",
+      "Laser-cut only materials approved for the enclosure, extraction, and fire-safety rules."
+    ]
+  },
+  {
+    slug: "opentouch-lipo-battery",
+    name: "OpenTouch 3.7V LiPo battery",
+    category: "Power and safety",
+    description: "Rechargeable glove battery for untethered WiReSens capture with the HUZZAH32 Feather.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 6,
+    quantityUnit: "batteries",
+    tags: ["3.7V", "LiPo", "wearable", "OpenTouch"],
+    validationNotes: [
+      "Confirm capacity, dimensions, JST polarity, protection, discharge current, and HUZZAH32 charge-path compatibility before purchase.",
+      "USB-only operation can omit the battery; all wearable battery use remains subject to the lab's charging and storage rules."
+    ]
+  },
+  {
+    slug: "protected-14500-li-ion",
+    name: "Protected 14500 1000mAh Li-ion cells",
+    category: "Power and safety",
+    description: "Protected button-top lithium-ion cells used in matched pairs to power Q8bot.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 6,
+    quantityUnit: "cells",
+    tags: ["14500", "Li-ion", "protected cell", "Q8bot"],
+    validationNotes: [
+      "Regular AA cells are not compatible; the upstream build specifies protected 14500 button-top cells.",
+      "Approve cell sourcing, matched-pair handling, charger compatibility, storage, transport, and disposal before purchase."
+    ]
+  },
+  {
+    slug: "battery-bms-safety",
+    name: "Battery, BMS, charger, and safe-storage set",
+    category: "Power and safety",
+    description: "Shared power and containment stock for rovers, drones, mobile robots, and wearables.",
+    inventoryClass: "reusable_tray",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "shared safety set",
+    tags: ["battery", "BMS", "charger", "LiPo"],
+    validationNotes: ["Specialist-vendor gap: buy only after cell chemistry, current, connectors, storage, and fire-response rules are approved."]
+  },
+  {
+    slug: "hazard-zone-safety",
+    name: "Emergency stops and hazard-zone safety",
+    category: "Power and safety",
+    description: "Emergency stops, barriers, guards, extinguishers, and interlock parts for guarded commissioning.",
+    inventoryClass: "fixed_equipment",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "set per hazard zone",
+    tags: ["E-stop", "guarding", "safety"],
+    validationNotes: ["Obtain a site-specific safety assessment; do not treat the catalog as an engineering approval."]
+  },
+  {
+    slug: "electronics-bench",
+    name: "ESD electronics bench tooling",
+    category: "Fabrication",
+    description: "Grounded mats, soldering, measurement, supplies, protected leads, and hand tools for shared build stations.",
+    inventoryClass: "fixed_equipment",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 5,
+    quantityUnit: "paired stations",
+    tags: ["ESD", "soldering", "bench"],
+    validationNotes: ["Specialist-vendor gap: quote a consistent bench standard with calibration and replacement tips."]
+  },
+  {
+    slug: "co2-laser-cutter",
+    name: "Enclosed CO2 laser cutter",
+    category: "Fabrication",
+    description: "Shared cutting station for repeatable glove sensor layers, gaskets, films, templates, and enclosure stock.",
+    inventoryClass: "fixed_equipment",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "guarded station",
+    tags: ["CO2 laser", "films", "templates", "fabrication"],
+    validationNotes: [
+      "OpenTouch recommends CO2 laser cutting for its material layers; validate each material before cutting.",
+      "Specify enclosure interlocks, extraction, fire detection, approved-material rules, operator certification, and India service support before PO."
+    ]
+  },
+  {
+    slug: "bambu-lab-a1",
+    name: "Bambu Lab A1 FDM printer",
+    category: "Fabrication",
+    description: "Open-frame 256 x 256 x 256 mm printer for routine PLA, PETG, TPU, and PVA robotics fixtures, brackets, jigs, and housings.",
+    inventoryClass: "fixed_equipment",
+    availability: "available",
+    validationState: "validate_before_po",
+    quantityTarget: 1,
+    quantityUnit: "printer",
+    tags: ["FDM", "PLA", "PETG", "TPU", "rapid prototyping"],
+    validationNotes: [
+      "Bambu Lab rates PLA, PETG, TPU, and PVA as ideal; ABS, ASA, PC, PA, PET, and fibre-filled polymers are not recommended on this open-frame model.",
+      "Amazon.in showed 5.0 / 5 from 14 ratings for ASIN B0DPXBT99W on 26 July 2026; the review sample is small and listing-specific.",
+      "Confirm the seller, India warranty, GST invoice, delivery, spare hotends, build plates, and local service before PO."
+    ]
+  },
+  {
+    slug: "bambu-lab-p1s-combo",
+    name: "Bambu Lab P1S Combo enclosed FDM printer",
+    category: "Fabrication",
+    description: "Enclosed 256 x 256 x 256 mm CoreXY printer for ABS, ASA, PETG, and other functional robotics parts that need a controlled chamber.",
+    inventoryClass: "fixed_equipment",
+    availability: "available",
+    validationState: "validate_before_po",
+    quantityTarget: 1,
+    quantityUnit: "printer",
+    tags: ["FDM", "enclosed", "ABS", "ASA", "functional parts"],
+    validationNotes: [
+      "Bambu Lab rates PLA, PETG, TPU, PVA, PET, ABS, and ASA as ideal, with PA and PC capable; fibre-filled polymers need a hotend and extruder upgrade.",
+      "Amazon.in showed 4.6 / 5 from 10 ratings for ASIN B0DSLLGZ3L on 26 July 2026; the review sample is small and listing-specific.",
+      "The audited listing includes AMS. Confirm whether multi-material work justifies it, plus seller authorization, India warranty, GST invoice, and service.",
+      "The enclosure and carbon filter do not replace room extraction when printing ABS or ASA."
+    ]
+  },
+  {
+    slug: "elegoo-neptune-4-plus",
+    name: "ELEGOO Neptune 4 Plus large-format FDM printer",
+    category: "Fabrication",
+    description: "Large-format 320 x 320 x 385 mm printer for rover panels, larger housings, fixtures, and robot structures that exceed the standard print bed.",
+    inventoryClass: "fixed_equipment",
+    availability: "available",
+    validationState: "validate_before_po",
+    quantityTarget: 1,
+    quantityUnit: "printer",
+    tags: ["FDM", "large format", "PLA", "PETG", "robot structures"],
+    validationNotes: [
+      "ELEGOO lists a 300 C nozzle, 100 C bed, and PLA, TPU, PETG, ABS, ASA, and nylon support; use an enclosure and extraction for ABS or ASA.",
+      "Amazon.in showed 4.7 / 5 from 5 ratings for ASIN B0CN4GDF1D on 26 July 2026; the review sample is very small and listing-specific.",
+      "Allow roughly 578 x 750 x 860 mm of operating space on a deep, stable bench.",
+      "Confirm the hardware revision, seller authorization, India warranty, GST invoice, spare nozzles, and local service before PO."
+    ]
+  },
+  {
+    slug: "3d-printing-stock",
+    name: "3D printing and mechanism stock",
+    category: "Fabrication",
+    description: "Filament, bearings, fasteners, belts, tendon line, inserts, and printed-spare capacity.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "shared stock set",
+    tags: ["3D printing", "fasteners", "mechanisms"],
+    validationNotes: ["Build a replenishment list from active project BOMs and maintain approximately 15% motion spares."]
+  },
+  {
+    slug: "wearable-sensor-kit",
+    name: "Wearable sensor starter kit",
+    category: "Tactile sensing",
+    description: "PPG, SpO2, magnetic, flex, and hand-tracking sensor stock for rings and tactile gloves.",
+    inventoryClass: "reusable_tray",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 2,
+    quantityUnit: "kits",
+    tags: ["PPG", "SpO2", "wearable"],
+    validationNotes: ["Research use only; validate electrical isolation and avoid presenting prototypes as medical devices."]
+  },
+  {
+    slug: "primary-nas",
+    name: "Primary NAS / ZFS storage node",
+    category: "Compute and storage",
+    description: "Checksummed storage for datasets, video, CAD, logs, checkpoints, and DVC remotes.",
+    inventoryClass: "fixed_equipment",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "storage node",
+    tags: ["NAS", "ZFS", "DVC"],
+    validationNotes: ["Finalize capacity, drive model, vdev layout, backup, UPS, and warranty before quoting."]
+  },
+  {
+    slug: "backup-nas",
+    name: "Backup NAS / offline set",
+    category: "Compute and storage",
+    description: "Independent recovery copy for critical datasets and reproducibility artifacts.",
+    inventoryClass: "fixed_equipment",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "backup node",
+    tags: ["backup", "recovery", "ZFS"],
+    validationNotes: ["Keep failure domains and credentials independent from the primary NAS."]
+  },
+  {
+    slug: "ten-gigabit-network",
+    name: "10GbE switch and workstation links",
+    category: "Compute and storage",
+    description: "Shared network path for camera ingest, NAS traffic, GPU training, and infrastructure management.",
+    inventoryClass: "fixed_equipment",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "switch plus 8-12 links",
+    tags: ["10GbE", "switch", "network"],
+    validationNotes: ["Validate optics or DACs, NIC support, rack power, noise, and management plane."]
+  },
+  {
+    slug: "gpu-workstation",
+    name: "Two-GPU autonomous workstation",
+    category: "Compute and storage",
+    description: "Central local workstation for robot learning, vision, simulation, fine-tuning, and private inference.",
+    inventoryClass: "fixed_equipment",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "workstation",
+    tags: ["GPU", "CUDA", "training"],
+    validationNotes: ["Validate chassis, motherboard lane layout, PSU, thermals, acoustic load, and two-card clearance."]
+  },
+  {
+    slug: "rtx-5090",
+    name: "NVIDIA GeForce RTX 5090 32GB",
+    category: "Compute and storage",
+    description: "Baseline CUDA accelerator pair for the central autonomous-computer build.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 2,
+    quantityUnit: "GPUs",
+    tags: ["NVIDIA", "CUDA", "32GB"],
+    validationNotes: ["Buy only after board dimensions, cooling, power delivery, warranty, and workstation integration are validated."]
+  },
+  {
+    slug: "rtx-pro-6000",
+    name: "NVIDIA RTX PRO 6000 Blackwell 96GB",
+    category: "Compute and storage",
+    description: "Optional high-VRAM accelerator for funded workloads that exceed the baseline GPU memory envelope.",
+    inventoryClass: "serialized_asset",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "GPU",
+    tags: ["NVIDIA", "96GB", "professional"],
+    validationNotes: ["Quote only against a demonstrated high-VRAM workload and support requirement."]
+  },
+  {
+    slug: "dgx-spark",
+    name: "NVIDIA DGX Spark",
+    category: "Compute and storage",
+    description: "Separate unified-memory desktop lane for local model and agent experiments outside the main GPU queue.",
+    inventoryClass: "fixed_equipment",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 1,
+    quantityUnit: "system",
+    tags: ["NVIDIA", "unified memory", "desktop AI"],
+    validationNotes: ["Obtain an Indian landed quote, support terms, power requirements, and delivery estimate."]
+  }
+];
+
+export const componentOffers: ComponentOffer[] = [
+  {
+    id: "getset-so101-74v",
+    componentSlug: "so101-pair",
+    vendor: "GetSet Robotics",
+    variant: "7.4V assembled leader / follower pair",
+    directUrl: "https://getsetrobotics.com/product/so-101-robotic-arm/",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 27500,
+    exGstPriceInr: 23305.08,
+    taxNote: "Ex-GST figure derived at 18%; confirm invoice tax treatment.",
+    stockState: "limited",
+    warrantyNote: "Warranty and delivery terms not stated in the audit.",
+    validationNotes: ["Limited availability.", "Camera not included.", "Do not mix with 12V spares."]
+  },
+  {
+    id: "getset-so101-12v",
+    componentSlug: "so101-pair",
+    vendor: "GetSet Robotics",
+    variant: "12V assembled leader / follower pair",
+    directUrl: "https://getsetrobotics.com/product/so-101-leader-follower-robotic-arm-12v-assembled/",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 32999,
+    exGstPriceInr: 27965.25,
+    taxNote: "Ex-GST figure derived at 18%; confirm invoice tax treatment.",
+    stockState: "limited",
+    warrantyNote: "Warranty and delivery terms not stated in the audit.",
+    validationNotes: ["Limited availability.", "Camera not included.", "Do not mix with 7.4V spares."]
+  },
+  {
+    id: "getset-g-clamp",
+    componentSlug: "so101-g-clamp",
+    vendor: "GetSet Robotics",
+    variant: "G clamp",
+    directUrl: "https://getsetrobotics.com/product/g-clamp/",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 120,
+    exGstPriceInr: 101.69,
+    taxNote: "Ex-GST figure derived at 18%; confirm invoice tax treatment.",
+    stockState: "in_stock",
+    warrantyNote: "Accessory warranty not stated.",
+    validationNotes: ["Quantity was not disclosed.", "Adapter plate not included."]
+  },
+  {
+    id: "getset-ab-so-bot",
+    componentSlug: "ab-so-bot",
+    vendor: "GetSet Robotics",
+    variant: "Assembled",
+    directUrl: "https://getsetrobotics.com/product/ab-so-bot/",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 40000,
+    exGstPriceInr: 33898.31,
+    taxNote: "Ex-GST figure derived at 18%; confirm invoice tax treatment.",
+    stockState: "in_stock",
+    warrantyNote: "Warranty and lead time not stated.",
+    validationNotes: ["Visible as orderable; quantity was not disclosed."]
+  },
+  {
+    id: "getset-elrobot",
+    componentSlug: "elrobot",
+    vendor: "GetSet Robotics",
+    variant: "Assembled",
+    directUrl: "https://getsetrobotics.com/product/elrobot/",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 42990,
+    exGstPriceInr: 36432.2,
+    taxNote: "Ex-GST figure derived at 18%; confirm invoice tax treatment.",
+    stockState: "in_stock",
+    warrantyNote: "Warranty and lead time not stated.",
+    validationNotes: ["Visible as orderable; quantity was not disclosed."]
+  },
+  {
+    id: "getset-xlerobot",
+    componentSlug: "xlerobot",
+    vendor: "GetSet Robotics",
+    variant: "Assembled",
+    directUrl: "https://getsetrobotics.com/product/xlerobot/",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 50000,
+    exGstPriceInr: 42372.88,
+    taxNote: "Ex-GST figure derived at 18%; confirm invoice tax treatment.",
+    stockState: "in_stock",
+    warrantyNote: "Warranty and lead time not stated.",
+    validationNotes: ["Battery, Raspberry Pi, and camera are not included."]
+  },
+  {
+    id: "getset-lekiwi",
+    componentSlug: "lekiwi",
+    vendor: "GetSet Robotics",
+    variant: "Assembled",
+    directUrl: "https://getsetrobotics.com/product/lekiwi-mobile-robot-with-arm/",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 39990,
+    exGstPriceInr: 33889.83,
+    taxNote: "Ex-GST figure derived at 18%; confirm invoice tax treatment.",
+    stockState: "in_stock",
+    warrantyNote: "Warranty and lead time not stated.",
+    validationNotes: ["Camera is not included."]
+  },
+  {
+    id: "getset-lelamp",
+    componentSlug: "lelamp",
+    vendor: "GetSet Robotics",
+    variant: "Assembled",
+    directUrl: "https://getsetrobotics.com/product/lelamp/",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 22500,
+    exGstPriceInr: 19067.8,
+    taxNote: "Ex-GST figure derived at 18%; confirm invoice tax treatment.",
+    stockState: "in_stock",
+    warrantyNote: "Warranty and lead time not stated.",
+    validationNotes: ["Visible as orderable; quantity was not disclosed."]
+  },
+  {
+    id: "getset-jetson-orin-nano",
+    componentSlug: "jetson-orin-nano",
+    vendor: "GetSet Robotics",
+    variant: "Developer kit; exact memory SKU unconfirmed",
+    directUrl: "https://getsetrobotics.com/product/jetson-orin-nano/",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 48000,
+    exGstPriceInr: 40677.97,
+    taxNote: "Ex-GST figure derived at 18%; confirm invoice tax treatment.",
+    stockState: "in_stock",
+    warrantyNote: "Confirm NVIDIA warranty coverage before purchase.",
+    validationNotes: ["Listing contains conflicting 8GB and 16GB signals.", "Obtain exact NVIDIA part number."]
+  },
+  {
+    id: "getset-jetson-agx-orin",
+    componentSlug: "jetson-agx-orin",
+    vendor: "GetSet Robotics",
+    variant: "Listed as Jetson AGX Orin Nano",
+    directUrl: "https://getsetrobotics.com/product/jetson-agx-orin-nano/",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 202000,
+    exGstPriceInr: 171186.44,
+    taxNote: "Ex-GST figure derived at 18%; confirm invoice tax treatment.",
+    stockState: "limited",
+    warrantyNote: "Confirm NVIDIA warranty coverage before purchase.",
+    validationNotes: ["Four were shown in stock.", "Product naming and specifications conflict; exact part number is mandatory."]
+  },
+  {
+    id: "getset-jetson-thor",
+    componentSlug: "jetson-thor",
+    vendor: "GetSet Robotics",
+    variant: "Developer kit; exact SKU unconfirmed",
+    directUrl: "https://getsetrobotics.com/product/jetson-thor/",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 318990,
+    exGstPriceInr: 270330.51,
+    taxNote: "Ex-GST figure derived at 18%; confirm invoice tax treatment.",
+    stockState: "out_of_stock",
+    warrantyNote: "Confirm NVIDIA warranty coverage and delivery before purchase.",
+    validationNotes: ["Out of stock at audit.", "Hold for a demonstrated workload."]
+  },
+  {
+    id: "thingbits-rpi5-8gb",
+    componentSlug: "raspberry-pi-5",
+    vendor: "Thingbits",
+    variant: "Raspberry Pi 5 8GB",
+    sku: "TH0489",
+    directUrl: "https://www.thingbits.in/products/raspberry-pi-5-computer",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 19617.5,
+    exGstPriceInr: 16625,
+    taxNote: "Vendor displayed both GST-inclusive and ex-GST prices.",
+    stockState: "in_stock",
+    warrantyNote: "One-year warranty shown by vendor.",
+    validationNotes: ["Board price only; add power, cooling, storage, and cables."]
+  },
+  {
+    id: "thingbits-arduino-r4",
+    componentSlug: "arduino-uno-r4-wifi",
+    vendor: "Thingbits",
+    variant: "Arduino UNO Ek R4 WiFi",
+    sku: "TH0742",
+    directUrl: "https://www.thingbits.in/products/arduino-uno-r4-wifi",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 1549.34,
+    exGstPriceInr: 1313,
+    taxNote: "Vendor displayed both GST-inclusive and ex-GST prices.",
+    stockState: "in_stock",
+    warrantyNote: "One-year warranty shown by vendor.",
+    validationNotes: ["Ships from Mumbai; confirm bulk lead time."]
+  },
+  {
+    id: "thingbits-esp32-c6",
+    componentSlug: "esp32-c6",
+    vendor: "Thingbits",
+    variant: "DFRobot FireBeetle 2 ESP32-C6",
+    sku: "TH2201",
+    directUrl: "https://www.thingbits.in/products/dfrobot-firebeetle-2-esp32-c6-iot-development-board-with-wifi-6-bluetooth-5-zigbee-3-thread-1-3",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 813.02,
+    exGstPriceInr: 689,
+    taxNote: "Vendor displayed both GST-inclusive and ex-GST prices.",
+    stockState: "in_stock",
+    warrantyNote: "Warranty duration not stated in the audit.",
+    validationNotes: ["Confirm bulk availability for 20 boards."]
+  },
+  {
+    id: "techiesms-esp32-s3-n16r8",
+    componentSlug: "esp32-s3-n16r8",
+    vendor: "Techiesms",
+    variant: "ESP32-S3 DevKitM-1 N16R8",
+    sku: "TBF2-005-1",
+    directUrl: "https://techiesms.com/product/esp32-s3-board-16mb-flash-n16r8/",
+    checkedAt: "2026-07-30",
+    gstInclusivePriceInr: 750,
+    taxNote: "Vendor displayed an INR GST-inclusive sale price.",
+    stockState: "in_stock",
+    warrantyNote: "Confirm carrier manufacturer, returns, and warranty before PO.",
+    validationNotes: [
+      "The listing showed 16MB flash, 8MB octal PSRAM, and 98 units in stock at the checked date.",
+      "The upstream project does not identify its carrier board; validate this listing against the required Arduino settings and boot diagnostics before bulk purchase."
+    ]
+  },
+  {
+    id: "robu-esp32-ai-sh1106-oled",
+    componentSlug: "esp32-ai-sh1106-oled",
+    vendor: "Robu.in",
+    variant: "1.3-inch SH1106 128x64 I2C OLED",
+    directUrl: "https://robu.in/product/128x64-i2c-communication-interface-oled-display/",
+    checkedAt: "2026-07-30",
+    gstInclusivePriceInr: 360,
+    taxNote: "Robu.in displayed an INR GST-inclusive category price.",
+    stockState: "unknown",
+    warrantyNote: "Confirm stock, controller marking, return terms, and warranty before PO.",
+    validationNotes: ["Validate that the delivered module is a four-wire I2C SH1106 board rather than a visually similar controller."]
+  },
+  {
+    id: "robu-esp32-ai-ssd1306-oled",
+    componentSlug: "esp32-ai-ssd1306-oled",
+    vendor: "Robu.in",
+    variant: "0.96-inch SSD1306 128x64 OLED",
+    directUrl: "https://robu.in/product/0-96-inch-128x64-ssd1306-controller-i2c-spi-communication-51-mcu-oled-display-blue-color-screen/",
+    checkedAt: "2026-07-30",
+    gstInclusivePriceInr: 198,
+    taxNote: "Robu.in displayed an INR GST-inclusive category price.",
+    stockState: "unknown",
+    warrantyNote: "Confirm stock, I2C pinout, return terms, and warranty before PO.",
+    validationNotes: ["Confirm that the selected board exposes the four-wire I2C interface expected by the project."]
+  },
+  {
+    id: "thingbits-cytron-mdd3a",
+    componentSlug: "cytron-mdd3a",
+    vendor: "Thingbits",
+    variant: "4-16V 3A dual-channel DC motor driver",
+    directUrl: "https://www.thingbits.in/products/4-16v-3a-dual-channel-dc-motor-driver",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 683.22,
+    exGstPriceInr: 579,
+    taxNote: "Vendor prices captured as GST-inclusive and ex-GST.",
+    stockState: "in_stock",
+    warrantyNote: "Warranty duration not stated in the audit.",
+    validationNotes: ["Confirm exact Cytron revision and bulk availability."]
+  },
+  {
+    id: "thingbits-pca9685",
+    componentSlug: "pca9685-servo-driver",
+    vendor: "Thingbits",
+    variant: "16-channel 12-bit PWM servo driver",
+    directUrl: "https://www.thingbits.in/products/16-channel-12-bit-pwm-servo-driver-pca9685-with-i2c-interface",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 218.3,
+    exGstPriceInr: 185,
+    taxNote: "Vendor prices captured as GST-inclusive and ex-GST.",
+    stockState: "in_stock",
+    warrantyNote: "Warranty duration not stated in the audit.",
+    validationNotes: ["Confirm connector layout and bulk availability."]
+  },
+  {
+    id: "thingbits-sg90",
+    componentSlug: "sg90-servo",
+    vendor: "Thingbits",
+    variant: "Original 180-degree SG90",
+    sku: "TH0646",
+    directUrl: "https://www.thingbits.in/products/sg90-micro-gear-servo-motor",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 352.82,
+    exGstPriceInr: 299,
+    taxNote: "Vendor displayed both GST-inclusive and ex-GST prices.",
+    stockState: "in_stock",
+    warrantyNote: "Warranty duration not stated in the audit.",
+    validationNotes: ["Bulk tiers were shown; recheck the 30-unit price before PO."]
+  },
+  {
+    id: "thingbits-mg995",
+    componentSlug: "mg995-servo",
+    vendor: "Thingbits",
+    variant: "180-degree MG995",
+    sku: "TH0649",
+    directUrl: "https://www.thingbits.in/products/mg995-standard-metal-gear-servo-motor",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 330.4,
+    exGstPriceInr: 280,
+    taxNote: "Vendor displayed both GST-inclusive and ex-GST prices.",
+    stockState: "out_of_stock",
+    warrantyNote: "Warranty duration not stated in the audit.",
+    validationNotes: ["Sold out at audit; retain only as a reference variant."]
+  },
+  {
+    id: "thingbits-geared-motor",
+    componentSlug: "brushed-geared-motor",
+    vendor: "Thingbits",
+    variant: "24V 425 RPM brushed DC geared motor",
+    sku: "TH2144",
+    directUrl: "https://www.thingbits.in/products/24v-425-rpm-brushed-dc-geared-motor-medium-power-high-torque",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 1593,
+    exGstPriceInr: 1350,
+    taxNote: "Vendor displayed both GST-inclusive and ex-GST prices.",
+    stockState: "out_of_stock",
+    warrantyNote: "Warranty duration not stated in the audit.",
+    validationNotes: ["Sold out at audit; choose ratio only after load calculations."]
+  },
+  {
+    id: "thingbits-bno055",
+    componentSlug: "bno055-imu",
+    vendor: "Thingbits",
+    variant: "Adafruit BNO055 STEMMA QT / Qwiic",
+    directUrl: "https://www.thingbits.in/products/adafruit-bno055-9-dof-imu-absolute-orientation-breakout-stemma-qt-qwiic",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 3468.02,
+    exGstPriceInr: 2939,
+    taxNote: "Vendor displayed both GST-inclusive and ex-GST prices.",
+    stockState: "in_stock",
+    warrantyNote: "Warranty duration not stated in the audit.",
+    validationNotes: ["Confirm bulk availability for 12 units."]
+  },
+  {
+    id: "thingbits-camera-v2",
+    componentSlug: "raspberry-pi-camera-v2",
+    vendor: "Thingbits",
+    variant: "Raspberry Pi Camera V2 8MP",
+    sku: "TH0530",
+    directUrl: "https://www.thingbits.in/products/raspberry-pi-camera-v2-8mp",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 1829,
+    exGstPriceInr: 1550,
+    taxNote: "Vendor displayed both GST-inclusive and ex-GST prices.",
+    stockState: "in_stock",
+    warrantyNote: "Warranty duration not stated in the audit.",
+    validationNotes: ["Listing exposed Standard and NoIR variants; select one per use case."]
+  },
+  {
+    id: "seeed-recamera-2002w-8gb",
+    componentSlug: "recamera-2002w-8gb",
+    vendor: "Seeed Studio",
+    variant: "reCamera 2002w 8GB",
+    sku: "102991896",
+    directUrl: "https://www.seeedstudio.com/reCamera-2002w-8GB-p-6250.html",
+    checkedAt: "2026-07-29",
+    taxNote: "Obtain an INR landed quote; the official source reference was USD 98.99 before freight, duty, and GST.",
+    stockState: "in_stock",
+    warrantyNote: "Confirm India delivery, returns, and local warranty support before PO.",
+    customerRating: 4.5,
+    customerRatingCount: 6,
+    ratingSource: "Seeed Studio",
+    validationNotes: ["The official product page showed the 8GB Wi-Fi variant in stock at the checked date."]
+  },
+  {
+    id: "seeed-recamera-gimbal-2002w-8gb",
+    componentSlug: "recamera-gimbal-2002w",
+    vendor: "Seeed Studio",
+    variant: "reCamera Gimbal 2002w 8GB",
+    sku: "108990119",
+    directUrl: "https://www.seeedstudio.com/reCamera-Gimbal-2002w-8GB-p-6402.html",
+    checkedAt: "2026-07-29",
+    taxNote: "Obtain an INR landed quote; the official source reference was USD 209.90 before freight, duty, and GST.",
+    stockState: "in_stock",
+    warrantyNote: "Confirm India delivery, returns, power-adapter compatibility, and local warranty support before PO.",
+    validationNotes: ["The official product page showed the 8GB gimbal variant in stock at the checked date."]
+  },
+  {
+    id: "thingbits-tof-8x8",
+    componentSlug: "tof-8x8",
+    vendor: "Thingbits",
+    variant: "Gravity 8x8 matrix ToF 3D distance sensor",
+    directUrl: "https://www.thingbits.in/products/gravity-8x8-matrix-tof-3d-distance-sensor-i2c-uart-3-5m-range-60-fov",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 3031.42,
+    exGstPriceInr: 2569,
+    taxNote: "Vendor prices captured as GST-inclusive and ex-GST.",
+    stockState: "in_stock",
+    warrantyNote: "Warranty duration not stated in the audit.",
+    validationNotes: ["Confirm bulk availability for six units."]
+  },
+  {
+    id: "thingbits-pixhawk-248",
+    componentSlug: "pixhawk-6c",
+    vendor: "Thingbits",
+    variant: "Legacy RadioLink Pixhawk 2.4.8 alternative",
+    directUrl: "https://www.thingbits.in/products/radiolink-pixhawk-flight-controller",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    taxNote: "No current orderable price captured.",
+    stockState: "out_of_stock",
+    warrantyNote: "Not applicable while unavailable.",
+    validationNotes: ["Sold out and legacy; do not substitute for the planned Pixhawk 6C-class set."]
+  },
+  {
+    id: "amazon-bambu-a1-b0dpxbt99w",
+    componentSlug: "bambu-lab-a1",
+    vendor: "Amazon.in",
+    variant: "Bambu Lab A1; 256 x 256 x 256 mm",
+    sku: "ASIN B0DPXBT99W",
+    directUrl: "https://www.amazon.in/dp/B0DPXBT99W",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 35199,
+    taxNote: "Amazon.in displayed price; confirm the GST invoice and tax split before PO.",
+    stockState: "in_stock",
+    warrantyNote: "Confirm seller authorization, Bambu Lab India warranty coverage, returns, and local service before purchase.",
+    customerRating: 5,
+    customerRatingCount: 14,
+    ratingSource: "Amazon.in",
+    validationNotes: ["Rating and price are listing-specific snapshots; recheck the exact ASIN before PO."]
+  },
+  {
+    id: "amazon-bambu-p1s-combo-b0dsllgz3l",
+    componentSlug: "bambu-lab-p1s-combo",
+    vendor: "Amazon.in",
+    variant: "WOL3D Bambu Lab P1S Combo with AMS; 256 x 256 x 256 mm",
+    sku: "ASIN B0DSLLGZ3L",
+    directUrl: "https://www.amazon.in/dp/B0DSLLGZ3L",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 81999,
+    taxNote: "Amazon.in displayed price; confirm the GST invoice and tax split before PO.",
+    stockState: "in_stock",
+    warrantyNote: "Confirm seller authorization, Bambu Lab India warranty coverage, returns, and local service before purchase.",
+    customerRating: 4.6,
+    customerRatingCount: 10,
+    ratingSource: "Amazon.in",
+    validationNotes: ["Rating and price are listing-specific snapshots; WOL 3D showed delivery on 21-24 August, so recheck lead time before PO."]
+  },
+  {
+    id: "amazon-elegoo-neptune-4-plus-b0cn4gdf1d",
+    componentSlug: "elegoo-neptune-4-plus",
+    vendor: "Amazon.in",
+    variant: "ELEGOO Neptune 4 Plus; 320 x 320 x 385 mm",
+    sku: "ASIN B0CN4GDF1D",
+    directUrl: "https://www.amazon.in/dp/B0CN4GDF1D",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    gstInclusivePriceInr: 38999,
+    taxNote: "Amazon.in displayed price; confirm the GST invoice and tax split before PO.",
+    stockState: "in_stock",
+    warrantyNote: "Confirm WOL 3D seller authorization, ELEGOO India warranty coverage, returns, and local service before purchase.",
+    customerRating: 4.7,
+    customerRatingCount: 5,
+    ratingSource: "Amazon.in",
+    validationNotes: ["Rating and price are listing-specific snapshots; confirm the Type-C or ribbon-cable hardware revision before PO."]
+  },
+  {
+    id: "pcbway-q8bot-v25",
+    componentSlug: "q8bot-v25-pcba",
+    vendor: "PCBWay",
+    variant: "Q8bot assembled PCB project; verify hw-v2.5 files",
+    directUrl: "https://www.pcbway.com/project/shareproject/Q8bot_PCB_Robot_dfa65114.html",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    taxNote: "Quote in INR only after assembly options, freight, duty, and GST are confirmed.",
+    stockState: "quote_required",
+    warrantyNote: "Manufacturing, assembly, and component-substitution terms require confirmation.",
+    validationNotes: ["Use the upstream Q8bot release files and reconcile the assembly BOM before ordering."]
+  },
+  {
+    id: "seeed-xiao-esp32c3",
+    componentSlug: "xiao-esp32c3",
+    vendor: "Seeed Studio",
+    variant: "XIAO ESP32-C3; SKU 113991054",
+    sku: "113991054",
+    directUrl: "https://www.seeedstudio.com/Seeed-XIAO-ESP32C3-p-5431.html",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    taxNote: "Official page showed USD 4.90; obtain an INR landed quote including freight, duty, and GST.",
+    stockState: "in_stock",
+    warrantyNote: "Confirm India delivery, returns, and local support before PO.",
+    customerRating: 4.8,
+    customerRatingCount: 313,
+    ratingSource: "Seeed Studio",
+    validationNotes: ["The official page showed 96% from 313 reviews and in-stock status on the audit date."]
+  },
+  {
+    id: "robotis-xl330-m077-t",
+    componentSlug: "dynamixel-xl330-m077-t",
+    vendor: "ROBOTIS",
+    variant: "DYNAMIXEL XL330-M077-T",
+    sku: "902-0162-000",
+    directUrl: "https://www.robotis.us/dynamixel-xl330-m077-t/",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    taxNote: "Official page showed USD 27.49; obtain an INR landed quote including freight, duty, and GST.",
+    stockState: "unknown",
+    warrantyNote: "Official page states a one-year limited warranty; confirm India coverage and return logistics.",
+    customerRating: 5,
+    customerRatingCount: 1,
+    ratingSource: "ROBOTIS",
+    validationNotes: ["Current stock quantity was not exposed in the audited page response."]
+  },
+  {
+    id: "illumn-keeppower-p1450c2",
+    componentSlug: "protected-14500-li-ion",
+    vendor: "Illumn",
+    variant: "KeepPower P1450C2 protected button-top 14500, 1000mAh",
+    mpn: "P1450C2",
+    directUrl: "https://illumn.com/14500-keeppower-1000mah-p1450c2-protected-button-top.html",
+    checkedAt: COMPONENT_AUDIT_DATE,
+    taxNote: "Obtain an INR landed quote and confirm lithium-cell shipping, duty, and GST.",
+    stockState: "unknown",
+    warrantyNote: "International battery shipping and warranty support require confirmation.",
+    validationNotes: ["Do not substitute regular AA cells; approve charger and protected-cell handling before PO."]
+  },
+  {
+    id: "adafruit-huzzah32-3405",
+    componentSlug: "adafruit-huzzah32",
+    vendor: "Adafruit",
+    variant: "HUZZAH32 ESP32 Feather Board",
+    sku: "3405",
+    directUrl: "https://www.adafruit.com/product/3405",
+    checkedAt: "2026-07-27",
+    taxNote: "Obtain an INR landed quote including freight, duty, and GST.",
+    stockState: "limited",
+    warrantyNote: "Confirm the selected header variant, India delivery, returns, and support before PO.",
+    validationNotes: [
+      "The official page showed the loose-header board out of stock while an assembled-header variant remained selectable.",
+      "The OpenTouch build names the original HUZZAH32; validate any ESP32 Feather V2 substitution against the firmware and readout board."
+    ]
+  },
+  {
+    id: "jlcpcb-opentouch-readout",
+    componentSlug: "opentouch-readout-pcba",
+    vendor: "JLCPCB",
+    variant: "OpenTouch readout PCB assembly quote",
+    directUrl: "https://cart.jlcpcb.com/quote",
+    checkedAt: "2026-07-27",
+    taxNote: "Quote in INR only after Gerbers, BOM, CPL, component availability, freight, duty, and GST are confirmed.",
+    stockState: "quote_required",
+    warrantyNote: "Manufacturing, assembly, component-substitution, and rework terms require confirmation.",
+    validationNotes: ["Use the official OpenTouch design files and reconcile every placed part before payment."]
+  },
+  {
+    id: "pcbway-opentouch-fpcb",
+    componentSlug: "opentouch-fpcb-pair",
+    vendor: "PCBWay",
+    variant: "Personalized two-layer flexible PCB quote",
+    directUrl: "https://www.pcbway.com/flexible.aspx",
+    checkedAt: "2026-07-27",
+    taxNote: "Quote in INR only after the personalized dimensions, special material stack, freight, duty, and GST are confirmed.",
+    stockState: "quote_required",
+    warrantyNote: "Confirm fabrication tolerances, material certification, connector assembly, and remake terms.",
+    validationNotes: ["Attach the official special instructions for adhesive placement, rolled-annealed copper, and no surface finish to the order."]
+  },
+  {
+    id: "agilex-yor-piper-arm",
+    componentSlug: "yor-agilex-piper-arm",
+    vendor: "AgileX Robotics",
+    variant: "Piper 6-DoF robotic arm",
+    directUrl: "https://global.agilex.ai/products/piper",
+    checkedAt: "2026-08-03",
+    taxNote: "No verified GST-inclusive INR offer was published; request a landed India quote before PO.",
+    stockState: "quote_required",
+    warrantyNote: "Confirm India delivery, warranty handling, spares, CAN accessories, and service turnaround in writing.",
+    validationNotes: ["The YOR BOM requires two arms; confirm the exact revision and gripper package with the project CAD and current vendor quote."]
+  },
+  {
+    id: "robotis-yor-xl430-w250-t",
+    componentSlug: "yor-dynamixel-xl430-w250-t",
+    vendor: "ROBOTIS",
+    variant: "DYNAMIXEL XL430-W250-T",
+    directUrl: "https://www.robotis.us/dynamixel-xl430-w250-t/",
+    checkedAt: "2026-08-03",
+    taxNote: "The upstream source is outside India; obtain an INR landed quote including duty, freight, and GST.",
+    stockState: "unknown",
+    warrantyNote: "Confirm regional warranty, exact model suffix, connector hardware, and return terms before PO.",
+    validationNotes: ["Do not substitute the existing Q8bot XL330 servo; YOR specifies the larger XL430-W250-T."]
+  },
+  {
+    id: "robotis-yor-u2d2",
+    componentSlug: "yor-dynamixel-u2d2",
+    vendor: "ROBOTIS",
+    variant: "U2D2 USB communication converter",
+    directUrl: "https://robotis.us/u2d2/",
+    checkedAt: "2026-08-03",
+    taxNote: "The upstream source is outside India; obtain an INR landed quote including duty, freight, and GST.",
+    stockState: "unknown",
+    warrantyNote: "Confirm included cables, regional warranty, and return terms before PO.",
+    validationNotes: ["The U2D2 Power Hub Board is a separate required line in the official YOR BOM."]
+  },
+  {
+    id: "robotis-yor-u2d2-power-hub",
+    componentSlug: "yor-dynamixel-u2d2-power-hub",
+    vendor: "ROBOTIS",
+    variant: "U2D2 Power Hub Board Set",
+    directUrl: "https://robotis.us/u2d2-power-hub-board-set/",
+    checkedAt: "2026-08-03",
+    taxNote: "The upstream source is outside India; obtain an INR landed quote including duty, freight, and GST.",
+    stockState: "unknown",
+    warrantyNote: "Confirm included connectors, fuse protection, regional warranty, and return terms before PO.",
+    validationNotes: ["Verify input voltage and current capacity against YOR's final DYNAMIXEL wiring diagram."]
+  },
+  {
+    id: "rev-yor-maxswerve",
+    componentSlug: "yor-rev-maxswerve",
+    vendor: "REV Robotics",
+    variant: "3-inch MAXSwerve module",
+    mpn: "REV-21-3005",
+    directUrl: "https://www.revrobotics.com/rev-21-3005/",
+    checkedAt: "2026-08-03",
+    taxNote: "No verified GST-inclusive INR offer was published; request a landed India quote before PO.",
+    stockState: "unknown",
+    warrantyNote: "Confirm motor and controller inclusion, orientation, regional warranty, and replacement-part support.",
+    validationNotes: ["YOR's detailed materials guide references a motor and SPARK Flex bundle; verify the exact current bundle SKU before ordering four modules."]
+  },
+  {
+    id: "amazon-us-yor-flexispot-e6",
+    componentSlug: "yor-flexispot-e6-lift",
+    vendor: "Amazon US (upstream BOM)",
+    variant: "FLEXISPOT E6 standing-desk lift",
+    directUrl: "https://www.amazon.com/dp/B0DSZLBVQ7",
+    checkedAt: "2026-08-03",
+    taxNote: "Reference link is US-only; source the exact revision in India and record GST-inclusive INR pricing before PO.",
+    stockState: "unknown",
+    warrantyNote: "Confirm India voltage, controller revision, load rating, warranty, and parts support.",
+    validationNotes: ["Match the lift geometry and controller interface to the current YOR CAD; a visually similar standing-desk frame is not sufficient."]
+  },
+  {
+    id: "amazon-us-yor-raspberry-pi-pico",
+    componentSlug: "raspberry-pi-pico",
+    vendor: "Amazon US (upstream BOM)",
+    variant: "Raspberry Pi Pico",
+    directUrl: "https://www.amazon.com/dp/B09KVB8LVR",
+    checkedAt: "2026-08-03",
+    taxNote: "Reference link is US-only; verify a GST-inclusive INR offer and exact board variant before PO.",
+    stockState: "unknown",
+    warrantyNote: "Confirm authenticity, included headers, return terms, and local warranty.",
+    validationNotes: ["The YOR lift stack also requires a matching Pico breakout board and BTS7960 controller."]
+  },
+  {
+    id: "aegis-yor-24v-20ah-battery",
+    componentSlug: "yor-24v-20ah-battery",
+    vendor: "Aegis Battery",
+    variant: "24V 20Ah NMC battery pack and charger",
+    directUrl: "https://www.aegisbattery.com/collections/24v-lithium-batteries/products/aegis-24v-20ah-lithium-ion-battery-pack-nmc-24v-lithium-battery?variant=30306907095138",
+    checkedAt: "2026-08-03",
+    taxNote: "No verified India offer exists; obtain a compliant INR landed quote including dangerous-goods freight, duty, and GST.",
+    stockState: "quote_required",
+    warrantyNote: "Confirm cell documentation, BMS, charger, connector, shipping eligibility, warranty, and end-of-life handling.",
+    validationNotes: ["Do not order internationally until the vendor confirms legal delivery to the lab and Armature's battery storage and charging controls are active."]
+  },
+  {
+    id: "microcenter-yor-raspberry-pi-5-16gb",
+    componentSlug: "yor-raspberry-pi-5-16gb",
+    vendor: "Micro Center (upstream BOM)",
+    variant: "Raspberry Pi 5 16GB",
+    directUrl: "https://www.microcenter.com/product/702590/raspberry-pi-5",
+    checkedAt: "2026-08-03",
+    taxNote: "Reference link is US-only; verify a GST-inclusive INR offer for the exact 16GB board before PO.",
+    stockState: "unknown",
+    warrantyNote: "Confirm exact RAM capacity, board authenticity, Indian power supply, and local warranty.",
+    validationNotes: ["The official YOR BOM specifies 16GB; do not replace it with the separately planned 8GB lab stock without upstream validation."]
+  },
+  {
+    id: "seeed-yor-recomputer-robotics-j4012",
+    componentSlug: "yor-recomputer-robotics-j4012",
+    vendor: "Seeed Studio",
+    variant: "reComputer Robotics J4012",
+    directUrl: "https://www.seeedstudio.com/reComputer-Robotics-J4012-p-6505.html",
+    checkedAt: "2026-08-03",
+    taxNote: "Optional SLAM reference; request GST-inclusive INR landed pricing before PO.",
+    stockState: "unknown",
+    warrantyNote: "Confirm exact Orin NX memory and storage, India delivery, JetPack support, and warranty.",
+    validationNotes: ["This computer belongs to YOR's optional SLAM configuration, not the baseline Raspberry Pi control stack."]
+  },
+  {
+    id: "stereolabs-yor-zed-2i",
+    componentSlug: "yor-zed-2i",
+    vendor: "Stereolabs",
+    variant: "ZED 2i stereo camera",
+    directUrl: "https://www.stereolabs.com/store/products/zed-2i",
+    checkedAt: "2026-08-03",
+    taxNote: "Optional SLAM reference; request GST-inclusive INR landed pricing before PO.",
+    stockState: "unknown",
+    warrantyNote: "Confirm lens and cable options, India delivery, SDK support, and warranty before PO.",
+    validationNotes: ["This camera belongs to YOR's optional SLAM configuration and must be validated with the selected Jetson and ZED SDK release."]
+  }
+];
+
+export const projectComponentLinks: ProjectComponentLink[] = [
+  ["local-dataset-nas", "primary-nas", "required"],
+  ["local-dataset-nas", "backup-nas", "required"],
+  ["local-dataset-nas", "ten-gigabit-network", "optional"],
+  ["truenas-openzfs-dvc", "primary-nas", "required"],
+  ["truenas-openzfs-dvc", "backup-nas", "required"],
+  ["truenas-openzfs-dvc", "ten-gigabit-network", "optional"],
+  ["autonomous-computer", "gpu-workstation", "required"],
+  ["autonomous-computer", "rtx-5090", "required"],
+  ["autonomous-computer", "rtx-pro-6000", "alternative"],
+  ["autonomous-computer", "dgx-spark", "optional"],
+  ["local-8b-model", "gpu-workstation", "required"],
+  ["local-8b-model", "rtx-5090", "required"],
+  ["local-8b-model", "dgx-spark", "alternative"],
+  ["esp32-ai", "esp32-s3-n16r8", "required"],
+  ["esp32-ai", "gpu-workstation", "required"],
+  ["esp32-ai", "electronics-bench", "required"],
+  ["esp32-ai", "esp32-ai-sh1106-oled", "optional"],
+  ["esp32-ai", "esp32-ai-ssd1306-oled", "alternative"],
+  ["esp32-ai", "esp32-ai-st7789-tft", "alternative"],
+  ["recamera", "recamera-2002w-8gb", "required"],
+  ["recamera", "recamera-gimbal-2002w", "optional"],
+  ["recamera", "recamera-sc130gs-sensor", "optional"],
+  ["recamera", "3d-printing-stock", "optional"],
+  ["lerobot-so-arm101", "so101-pair", "required"],
+  ["lerobot-so-arm101", "so101-g-clamp", "required"],
+  ["lerobot-so-arm101", "raspberry-pi-camera-v2", "required"],
+  ["lerobot-so-arm101", "sts3215-servo", "optional"],
+  ["lerobot-so-arm101", "jetson-orin-nano", "alternative"],
+  ["so-arm100-so101", "so101-pair", "required"],
+  ["so-arm100-so101", "so101-g-clamp", "required"],
+  ["so-arm100-so101", "sts3215-servo", "required"],
+  ["so-arm100-so101", "3d-printing-stock", "optional"],
+  ["so-arm100-so101", "bambu-lab-a1", "optional"],
+  ["gem", "3d-printing-stock", "required"],
+  ["gem", "bambu-lab-a1", "required"],
+  ["gem", "elegoo-neptune-4-plus", "optional"],
+  ["gem", "arduino-uno-r4-wifi", "required"],
+  ["gem", "raspberry-pi-camera-v2", "optional"],
+  ["gem", "elrobot", "alternative"],
+  ["openactuator", "openactuator-linear-vcm-core", "required"],
+  ["openactuator", "openactuator-arduino-uno", "required"],
+  ["openactuator", "openactuator-l9110-h-bridge", "required"],
+  ["openactuator", "openactuator-wsh136-hall-sensor", "required"],
+  ["openactuator", "3d-printing-stock", "required"],
+  ["openactuator", "electronics-bench", "required"],
+  ["openactuator", "openactuator-coil-winder-v12", "optional"],
+  ["openactuator", "bambu-lab-a1", "optional"],
+  ["electrofluidic-fiber-muscles", "efm-fiber-winding-fixture", "required"],
+  ["electrofluidic-fiber-muscles", "efm-fiber-pump-materials", "required"],
+  ["electrofluidic-fiber-muscles", "efm-mckibben-materials", "required"],
+  ["electrofluidic-fiber-muscles", "efm-dielectric-working-fluid", "required"],
+  ["electrofluidic-fiber-muscles", "efm-interlocked-hv-test-cell", "required"],
+  ["electrofluidic-fiber-muscles", "efm-fluidic-instrumentation", "required"],
+  ["electrofluidic-fiber-muscles", "efm-force-displacement-rig", "required"],
+  ["electrofluidic-fiber-muscles", "hazard-zone-safety", "required"],
+  ["electrofluidic-fiber-muscles", "electronics-bench", "optional"],
+  ["electrofluidic-fiber-muscles", "3d-printing-stock", "optional"],
+  ["valetudo", "raspberry-pi-5", "optional"],
+  ["valetudo", "rplidar-a1-c1", "required"],
+  ["valetudo", "bno055-imu", "optional"],
+  ["oomwoo", "raspberry-pi-5", "required"],
+  ["oomwoo", "rplidar-a1-c1", "required"],
+  ["oomwoo", "esp32-c6", "required"],
+  ["oomwoo", "cytron-mdd3a", "optional"],
+  ["oomwoo", "lekiwi", "alternative"],
+  ["openmower", "rtk-gnss", "required"],
+  ["openmower", "pixhawk-6c", "required"],
+  ["openmower", "battery-bms-safety", "required"],
+  ["openmower", "hazard-zone-safety", "required"],
+  ["openmower", "elegoo-neptune-4-plus", "optional"],
+  ["q8bot", "q8bot-v25-pcba", "required"],
+  ["q8bot", "dynamixel-xl330-m077-t", "required"],
+  ["q8bot", "xiao-esp32c3", "required"],
+  ["q8bot", "protected-14500-li-ion", "required"],
+  ["q8bot", "3d-printing-stock", "required"],
+  ["q8bot", "battery-bms-safety", "required"],
+  ["q8bot", "electronics-bench", "required"],
+  ["q8bot", "bambu-lab-a1", "optional"],
+  ["solo12-odri", "solo12-actuator-core-v11", "required"],
+  ["solo12-odri", "solo12-micro-driver-v2", "required"],
+  ["solo12-odri", "solo12-master-board-v2", "required"],
+  ["solo12-odri", "solo12-microstrain-imu", "required"],
+  ["solo12-odri", "solo12-mechanical-set", "required"],
+  ["solo12-odri", "solo12-wiring-set", "required"],
+  ["solo12-odri", "solo12-real-time-control-host", "required"],
+  ["solo12-odri", "3d-printing-stock", "required"],
+  ["solo12-odri", "electronics-bench", "required"],
+  ["solo12-odri", "hazard-zone-safety", "required"],
+  ["solo12-odri", "solo12-autonomy-upgrade", "optional"],
+  ["yor", "yor-agilex-piper-arm", "required"],
+  ["yor", "yor-dynamixel-xl430-w250-t", "required"],
+  ["yor", "yor-dynamixel-u2d2", "required"],
+  ["yor", "yor-dynamixel-u2d2-power-hub", "required"],
+  ["yor", "yor-rev-maxswerve", "required"],
+  ["yor", "yor-flexispot-e6-lift", "required"],
+  ["yor", "raspberry-pi-pico", "required"],
+  ["yor", "yor-24v-20ah-battery", "required"],
+  ["yor", "yor-raspberry-pi-5-16gb", "required"],
+  ["yor", "yor-24v-power-stack", "required"],
+  ["yor", "yor-frame-and-hardware", "required"],
+  ["yor", "battery-bms-safety", "required"],
+  ["yor", "hazard-zone-safety", "required"],
+  ["yor", "yor-recomputer-robotics-j4012", "optional"],
+  ["yor", "yor-zed-2i", "optional"],
+  ["rebot-devarm", "arduino-uno-r4-wifi", "required"],
+  ["rebot-devarm", "pca9685-servo-driver", "required"],
+  ["rebot-devarm", "raspberry-pi-camera-v2", "optional"],
+  ["rebot-devarm", "elrobot", "alternative"],
+  ["openarm", "ab-so-bot", "alternative"],
+  ["openarm", "xlerobot", "alternative"],
+  ["openarm", "jetson-orin-nano", "required"],
+  ["openarm", "oak-d-lite", "optional"],
+  ["px4", "pixhawk-6c", "required"],
+  ["px4", "battery-bms-safety", "required"],
+  ["px4", "bno055-imu", "optional"],
+  ["px4", "hazard-zone-safety", "required"],
+  ["ardupilot", "pixhawk-6c", "required"],
+  ["ardupilot", "battery-bms-safety", "required"],
+  ["ardupilot", "raspberry-pi-5", "optional"],
+  ["ardupilot", "rtk-gnss", "optional"],
+  ["flexitac", "tactile-materials", "required"],
+  ["flexitac", "force-torque-starter", "optional"],
+  ["flexitac", "arduino-uno-r4-wifi", "required"],
+  ["9dtact", "tactile-materials", "required"],
+  ["9dtact", "raspberry-pi-camera-v2", "required"],
+  ["9dtact", "oak-d-lite", "alternative"],
+  ["orca-hand", "3d-printing-stock", "required"],
+  ["orca-hand", "bambu-lab-a1", "required"],
+  ["orca-hand", "bambu-lab-p1s-combo", "optional"],
+  ["orca-hand", "pca9685-servo-driver", "required"],
+  ["orca-hand", "force-torque-starter", "optional"],
+  ["orca-hand", "tactile-materials", "optional"],
+  ["osmo-tactile-glove", "wearable-sensor-kit", "required"],
+  ["osmo-tactile-glove", "bno055-imu", "optional"],
+  ["osmo-tactile-glove", "esp32-c6", "required"],
+  ["opentouch-glove", "opentouch-fpcb-pair", "required"],
+  ["opentouch-glove", "opentouch-readout-pcba", "required"],
+  ["opentouch-glove", "opentouch-interconnect-set", "required"],
+  ["opentouch-glove", "adafruit-huzzah32", "required"],
+  ["opentouch-glove", "opentouch-glove-materials", "required"],
+  ["opentouch-glove", "opentouch-lipo-battery", "required"],
+  ["opentouch-glove", "battery-bms-safety", "required"],
+  ["opentouch-glove", "electronics-bench", "required"],
+  ["opentouch-glove", "co2-laser-cutter", "required"],
+  ["opentouch-glove", "3d-printing-stock", "required"],
+  ["opentouch-glove", "bambu-lab-a1", "optional"],
+  ["stag", "wearable-sensor-kit", "required"],
+  ["stag", "tactile-materials", "required"],
+  ["stag", "raspberry-pi-camera-v2", "optional"],
+  ["amazinghand", "3d-printing-stock", "required"],
+  ["amazinghand", "bambu-lab-a1", "required"],
+  ["amazinghand", "bambu-lab-p1s-combo", "optional"],
+  ["amazinghand", "pca9685-servo-driver", "required"],
+  ["amazinghand", "sg90-servo", "alternative"],
+  ["dexhand-v1", "3d-printing-stock", "required"],
+  ["dexhand-v1", "bambu-lab-a1", "required"],
+  ["dexhand-v1", "bambu-lab-p1s-combo", "optional"],
+  ["dexhand-v1", "pca9685-servo-driver", "required"],
+  ["dexhand-v1", "esp32-c6", "optional"],
+  ["dexhand-v1", "raspberry-pi-camera-v2", "optional"],
+  ["leap-hand", "3d-printing-stock", "optional"],
+  ["leap-hand", "force-torque-starter", "required"],
+  ["leap-hand", "tactile-materials", "optional"],
+  ["leap-hand", "jetson-agx-orin", "alternative"],
+  ["open-health-ring", "wearable-sensor-kit", "required"],
+  ["open-health-ring", "esp32-c6", "required"],
+  ["open-health-ring", "bno055-imu", "optional"],
+  ["netbox", "raspberry-pi-5", "optional"],
+  ["netbox", "primary-nas", "alternative"],
+  ["netbox", "ten-gigabit-network", "required"],
+  ["openbmc", "gpu-workstation", "alternative"],
+  ["openbmc", "ten-gigabit-network", "required"],
+  ["openbmc", "raspberry-pi-5", "optional"],
+  ["sonic", "ten-gigabit-network", "required"],
+  ["sonic", "primary-nas", "optional"],
+  ["seaweedfs-garage", "primary-nas", "required"],
+  ["seaweedfs-garage", "backup-nas", "required"],
+  ["seaweedfs-garage", "ten-gigabit-network", "required"],
+  ["nasa-rover", "raspberry-pi-5", "required"],
+  ["nasa-rover", "cytron-mdd3a", "required"],
+  ["nasa-rover", "bno055-imu", "required"],
+  ["nasa-rover", "brushed-geared-motor", "optional"],
+  ["nasa-rover", "battery-bms-safety", "required"],
+  ["nasa-rover", "elegoo-neptune-4-plus", "optional"]
+].map(([projectSlug, componentSlug, role]) => ({
+  projectSlug,
+  componentSlug,
+  role: role as ProjectComponentRole
+}));
+
+export const procurementGroups: ProcurementGroup[] = [
+  {
+    title: "Shared compute and storage",
+    icon: "storage",
+    rows: [
+      { item: "Primary NAS / ZFS storage node", quantity: "1", indicativeInr: "Rs 6L-10L", supports: "Datasets, video, CAD, checkpoints, DVC", sourceLabel: "TrueNAS", sourceUrl: "https://www.truenas.com/", state: "buy_first" },
+      { item: "Backup NAS / offline set", quantity: "1", indicativeInr: "Rs 3L-6L", supports: "Dataset survivability and recovery", sourceLabel: "OpenZFS", sourceUrl: "https://openzfs.org/", state: "buy_first" },
+      { item: "10GbE switch + NIC links", quantity: "1 + 8-12", indicativeInr: "Rs 1.5L-4L", supports: "Shared ingest and GPU/NAS traffic", sourceLabel: "MikroTik", sourceUrl: "https://mikrotik.com/products/group/switches", state: "buy_first" },
+      { item: "2-GPU autonomous workstation", quantity: "1", indicativeInr: "Rs 9L-24L", supports: "Training, vision, simulation, local inference", sourceLabel: "Build notes", sourceUrl: "https://www.shikhar.gg/blog/gpu-pc-build", state: "buy_first" },
+      { item: "NVIDIA DGX Spark", quantity: "1", indicativeInr: "Rs 4.5L-6L", supports: "Shared local AI and robotics software", sourceLabel: "NVIDIA", sourceUrl: "https://www.nvidia.com/en-us/products/workstations/dgx-spark/", state: "validate" },
+      { item: "RTX 5090 32GB", quantity: "2", indicativeInr: "Rs 3.4L-5L+ each", supports: "Primary CUDA training and inference", sourceLabel: "NVIDIA", sourceUrl: "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/", state: "validate" },
+      { item: "RTX PRO 6000 Blackwell 96GB", quantity: "1 optional", indicativeInr: "About Rs 11.9L before landing", supports: "High-VRAM funded workloads", sourceLabel: "NVIDIA", sourceUrl: "https://www.nvidia.com/en-us/design-visualization/rtx-pro-6000/", state: "validate" }
+    ]
+  },
+  {
+    title: "Robot and edge-compute stations",
+    icon: "compute",
+    rows: [
+      { item: "Jetson Orin Nano", quantity: "6", indicativeInr: "Rs 48k observed", supports: "Edge AI and camera stations", sourceLabel: "GetSet Robotics", sourceUrl: "https://getsetrobotics.com/product/jetson-orin-nano/", state: "validate" },
+      { item: "Jetson Thor", quantity: "1 pilot", indicativeInr: "Rs 3.19L observed", supports: "High-end multi-camera physical AI", sourceLabel: "GetSet Robotics", sourceUrl: "https://getsetrobotics.com/product/jetson-thor/", state: "validate" },
+      { item: "SO-101 leader / follower sets", quantity: "5 + 10 spare servos", indicativeInr: "Rs 27.5k-33k per set", supports: "Ten builders working in pairs", sourceLabel: "GetSet Robotics", sourceUrl: "https://getsetrobotics.com/product/so-101-robotic-arm/", state: "buy_first" },
+      { item: "Raspberry Pi 5 8GB boards", quantity: "12", indicativeInr: "Rs 19,617.50 each", supports: "Rovers, vacuum, logging, controllers", sourceLabel: "Thingbits", sourceUrl: "https://www.thingbits.in/products/raspberry-pi-5-computer", state: "buy_first" },
+      { item: "Microcontroller and motor-control drawer", quantity: "20 ESP32 + 12 Arduino", indicativeInr: "SKU table below", supports: "Fast controls and sensor work", sourceLabel: "Thingbits", sourceUrl: "https://www.thingbits.in/", state: "buy_first" },
+      { item: "Pixhawk 6C-class autopilot sets", quantity: "2", indicativeInr: "Quote in INR", supports: "Rovers first, drones after cage readiness", sourceLabel: "PX4 guide", sourceUrl: "https://docs.px4.io/main/en/assembly/quick_start_pixhawk6c.html", state: "validate" }
+    ]
+  },
+  {
+    title: "Cameras and navigation sensors",
+    icon: "camera",
+    rows: [
+      { item: "Raspberry Pi Camera V2", quantity: "12", indicativeInr: "Rs 1,829 each", supports: "Arm stations, tactile vision, mobile robots", sourceLabel: "Thingbits", sourceUrl: "https://www.thingbits.in/products/raspberry-pi-camera-v2-8mp", state: "buy_first" },
+      { item: "Luxonis OAK-D Lite", quantity: "6", indicativeInr: "About Rs 15k before landing", supports: "Stereo depth and onboard AI", sourceLabel: "Luxonis", sourceUrl: "https://shop.luxonis.com/products/oak-d-lite-1", state: "validate" },
+      { item: "Luxonis OAK-D Pro", quantity: "4", indicativeInr: "About Rs 39k before landing", supports: "Active stereo and low-light tests", sourceLabel: "Luxonis", sourceUrl: "https://shop.luxonis.com/products/oak-d-pro", state: "validate" },
+      { item: "RealSense D455-class pair", quantity: "2", indicativeInr: "Quote current stock", supports: "RGB-D compatibility for project pipelines", sourceLabel: "RealSense", sourceUrl: "https://www.realsenseai.com/products/depth-camera-d455/", state: "validate" },
+      { item: "RPLIDAR A1 / C1", quantity: "4", indicativeInr: "Rs 9k-18k each", supports: "Rovers and indoor mapping", sourceLabel: "SLAMTEC", sourceUrl: "https://www.slamtec.com/en/lidar/a1", state: "validate" },
+      { item: "RTK GNSS base + rover", quantity: "2 pairs", indicativeInr: "Rs 20k-50k+ per kit", supports: "OpenMower and outdoor autonomy", sourceLabel: "ArduSimple", sourceUrl: "https://www.ardusimple.com/product/simplertk2b-basic-starter-kit-ip65/", state: "validate" },
+      { item: "AprilTag / Charuco boards", quantity: "10 sets", indicativeInr: "Rs 20k-60k total", supports: "Calibration, pose, and data collection", sourceLabel: "AprilTag", sourceUrl: "https://github.com/AprilRobotics/apriltag", state: "buy_first" }
+    ]
+  },
+  {
+    title: "Fabrication, bench, motion, and safety stock",
+    icon: "safety",
+    rows: [
+      { item: "Bambu Lab A1 open-frame FDM printer", quantity: "1", indicativeInr: "Rs 35,199", supports: "Routine PLA, PETG, and TPU robotics parts", sourceLabel: "Amazon.in · 5.0/5 (14)", sourceUrl: "https://www.amazon.in/dp/B0DPXBT99W", state: "buy_first" },
+      { item: "Bambu Lab P1S Combo enclosed FDM printer", quantity: "1", indicativeInr: "Rs 81,999", supports: "ABS, ASA, and functional heat-resistant parts", sourceLabel: "Amazon.in · 4.6/5 (10)", sourceUrl: "https://www.amazon.in/dp/B0DSLLGZ3L", state: "validate" },
+      { item: "ELEGOO Neptune 4 Plus large-format FDM printer", quantity: "1", indicativeInr: "Rs 38,999", supports: "Large rover panels, fixtures, and robot structures", sourceLabel: "Amazon.in · 4.7/5 (5)", sourceUrl: "https://www.amazon.in/dp/B0CN4GDF1D", state: "validate" },
+      { item: "Electronics bench tooling", quantity: "10 mats + 5 solder stations", indicativeInr: "Rs 3L-6L", supports: "Ten builders without tool bottlenecks", sourceLabel: "element14 India", sourceUrl: "https://in.element14.com/", state: "buy_first" },
+      { item: "Force / torque and load-cell starter kits", quantity: "2", indicativeInr: "Rs 50k-3L", supports: "Gripper force and manipulation safety", sourceLabel: "Mouser India", sourceUrl: "https://www.mouser.in/", state: "validate" },
+      { item: "LiPo batteries, chargers, safe bags", quantity: "Shared safety set", indicativeInr: "Rs 1L-2L", supports: "Drones, rovers, and mobile robots", sourceLabel: "Robu", sourceUrl: "https://robu.in/", state: "validate" },
+      { item: "Servo and motor-control drawer", quantity: "12 drivers + 42 servos", indicativeInr: "SKU table below", supports: "Fast mechanism work and motion spares", sourceLabel: "Thingbits", sourceUrl: "https://www.thingbits.in/", state: "buy_first" },
+      { item: "Spare belts, bearings, fasteners", quantity: "15% motion spares", indicativeInr: "Rs 1L-2L initial", supports: "Keep active builds moving", sourceLabel: "Robu", sourceUrl: "https://robu.in/", state: "buy_first" },
+      { item: "Emergency stops, barriers, extinguishers", quantity: "Per hazard zone", indicativeInr: "Rs 1L-2.5L", supports: "Guarded commissioning and incident response", sourceLabel: "BIS reference", sourceUrl: "https://bis.gov.in/", state: "validate" }
+    ]
+  }
+];
+
+export function getComponent(slug: string) {
+  return components.find((component) => component.slug === slug);
+}
+
+export function getOffersForComponent(componentSlug: string) {
+  return componentOffers.filter((offer) => offer.componentSlug === componentSlug);
+}
+
+export function getProjectComponents(projectSlug: string) {
+  return projectComponentLinks
+    .filter((link) => link.projectSlug === projectSlug)
+    .map((link) => ({ ...link, component: getComponent(link.componentSlug) }))
+    .filter((item): item is typeof item & { component: CatalogComponent } => Boolean(item.component));
+}
+
+export function getProjectsForComponent(componentSlug: string) {
+  return projectComponentLinks.filter((link) => link.componentSlug === componentSlug);
+}
+
+export function getProjectComponentCounts(projectSlug: string) {
+  return projectComponentLinks
+    .filter((link) => link.projectSlug === projectSlug)
+    .reduce<Record<ProjectComponentRole, number>>(
+      (counts, link) => ({ ...counts, [link.role]: counts[link.role] + 1 }),
+      { required: 0, optional: 0, alternative: 0 }
+    );
+}
+
+export function isOfferStale(checkedAt: string, now = new Date()) {
+  const checked = new Date(`${checkedAt}T00:00:00Z`);
+  return now.getTime() - checked.getTime() > OFFER_STALE_AFTER_DAYS * 24 * 60 * 60 * 1000;
+}
+
+export function availabilityLabel(availability: ComponentAvailability) {
+  return {
+    available: "Available",
+    low_stock: "Low stock",
+    unavailable: "Unavailable"
+  }[availability];
+}

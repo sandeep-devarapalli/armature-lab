@@ -3,12 +3,18 @@ import { lazy, Suspense, type ReactNode } from "react";
 import { PwaUpdatePrompt } from "../components/PwaUpdatePrompt";
 import { Shell } from "../components/Shell";
 import { MemberRoute, StaffRoute } from "../components/RouteGuard";
+import { HomePage } from "../pages/HomePage";
 
-const HomePage = lazy(() => import("../pages/HomePage").then((module) => ({ default: module.HomePage })));
 const ProjectsPage = lazy(() => import("../pages/ProjectsPage").then((module) => ({ default: module.ProjectsPage })));
+const ElectrofluidicMusclesPage = lazy(() => import("../pages/ElectrofluidicMusclesPage").then((module) => ({ default: module.ElectrofluidicMusclesPage })));
+const BuildingVisionPage = lazy(() => import("../pages/BuildingVisionPage").then((module) => ({ default: module.BuildingVisionPage })));
+const EcosystemPage = lazy(() => import("../pages/EcosystemPage").then((module) => ({ default: module.EcosystemPage })));
 const KioskPage = lazy(() => import("../pages/KioskPage").then((module) => ({ default: module.KioskPage })));
 const FinancialsPage = lazy(() => import("../pages/PlanningPages").then((module) => ({ default: module.FinancialsPage })));
 const ProcurementPage = lazy(() => import("../pages/PlanningPages").then((module) => ({ default: module.ProcurementPage })));
+const ComponentsPage = lazy(() => import("../pages/ComponentsPages").then((module) => ({ default: module.ComponentsPage })));
+const ComponentDetailPage = lazy(() => import("../pages/ComponentsPages").then((module) => ({ default: module.ComponentDetailPage })));
+const MakerDeskPage = lazy(() => import("../pages/MakerDeskPages").then((module) => ({ default: module.MakerDeskPage })));
 const EquipmentPage = lazy(() => import("../pages/PublicPages").then((module) => ({ default: module.EquipmentPage })));
 const MembershipPage = lazy(() => import("../pages/PublicPages").then((module) => ({ default: module.MembershipPage })));
 const ServicesPage = lazy(() => import("../pages/PublicPages").then((module) => ({ default: module.ServicesPage })));
@@ -47,8 +53,14 @@ export const router = createBrowserRouter([
       { path: "/membership", element: <MembershipPage /> },
       { path: "/services", element: <ServicesPage /> },
       { path: "/projects", element: <ProjectsPage /> },
+      { path: "/projects/electrofluidic-fiber-muscles", element: <ElectrofluidicMusclesPage /> },
+      { path: "/building-vision", element: <BuildingVisionPage /> },
+      { path: "/ecosystem", element: <EcosystemPage /> },
       { path: "/financials", element: <FinancialsPage /> },
       { path: "/procurement", element: <ProcurementPage /> },
+      { path: "/components", element: <ComponentsPage /> },
+      { path: "/components/:slug", element: <ComponentDetailPage /> },
+      { path: "/maker-desk", element: <MakerDeskPage /> },
       { path: "/join", element: <JoinPage /> },
       { path: "/members", element: <MembersPage /> },
       { path: "/members/:handle", element: <PublicMemberPage /> },

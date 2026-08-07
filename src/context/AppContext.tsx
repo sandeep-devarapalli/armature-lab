@@ -10,6 +10,8 @@ import {
 import type { Session } from "@supabase/supabase-js";
 import { addMinutes, isAfter, isBefore, parseISO } from "date-fns";
 import { initialDemoState } from "../data/demo";
+import { hasOpenDemoLoans } from "../data/inventoryDemo";
+import { hasOpenDemoToolkitRental } from "../data/makerServices";
 import { loadLiveSnapshot } from "../lib/liveData";
 import { dataMode, googleAuthEnabled, supabase } from "../lib/supabase";
 import type {
@@ -1006,6 +1008,14 @@ export function AppProvider({ children }: PropsWithChildren) {
           throw new Error("Membership is not active.");
         }
         if (intent.action === "check_out") {
+          if (
+            hasOpenDemoLoans(intent.memberId) ||
+            hasOpenDemoToolkitRental(intent.memberId)
+          ) {
+            throw new Error(
+              "Return all lab-only component loans and toolkits before checking out."
+            );
+          }
           const session = value.attendance.find(
             (item) =>
               item.memberId === intent.memberId && item.state === "open"

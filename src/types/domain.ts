@@ -129,6 +129,100 @@ export interface Project {
   description: string;
   image?: string;
   sourceUrl: string;
+  detailPath?: string;
   infrastructure?: boolean;
   tags: string[];
+}
+
+export type ComponentCategory =
+  | "Robot systems"
+  | "Edge compute"
+  | "Controllers"
+  | "Motion"
+  | "Vision"
+  | "Navigation"
+  | "Tactile sensing"
+  | "Power and safety"
+  | "Compute and storage"
+  | "Fabrication";
+
+export type ComponentAvailability =
+  | "available"
+  | "low_stock"
+  | "unavailable";
+
+export type ComponentInventoryClass =
+  | "fixed_equipment"
+  | "serialized_asset"
+  | "reusable_tray"
+  | "consumable";
+
+export type ComponentValidationState =
+  | "ready"
+  | "validate_before_po"
+  | "source_required";
+
+export type ComponentOfferStockState =
+  | "in_stock"
+  | "limited"
+  | "out_of_stock"
+  | "quote_required"
+  | "unknown";
+
+export type ProjectComponentRole = "required" | "optional" | "alternative";
+
+export interface CatalogComponent {
+  slug: string;
+  name: string;
+  category: ComponentCategory;
+  description: string;
+  inventoryClass: ComponentInventoryClass;
+  availability: ComponentAvailability;
+  validationState: ComponentValidationState;
+  quantityTarget: number;
+  quantityUnit: string;
+  tags: string[];
+  validationNotes: string[];
+}
+
+export interface ComponentOffer {
+  id: string;
+  componentSlug: string;
+  vendor: string;
+  variant: string;
+  sku?: string;
+  mpn?: string;
+  directUrl: string;
+  checkedAt: string;
+  gstInclusivePriceInr?: number;
+  exGstPriceInr?: number;
+  taxNote: string;
+  stockState: ComponentOfferStockState;
+  warrantyNote: string;
+  customerRating?: number;
+  customerRatingCount?: number;
+  ratingSource?: string;
+  validationNotes: string[];
+}
+
+export interface ProjectComponentLink {
+  projectSlug: string;
+  componentSlug: string;
+  role: ProjectComponentRole;
+}
+
+export interface ProcurementRow {
+  item: string;
+  quantity: string;
+  indicativeInr: string;
+  supports: string;
+  sourceLabel: string;
+  sourceUrl: string;
+  state: "buy_first" | "validate";
+}
+
+export interface ProcurementGroup {
+  title: string;
+  icon: "storage" | "compute" | "camera" | "safety";
+  rows: ProcurementRow[];
 }

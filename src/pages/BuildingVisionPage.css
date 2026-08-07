@@ -1,0 +1,566 @@
+.building-vision-page .page-hero {
+  min-height: 560px;
+  background:
+    linear-gradient(90deg, transparent 0 71%, var(--grid-line) 71% 71.1%, transparent 71.1%),
+    linear-gradient(var(--grid-line) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 36px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.building-vision-page .page-hero .wrap {
+  padding-top: 96px;
+  padding-bottom: 82px;
+}
+
+.building-vision-page .page-hero h1 {
+  max-width: 13ch;
+}
+
+.building-vision-page .hero-copy {
+  max-width: 780px;
+}
+
+.building-vision-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 780px;
+  margin-top: 54px;
+  border-top: 1px solid var(--hair-strong);
+  border-bottom: 1px solid var(--hair-strong);
+}
+
+.building-vision-summary > div {
+  display: grid;
+  gap: 4px;
+  padding: 20px 20px 18px 0;
+}
+
+.building-vision-summary > div + div {
+  padding-left: 20px;
+  border-left: 1px solid var(--hair);
+}
+
+.building-vision-summary strong {
+  font-family: var(--display);
+  font-size: 38px;
+  font-weight: 560;
+  line-height: 1;
+}
+
+.building-vision-summary span {
+  color: var(--fg-3);
+}
+
+.building-vision-guardrail {
+  color: var(--feature-text);
+  background: var(--feature-bg);
+  border-bottom: 1px solid var(--feature-hair);
+}
+
+.building-vision-guardrail .wrap,
+.building-vision-note .wrap {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 760px);
+  gap: 34px;
+  align-items: baseline;
+  padding-top: 28px;
+  padding-bottom: 30px;
+}
+
+.building-vision-guardrail span {
+  color: var(--saffron-soft);
+}
+
+.building-vision-guardrail p {
+  color: var(--feature-muted);
+}
+
+.building-vision-principles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 42px;
+  border-top: 1px solid var(--hair);
+  border-left: 1px solid var(--hair);
+}
+
+.building-vision-principles article {
+  min-height: 220px;
+  padding: 30px;
+  background: var(--panel);
+  border-right: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+}
+
+.building-vision-principles span,
+.building-vision-room header span,
+.building-vision-spec span {
+  color: var(--brick);
+}
+
+.building-vision-principles h3 {
+  margin-top: 30px;
+}
+
+.building-vision-principles p {
+  max-width: 48ch;
+  margin-top: 12px;
+  color: var(--fg-2);
+}
+
+.building-vision-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 38px;
+}
+
+.building-vision-filters button {
+  min-height: 44px;
+  padding: 0 16px;
+  color: var(--fg-2);
+  background: transparent;
+  border: 1px solid var(--hair-strong);
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.building-vision-filters button:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.building-vision-filters button.is-active {
+  color: var(--paper);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.building-vision-count {
+  margin-top: 18px;
+  color: var(--fg-3);
+}
+
+.building-vision-list {
+  display: grid;
+  gap: 84px;
+  margin-top: 48px;
+}
+
+.building-vision-room {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1050px;
+  scroll-margin-top: 90px;
+  border-top: 1px solid var(--hair-strong);
+}
+
+.building-vision-room > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 420px);
+  gap: 36px;
+  align-items: end;
+  padding: 24px 0;
+}
+
+.building-vision-room h3 {
+  margin-top: 8px;
+  font-size: 29px;
+}
+
+.building-vision-room > header > p {
+  color: var(--fg-2);
+  font-family: var(--serif);
+  font-size: 20px;
+  font-style: italic;
+}
+
+.building-vision-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.building-vision-comparison figure {
+  min-width: 0;
+  margin: 0;
+}
+
+.building-vision-image-frame {
+  display: grid;
+  overflow: hidden;
+  place-items: center;
+  background: var(--feature-bg);
+  border: 1px solid var(--hair-strong);
+}
+
+.building-vision-image-frame img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.building-vision-comparison figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 2px 0;
+  color: var(--fg-3);
+  font-size: 13px;
+}
+
+.building-vision-comparison figcaption span {
+  color: var(--ink);
+}
+
+.building-vision-spec {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 28px;
+  border-top: 1px solid var(--hair);
+  border-left: 1px solid var(--hair);
+}
+
+.building-vision-spec > div {
+  min-height: 116px;
+  padding: 20px;
+  background: var(--panel);
+  border-right: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+}
+
+.building-vision-spec p {
+  margin-top: 9px;
+  color: var(--fg-2);
+}
+
+.building-vision-spec .building-vision-preserve {
+  grid-column: 1 / -1;
+  min-height: auto;
+  background: var(--panel-2);
+}
+
+.building-vision-agent-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 40px;
+  border-top: 1px solid var(--hair);
+  border-left: 1px solid var(--hair);
+}
+
+.building-vision-agent-resources {
+  margin-top: 40px;
+  background: var(--panel);
+  border: 1px solid var(--hair);
+}
+
+.building-vision-agent-resources > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 470px);
+  gap: 32px;
+  align-items: end;
+  padding: 26px 28px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.building-vision-agent-resources > header span,
+.building-vision-agent-links > a > span,
+.building-vision-agent-paths > span {
+  color: var(--brick);
+}
+
+.building-vision-agent-resources h3 {
+  margin-top: 9px;
+}
+
+.building-vision-agent-resources > header p,
+.building-vision-agent-links p {
+  color: var(--fg-2);
+}
+
+.building-vision-agent-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.building-vision-agent-links > a {
+  display: grid;
+  min-height: 164px;
+  padding: 22px;
+  color: var(--ink);
+  text-decoration: none;
+  border-right: 1px solid var(--hair);
+}
+
+.building-vision-agent-links > a:last-child {
+  border-right: 0;
+}
+
+.building-vision-agent-links > a:hover {
+  background: var(--panel-2);
+}
+
+.building-vision-agent-links p {
+  margin-top: 13px;
+  font-size: 14px;
+}
+
+.building-vision-agent-links strong {
+  align-self: end;
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.building-vision-agent-paths {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 16px 22px;
+  color: var(--fg-3);
+  background: var(--panel-2);
+  border-top: 1px solid var(--hair);
+}
+
+.building-vision-agent-paths > span {
+  margin-right: 8px;
+}
+
+.building-vision-agent-paths code {
+  padding: 5px 8px;
+  color: var(--fg-2);
+  background: var(--panel);
+  border: 1px solid var(--hair);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.building-vision-agent-grid article {
+  padding: 28px;
+  background: var(--panel);
+  border-right: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+}
+
+.building-vision-agent-grid span,
+.building-vision-agent-prompt span {
+  color: var(--brick);
+}
+
+.building-vision-agent-grid h3 {
+  margin-top: 24px;
+}
+
+.building-vision-agent-grid ol {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  padding-left: 20px;
+  color: var(--fg-2);
+}
+
+.building-vision-agent-grid code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+}
+
+.building-vision-agent-prompt {
+  margin-top: 24px;
+  color: var(--feature-text);
+  background: var(--feature-bg);
+  border: 1px solid var(--feature-hair);
+}
+
+.building-vision-agent-prompt header {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--feature-hair);
+}
+
+.building-vision-agent-prompt header p {
+  margin-top: 5px;
+  color: var(--feature-muted);
+  font-size: 13px;
+}
+
+.building-vision-copy-button {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 0 15px;
+  color: var(--feature-bg);
+  background: var(--saffron-soft);
+  border: 1px solid var(--saffron-soft);
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.building-vision-copy-button:hover {
+  background: var(--paper);
+  border-color: var(--paper);
+}
+
+.building-vision-copy-button:focus-visible {
+  outline: 2px solid var(--saffron-soft);
+  outline-offset: 3px;
+}
+
+.building-vision-agent-prompt pre {
+  max-width: 100%;
+  margin: 0;
+  overflow-x: auto;
+  padding: 24px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.building-vision-agent-prompt code {
+  color: var(--feature-text);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+.building-vision-note {
+  background: var(--band);
+  border-bottom: 1px solid var(--hair);
+}
+
+.building-vision-note span {
+  color: var(--saffron-deep);
+}
+
+.building-vision-note p {
+  color: var(--fg-2);
+}
+
+@media (max-width: 760px) {
+  .building-vision-page .page-hero {
+    min-height: 0;
+  }
+
+  .building-vision-page .page-hero .wrap {
+    padding-top: 62px;
+    padding-bottom: 58px;
+  }
+
+  .building-vision-summary {
+    grid-template-columns: 1fr;
+    margin-top: 38px;
+  }
+
+  .building-vision-summary > div,
+  .building-vision-summary > div + div {
+    grid-template-columns: 58px minmax(0, 1fr);
+    align-items: center;
+    padding: 16px 0;
+    border-top: 1px solid var(--hair);
+    border-left: 0;
+  }
+
+  .building-vision-summary > div:first-child {
+    border-top: 0;
+  }
+
+  .building-vision-summary strong {
+    font-size: 30px;
+  }
+
+  .building-vision-guardrail .wrap,
+  .building-vision-note .wrap {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .building-vision-principles,
+  .building-vision-agent-resources > header,
+  .building-vision-agent-links,
+  .building-vision-agent-grid,
+  .building-vision-spec,
+  .building-vision-room > header {
+    grid-template-columns: 1fr;
+  }
+
+  .building-vision-principles article {
+    min-height: 0;
+    padding: 24px;
+  }
+
+  .building-vision-principles h3 {
+    margin-top: 20px;
+  }
+
+  .building-vision-room > header {
+    gap: 14px;
+    padding: 20px 0;
+  }
+
+  .building-vision-room h3 {
+    font-size: 25px;
+  }
+
+  .building-vision-comparison {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .building-vision-image-frame {
+    height: auto;
+    min-height: 0;
+  }
+
+  .building-vision-image-frame img {
+    height: auto;
+    max-height: 76svh;
+  }
+
+  .building-vision-spec .building-vision-preserve {
+    grid-column: auto;
+  }
+
+  .building-vision-agent-grid article,
+  .building-vision-agent-prompt pre {
+    padding: 22px;
+  }
+
+  .building-vision-agent-resources > header {
+    align-items: start;
+    padding: 22px;
+  }
+
+  .building-vision-agent-links > a {
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--hair);
+  }
+
+  .building-vision-agent-links > a:last-child {
+    border-bottom: 0;
+  }
+
+  .building-vision-agent-paths {
+    align-items: flex-start;
+  }
+
+  .building-vision-agent-prompt header {
+    display: grid;
+    gap: 14px;
+  }
+
+  .building-vision-copy-button {
+    width: 100%;
+  }
+}
