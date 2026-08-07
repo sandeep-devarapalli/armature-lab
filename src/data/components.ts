@@ -181,6 +181,38 @@ export const components: CatalogComponent[] = [
     validationNotes: ["Treat 3.3V I/O and battery wiring as part of bench induction."]
   },
   {
+    slug: "esp32-wroom-drone-controller",
+    name: "ESP32-WROOM drone controller set",
+    category: "Controllers",
+    description: "ESP32-WROOM, CP2102N USB-UART, MPU6050 IMU, charger, regulation, switching, and motor-driver electronics for the Circuit Digest flight-controller PCB.",
+    inventoryClass: "reusable_tray",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 6,
+    quantityUnit: "complete controller BOMs",
+    tags: ["ESP32-WROOM", "MPU6050", "CP2102N", "flight controller"],
+    validationNotes: [
+      "Source against the published schematic and BOM; module substitutions are not automatically pin-, package-, or firmware-compatible.",
+      "Validate genuine MPU6050 operation at the firmware's configured I2C rate before assembling the full batch."
+    ]
+  },
+  {
+    slug: "esp32-drone-custom-pcb",
+    name: "ESP-Drone structural custom PCB",
+    category: "Controllers",
+    description: "The project-specific assembled PCB that combines flight control, motor drive, charging, USB programming, and the quadcopter frame.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 6,
+    quantityUnit: "assembled boards",
+    tags: ["ESP-Drone", "PCBA", "flight controller", "structural PCB"],
+    validationNotes: [
+      "Review the upstream Gerbers, schematic, BOM, and component placement before requesting a fabrication quote.",
+      "Order one engineering sample and complete a grounded motor test before approving the remaining batch."
+    ]
+  },
+  {
     slug: "esp32-s3-n16r8",
     name: "ESP32-S3 N16R8 development board",
     category: "Controllers",
@@ -938,6 +970,22 @@ export const components: CatalogComponent[] = [
     validationNotes: ["Reference offer was sold out; choose ratios from project load and speed calculations."]
   },
   {
+    slug: "esp32-drone-propulsion-set",
+    name: "ESP-Drone 720 motor and 55mm propeller set",
+    category: "Motion",
+    description: "Four 720 coreless motors with two clockwise and two counter-clockwise 55mm propellers for one ESP-Drone airframe.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 7,
+    quantityUnit: "four-motor sets",
+    tags: ["720 coreless motor", "55mm propeller", "CW", "CCW"],
+    validationNotes: [
+      "The seventh set is a motion-part spare; confirm motor voltage, shaft diameter, connector style, thrust, and matched propeller fit before PO.",
+      "Keep propellers removed during bench firmware, sensor, direction, and motor-response tests."
+    ]
+  },
+  {
     slug: "bno055-imu",
     name: "Adafruit BNO055 9-DOF IMU",
     category: "Navigation",
@@ -1220,6 +1268,22 @@ export const components: CatalogComponent[] = [
     quantityUnit: "shared safety set",
     tags: ["battery", "BMS", "charger", "LiPo"],
     validationNotes: ["Specialist-vendor gap: buy only after cell chemistry, current, connectors, storage, and fire-response rules are approved."]
+  },
+  {
+    slug: "esp32-drone-1s-lipo",
+    name: "ESP-Drone 1S 1300mAh high-discharge LiPo",
+    category: "Power and safety",
+    description: "A 1S 1300mAh 30C-class LiPo battery matched to the project's charger, connector, current draw, and target mass.",
+    inventoryClass: "consumable",
+    availability: "unavailable",
+    validationState: "source_required",
+    quantityTarget: 12,
+    quantityUnit: "battery packs",
+    tags: ["1S LiPo", "1300mAh", "30C", "ESP-Drone"],
+    validationNotes: [
+      "Approve the exact cell, protection approach, connector polarity, charger current, storage voltage, fire-safe charging, and retirement rules before purchase.",
+      "Use only packs that can sustain takeoff current without voltage collapse; inspect and quarantine damaged or swollen packs."
+    ]
   },
   {
     slug: "hazard-zone-safety",
@@ -2231,6 +2295,13 @@ export const projectComponentLinks: ProjectComponentLink[] = [
   ["openarm", "xlerobot", "alternative"],
   ["openarm", "jetson-orin-nano", "required"],
   ["openarm", "oak-d-lite", "optional"],
+  ["low-cost-esp32-drone", "esp32-wroom-drone-controller", "required"],
+  ["low-cost-esp32-drone", "esp32-drone-custom-pcb", "required"],
+  ["low-cost-esp32-drone", "esp32-drone-propulsion-set", "required"],
+  ["low-cost-esp32-drone", "esp32-drone-1s-lipo", "required"],
+  ["low-cost-esp32-drone", "battery-bms-safety", "required"],
+  ["low-cost-esp32-drone", "electronics-bench", "required"],
+  ["low-cost-esp32-drone", "hazard-zone-safety", "required"],
   ["px4", "pixhawk-6c", "required"],
   ["px4", "battery-bms-safety", "required"],
   ["px4", "bno055-imu", "optional"],
