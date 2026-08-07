@@ -62,6 +62,18 @@ test("public catalogs remain available", async ({ page }) => {
   ).toBeVisible();
 });
 
+test("historical directory URLs load the React routes", async ({ page }) => {
+  await page.goto("/projects/");
+  await expect(
+    page.getByRole("heading", { name: "Build what the lab needs next." })
+  ).toBeVisible();
+
+  await page.goto("/building-vision/");
+  await expect(
+    page.getByRole("heading", { name: "The building, without rebuilding it." })
+  ).toBeVisible();
+});
+
 test("mobile public navigation remains usable with member controls disabled", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "Mobile breakpoint only.");
 

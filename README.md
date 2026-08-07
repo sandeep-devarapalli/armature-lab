@@ -74,6 +74,9 @@ for provisioning, kiosk, Google Workspace, release, and rollback procedures.
   Turnstile and a verified Resend or Postmark sender are configured.
 - Deploy only a fresh production build from a reviewed, merged `main` commit.
   Never deploy the demo build or the preserved `site/` directory.
+- Production builds materialize React shell files for the historical
+  `/projects/` and `/building-vision/` directory URLs so a Direct Upload
+  replaces their legacy static objects as well as serving the SPA fallback.
 - Production promotion requires frontend, SQL/RLS, concurrency, PWA-cache,
   direct-route, responsive-theme, and live smoke checks. The previous
   Cloudflare Pages deployment remains the rollback target until those checks
