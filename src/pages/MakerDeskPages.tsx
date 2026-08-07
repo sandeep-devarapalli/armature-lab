@@ -22,6 +22,7 @@ import {
   Section,
   Status
 } from "../components/Primitives";
+import { memberPlatformAvailable } from "../config/release";
 import { OperationsHeader } from "./AdminPages";
 import { useApp } from "../context/AppContext";
 import { useInventory } from "../context/InventoryContext";
@@ -83,7 +84,7 @@ export function MakerDeskPage() {
         meta="Maker desk · storage · bench stock · portable tools"
         title="Keep the project moving between bookings."
         description="Store a build securely, buy the handful of small parts it needs, and rent a complete tagged toolkit instead of carrying a workshop in your backpack."
-        actions={
+        actions={memberPlatformAvailable ? (
           currentMember ? (
             <Link className="button button-primary" to="/lockers">
               Open member maker desk <ArrowRight aria-hidden="true" />
@@ -93,7 +94,7 @@ export function MakerDeskPage() {
               Sign in to use the maker desk <ArrowRight aria-hidden="true" />
             </Link>
           )
-        }
+        ) : undefined}
       >
         <MakerDeskMetrics />
       </PageHeader>
@@ -131,11 +132,13 @@ export function MakerDeskPage() {
             );
           })}
         </div>
-        <div className="section-actions">
-          <Link className="button button-quiet" to={currentMember ? "/lockers" : "/auth"}>
-            Request secure storage <ArrowRight aria-hidden="true" />
-          </Link>
-        </div>
+        {memberPlatformAvailable && (
+          <div className="section-actions">
+            <Link className="button button-quiet" to={currentMember ? "/lockers" : "/auth"}>
+              Request secure storage <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
+        )}
       </Section>
 
       <Section
@@ -160,11 +163,13 @@ export function MakerDeskPage() {
             );
           })}
         </div>
-        <div className="section-actions">
-          <Link className="button button-primary" to={currentMember ? "/consumables" : "/auth"}>
-            Build a pickup order <ShoppingBasket aria-hidden="true" />
-          </Link>
-        </div>
+        {memberPlatformAvailable && (
+          <div className="section-actions">
+            <Link className="button button-primary" to={currentMember ? "/consumables" : "/auth"}>
+              Build a pickup order <ShoppingBasket aria-hidden="true" />
+            </Link>
+          </div>
+        )}
       </Section>
 
       <Section
@@ -197,11 +202,13 @@ export function MakerDeskPage() {
             );
           })}
         </div>
-        <div className="section-actions">
-          <Link className="button button-quiet" to={currentMember ? "/toolkits" : "/auth"}>
-            Rent a toolkit <ArrowRight aria-hidden="true" />
-          </Link>
-        </div>
+        {memberPlatformAvailable && (
+          <div className="section-actions">
+            <Link className="button button-quiet" to={currentMember ? "/toolkits" : "/auth"}>
+              Rent a toolkit <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
+        )}
       </Section>
 
       <Section number="04" title="One clean operating path" dark>

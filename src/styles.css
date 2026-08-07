@@ -4731,13 +4731,7 @@ footer p {
   }
 
   .public-nav {
-    justify-content: flex-start;
-  }
-
-  .public-nav a {
-    display: inline-flex !important;
-    min-height: 44px;
-    align-items: center;
+    display: none;
   }
 
   .theme-switch button {
@@ -5489,14 +5483,6 @@ footer p {
 
   .theme-switch button {
     width: 28px;
-  }
-
-  .public-nav a:nth-child(n + 5) {
-    display: none !important;
-  }
-
-  .topbar-actions .icon-button:last-child {
-    display: none;
   }
 
   .button {
