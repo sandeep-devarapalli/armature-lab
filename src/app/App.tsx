@@ -6,6 +6,7 @@ import { MemberRoute, StaffRoute } from "../components/RouteGuard";
 
 const HomePage = lazy(() => import("../pages/HomePage").then((module) => ({ default: module.HomePage })));
 const ProjectsPage = lazy(() => import("../pages/ProjectsPage").then((module) => ({ default: module.ProjectsPage })));
+const BuildingVisionPage = lazy(() => import("../pages/BuildingVisionPage").then((module) => ({ default: module.BuildingVisionPage })));
 const KioskPage = lazy(() => import("../pages/KioskPage").then((module) => ({ default: module.KioskPage })));
 const FinancialsPage = lazy(() => import("../pages/PlanningPages").then((module) => ({ default: module.FinancialsPage })));
 const ProcurementPage = lazy(() => import("../pages/PlanningPages").then((module) => ({ default: module.ProcurementPage })));
@@ -47,6 +48,7 @@ export const router = createBrowserRouter([
       { path: "/membership", element: <MembershipPage /> },
       { path: "/services", element: <ServicesPage /> },
       { path: "/projects", element: <ProjectsPage /> },
+      { path: "/building-vision", element: <BuildingVisionPage /> },
       { path: "/financials", element: <FinancialsPage /> },
       { path: "/procurement", element: <ProcurementPage /> },
       { path: "/join", element: <JoinPage /> },

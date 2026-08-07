@@ -65,6 +65,7 @@ export default defineConfig({
       workbox: {
         navigateFallback: "/index.html",
         globPatterns: ["**/*.{js,css,html,png,jpg,jpeg,webp,svg,woff2}"],
+        globIgnores: ["**/building-vision/**"],
         cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
