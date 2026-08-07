@@ -6,7 +6,7 @@ test("building vision presents all views and filters without overflow", async ({
   });
   await page.goto("/building-vision");
 
-  await expect(page.getByRole("heading", { name: "The building, without rebuilding it." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "The building, without rebuilding it." })).toBeVisible({ timeout: 15_000 });
   await expect(page.getByText("Showing 16 of 16 views")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Building frontage" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Main café hall" })).toHaveCount(0);

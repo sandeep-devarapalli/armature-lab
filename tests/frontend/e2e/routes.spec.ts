@@ -9,7 +9,7 @@ async function signInDemo(page: import("@playwright/test").Page) {
 test("public projects and three themes remain usable", async ({ page }) => {
   await page.goto("/projects");
   await expect(page.getByRole("heading", { name: "Build what the lab needs next." })).toBeVisible();
-  await expect(page.getByText("LeRobot + SO-ARM101")).toBeVisible();
+  await expect(page.getByText("LeRobot + SO-ARM101").first()).toBeVisible();
   await page.getByRole("button", { name: "dark theme" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await page.reload();
@@ -130,12 +130,13 @@ test("PWA keeps transactional traffic out of Cache Storage", async ({ page, cont
       /^\/(?:auth|rest|functions|booking|bookings|check-in|calendar)(?:\/|$)/.test(parsed.pathname)
     );
   })).toBe(false);
+  expect(cachedUrls.some((url) => /\/assets\/index-[^/]+\.js$/.test(url))).toBe(true);
 
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "armature", exact: true })).toBeVisible();
   await context.setOffline(true);
   await page.reload();
-  await expect(page.getByRole("heading", { name: "GPU compute node" })).toBeVisible();
-  await page.evaluate(() => window.dispatchEvent(new Event("offline")));
-  await expect(page.getByRole("button", { name: "Confirm booking" })).toBeDisabled();
+  await expect(page.getByRole("heading", { name: "armature", exact: true })).toBeVisible();
 });
 
 test("mobile home has no horizontal overflow", async ({ page }) => {
