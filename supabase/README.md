@@ -37,6 +37,25 @@ booking, attendance, and operational calendar mirroring.
   resource's floor zone.
 - `202607260006_operations_controls.sql`: audited weekly-hours updates and
   staff booking cancellation, completion, and no-show controls.
+- `202607260007_component_inventory.sql`: component catalog, offers, requests,
+  inventory locations, checkout, cabinet events, RLS, and atomic inventory RPCs.
+- `202607260008_component_inventory_app_contracts.sql`: public catalog
+  projections and application-facing inventory contracts.
+- `202607260009_maker_services.sql`: locker subscriptions, bench-stock orders,
+  portable toolkit custody, coarse public catalogs, and attendance safeguards.
+- `202607260010_maker_services_catalog_seed.sql`: three locker sizes, fourteen
+  small-parts lines, and five complete toolkit templates. Physical stock stays
+  unavailable until staff counts and labels real units.
+- `202607260011_maker_services_contract_alignment.sql`: aligns toolkit
+  identifiers and contents with the web catalog and rejects mismatched locker
+  sizes during staff assignment.
+- `202607260012_3d_printer_procurement.sql`: adds listing rating snapshots and
+  seeds three fixed-bookable FDM printers, dated offers, and project mappings.
+
+Migrations `202607260001` through `202607260012` have already been applied to
+the linked project. Treat these files as immutable production history. Fixes
+must be additive migrations; do not edit, reorder, squash, or replay them
+against production.
 
 The required public RPCs are:
 
@@ -66,6 +85,10 @@ Generate frontend database types after a migration change:
 ```sh
 supabase gen types typescript --local
 ```
+
+The migrations publish the maker-desk catalog without inventing stock counts or
+prices. Staff must add physical lockers with an `offering_slug`, counted
+consumable lots, and tagged toolkit kits before those offers become available.
 
 The seed creates the HSR Layout location, safety certifications, sixteen
 builder pods, electronics benches, fabrication equipment, robot cells, the
@@ -113,6 +136,37 @@ data. It should deliver through the approved Google Workspace sender or the
 lab's transactional email provider. Supabase Auth custom SMTP is configured
 separately in the project dashboard for OTP and account email.
 
+Public component requests (`component-request`):
+
+- `APP_ORIGIN`: `https://armaturelab.org`.
+- `TURNSTILE_SECRET_KEY`: Cloudflare Turnstile server secret.
+- `COMPONENT_REQUEST_FROM_EMAIL`: verified transactional sender.
+- `COMPONENT_REQUEST_EMAIL_PROVIDER`: `resend` or `postmark`.
+- `RESEND_API_KEY` or `POSTMARK_SERVER_TOKEN`: selected provider credential.
+- `COMPONENT_REQUEST_RATE_LIMIT`: optional hourly email/IP limit, default `5`.
+
+The public browser receives only `VITE_TURNSTILE_SITE_KEY`. The Edge Function
+validates Turnstile, applies the atomic rate limit, creates a private pending
+request, and emails a one-use 24-hour verification link. Requester email and
+token material never appear in the published request view.
+
+The function and its frontend action remain disabled for the public-first
+release. Do not deploy or expose the action until Turnstile, a verified Resend
+or Postmark sender, `APP_ORIGIN`, rate limits, allowed origins, and token
+expiry/replay tests are complete. `VITE_COMPONENT_REQUESTS_ENABLED=false` is
+the production default until that gate is signed off.
+
+## Generated type review
+
+`src/types/database.ts` was reviewed statically against migrations
+`202607260007` through `202607260012`. It contains their public tables, views,
+RPCs, enums, maker-service contracts, and the rating fields added to
+`component_offers`; no missing generated public object was found in that
+review. This is not a substitute for generation from a clean local reset.
+Before merging schema work, run `supabase db reset`, regenerate with
+`supabase gen types typescript --local`, and review the diff. Do not generate
+types from production or use a destructive remote reset.
+
 ## Function Operations
 
 Deploy:
@@ -122,6 +176,8 @@ supabase functions deploy kiosk --no-verify-jwt
 supabase functions deploy calendar-sync --no-verify-jwt
 supabase functions deploy retry-reminders --no-verify-jwt
 supabase functions deploy booking-ics --no-verify-jwt
+# Only after the Turnstile/email release gate:
+supabase functions deploy component-request --no-verify-jwt
 ```
 
 JWT verification is disabled at the gateway because each function implements a
@@ -132,6 +188,8 @@ more specific boundary:
 - `calendar-sync` and `retry-reminders` require `ARMATURE_JOB_SECRET`.
 - `booking-ics` validates the bearer token and authorizes the booking owner or
   operations staff.
+- `component-request` validates Turnstile and uses service-role RPCs for the
+  private create/verify flow. Its public responses are always `no-store`.
 
 Schedule `calendar-sync` every minute and `retry-reminders` every minute using
 Supabase Cron or an external scheduler. Store the job secret in the scheduler's
@@ -169,12 +227,15 @@ An `aal2` operations/admin user can revoke an enrolled device with
 
 1. Link the intended Supabase project and review `supabase db diff` before
    pushing migrations.
-2. Enable Google OAuth, configure `https://armaturelab.org/auth/callback`, and
-   configure custom SMTP for OTP email.
+2. Configure custom SMTP for OTP email. Enable Google OAuth and
+   `https://armaturelab.org/auth/callback` only before the member-platform
+   launch, after its production flow tests pass.
 3. Create the first staff role through a reviewed SQL/admin operation. Never
    expose staff-role mutation to member clients.
 4. Configure private resource calendars and `calendar_links`.
 5. Set Edge Function secrets, deploy functions, and configure schedules.
-6. Run the pgTAP suite and real two-connection concurrency test.
-7. Review RLS with anonymous, pending, active, suspended, staff, kiosk, and
+6. Schedule deletion of `inventory_evidence` objects and rows after
+   `retain_until`; routine evidence is 30 days and flagged evidence is 180 days.
+7. Run the pgTAP suite and real two-connection concurrency test.
+8. Review RLS with anonymous, pending, active, suspended, staff, kiosk, and
    service-role personas before production traffic.
