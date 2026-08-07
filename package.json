@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:production": "node scripts/assert-production-env.mjs && tsc -b && vite build",
     "build:demo": "tsc -b && VITE_DEMO_MODE=true vite build",
+    "audit:production": "node scripts/check-production-audit.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -17,10 +19,11 @@
     "@zxing/browser": "^0.1.5",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.468.0",
+    "maplibre-gl": "^5.24.0",
     "qrcode": "^1.5.4",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-router-dom": "7.18.1"
+    "react-router-dom": "7.18.2"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.1",
@@ -36,6 +39,7 @@
     "typescript": "~5.9.2",
     "vite": "^7.1.7",
     "vite-plugin-pwa": "1.2.0",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "wrangler": "4.119.0"
   }
 }
