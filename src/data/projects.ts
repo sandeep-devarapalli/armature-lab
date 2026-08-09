@@ -248,6 +248,17 @@ export const projects: Project[] = [
     tags: ["autopilot", "rover", "mission planning", "simulation"]
   },
   {
+    slug: "openmantaclaus",
+    title: "OpenMantaClaus",
+    category: "Underwater Robots",
+    priority: "P1",
+    status: "Research Track",
+    description: "A competition-tested five-thruster AUV combining ROS 2 mission control, monocular YOLO perception, and bearing-only EKF SLAM for supervised pool autonomy.",
+    image: "/project-images/openmantaclaus-official.jpg",
+    sourceUrl: "https://github.com/kushagra77/OpenMantaClaus",
+    tags: ["AUV", "ROS 2", "ArduSub", "YOLO", "EKF SLAM", "Apache-2.0"]
+  },
+  {
     slug: "flexitac",
     title: "FlexiTac",
     category: "Tactile Sensing",

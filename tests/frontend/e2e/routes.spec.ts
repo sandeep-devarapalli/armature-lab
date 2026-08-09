@@ -132,6 +132,32 @@ test("low-cost ESP32 drone uses the documented airframe and build list", async (
   await expect(page.getByRole("heading", { name: "ESP-Drone 1S 1300mAh high-discharge LiPo" })).toBeVisible();
 });
 
+test("OpenMantaClaus uses its official AUV image and source-backed build list", async ({ page }) => {
+  await page.goto("/projects");
+  const card = page.locator("#openmantaclaus");
+
+  await expect(card.getByRole("heading", { name: "OpenMantaClaus" })).toBeVisible();
+  await expect(card.locator("img")).toHaveAttribute("src", "/project-images/openmantaclaus-official.jpg");
+  await expect(card.getByRole("link", { name: "Image: OpenMantaClaus · Kushagra Javeri" })).toHaveAttribute(
+    "href",
+    "https://github.com/kushagra77/OpenMantaClaus/blob/main/docs/assets/hero_shot.jpg"
+  );
+  await expect(card.getByRole("link", { name: "Project source" })).toHaveAttribute(
+    "href",
+    "https://github.com/kushagra77/OpenMantaClaus"
+  );
+  await expect(card.getByText("10 required")).toBeVisible();
+  await expect(card.getByText("2 optional")).toBeVisible();
+  await expect(card.getByText("1 alternative")).toBeVisible();
+
+  await card.getByRole("link", { name: "Build components" }).click();
+  await expect(page.getByRole("heading", { name: "Build list for OpenMantaClaus." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "OpenMantaClaus watertight structure set" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "OpenMantaClaus five-thruster propulsion set" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "OpenMantaClaus Navigator flight controller" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "OpenMantaClaus camera and depth-sensing set" })).toBeVisible();
+});
+
 test("OpenActuator uses its released LinearVCM hardware and published demo stack", async ({ page }) => {
   await page.goto("/projects");
   const card = page.locator("#openactuator");

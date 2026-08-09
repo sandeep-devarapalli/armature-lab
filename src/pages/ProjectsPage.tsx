@@ -41,6 +41,7 @@ const projectMediaCredits: Record<string, readonly [string, string]> = {
   "low-cost-esp32-drone": ["Circuit Digest · ESP-Drone", "https://circuitdigest.com/microcontroller-projects/DIY-wifi-controlled-drone"],
   px4: ["PX4 · Holybro / Dronecode", "https://docs.px4.io/main/en/frames_multicopter/holybro_x500v2_pixhawk6c"],
   ardupilot: ["ArduPilot Project", "https://ardupilot.org/"],
+  openmantaclaus: ["OpenMantaClaus · Kushagra Javeri", "https://github.com/kushagra77/OpenMantaClaus/blob/main/docs/assets/hero_shot.jpg"],
   flexitac: ["FlexiTac · Huang & Li", "https://flexitac.github.io/"],
   "9dtact": ["9DTact · Lin et al.", "https://linchangyi1.github.io/9DTact/"],
   "orca-hand": ["ORCA Dexterity", "https://www.orcahand.com/models"],
