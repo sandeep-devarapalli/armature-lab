@@ -415,11 +415,12 @@ test("home hero restores the mechanical kernel animation", async ({ page }) => {
   const firstFrame = await canvas.evaluate((element) =>
     (element as HTMLCanvasElement).toDataURL()
   );
-  await page.waitForTimeout(300);
-  const secondFrame = await canvas.evaluate((element) =>
-    (element as HTMLCanvasElement).toDataURL()
-  );
-  expect(secondFrame).not.toBe(firstFrame);
+  await expect.poll(
+    () => canvas.evaluate((element) =>
+      (element as HTMLCanvasElement).toDataURL()
+    ),
+    { timeout: 3_000 }
+  ).not.toBe(firstFrame);
 
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.reload();
