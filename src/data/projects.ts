@@ -71,6 +71,17 @@ export const projects: Project[] = [
     tags: ["open hardware", "RISC-V", "1 TOPS", "Node-RED", "edge vision"]
   },
   {
+    slug: "eyecam",
+    title: "Eyecam",
+    category: "Vision AI",
+    priority: "P2",
+    status: "Research Track",
+    description: "An open anthropomorphic webcam with an actuated eye, eyelids, eyebrow, embedded camera, and six-servo motion for studying expressive sensing and visible privacy cues.",
+    image: "/project-images/eyecam-official.jpg",
+    sourceUrl: "https://github.com/marcteys/eyecam",
+    tags: ["open hardware", "embedded vision", "6 servos", "HCI", "privacy"]
+  },
+  {
     slug: "lerobot-so-arm101",
     title: "LeRobot + SO-ARM101",
     category: "Robot Arms",
@@ -259,6 +270,28 @@ export const projects: Project[] = [
     tags: ["AUV", "ROS 2", "ArduSub", "YOLO", "EKF SLAM", "Apache-2.0"]
   },
   {
+    slug: "human-like-robot-skin",
+    title: "Human-like Robot Skin",
+    category: "Tactile Sensing",
+    priority: "P1",
+    status: "Research Track",
+    description: "A compliant mutual-capacitance skin sensor that embeds an electrode matrix in layered silicone for precise, deformable, and replicable physical human-robot interaction research.",
+    image: "/project-images/human-like-robot-skin-official.jpg",
+    sourceUrl: "https://marcteyssier.com/projects/humanlike-skin",
+    tags: ["robot skin", "mutual capacitance", "pHRI", "silicone", "open source"]
+  },
+  {
+    slug: "skin-on-interfaces",
+    title: "Skin-On Interfaces",
+    category: "Tactile Interfaces",
+    priority: "P2",
+    status: "Research Track",
+    description: "A bio-driven artificial-skin interface combining textured silicone, a conductive electrode grid, and multitouch sensing for pressure, stretch, pinch, and touch gestures.",
+    image: "/project-images/skin-on-interfaces-official.jpg",
+    sourceUrl: "https://marcteyssier.com/projects/skin-on",
+    tags: ["artificial skin", "multitouch", "deformable input", "MuCa", "HCI"]
+  },
+  {
     slug: "flexitac",
     title: "FlexiTac",
     category: "Tactile Sensing",
@@ -312,6 +345,17 @@ export const projects: Project[] = [
     image: "/project-images/opentouch-glove-official.jpg",
     sourceUrl: "https://wiresens-gloves.vercel.app/",
     tags: ["tactile glove", "FPCB", "ESP-NOW", "WiReSens", "research prototype"]
+  },
+  {
+    slug: "polysense",
+    title: "PolySense",
+    category: "Wearables",
+    priority: "P2",
+    status: "Research Track",
+    description: "An open fabrication process that uses in-situ polymerization to turn ordinary textiles, tape, yarn, and other fibrous materials into custom conductive and piezoresistive sensors.",
+    image: "/project-images/polysense-official.jpg",
+    sourceUrl: "https://counterchemists.github.io/",
+    tags: ["smart textiles", "piezoresistive", "in-situ polymerization", "wearables", "wet chemistry"]
   },
   {
     slug: "stag",

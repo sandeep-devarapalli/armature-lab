@@ -158,6 +158,66 @@ test("OpenMantaClaus uses its official AUV image and source-backed build list", 
   await expect(page.getByRole("heading", { name: "OpenMantaClaus camera and depth-sensing set" })).toBeVisible();
 });
 
+test("Marc Teyssier research tracks use distinct official media and source-backed build paths", async ({ page }) => {
+  const tracks = [
+    {
+      slug: "human-like-robot-skin",
+      title: "Human-like Robot Skin",
+      image: "/project-images/human-like-robot-skin-official.jpg",
+      credit: "Image: Marc Teyssier et al. · Human-like Robot Skin",
+      creditUrl: "https://marcteyssier.com/thumbs/projects/humanlike-skin/dscf0391_crop2-800x400.jpg",
+      sourceUrl: "https://marcteyssier.com/projects/humanlike-skin",
+      counts: ["3 required", "1 optional", "0 alternative"],
+      component: "MuCa mutual-capacitance controller"
+    },
+    {
+      slug: "skin-on-interfaces",
+      title: "Skin-On Interfaces",
+      image: "/project-images/skin-on-interfaces-official.jpg",
+      credit: "Image: Marc Teyssier et al. · Skin-On Interfaces",
+      creditUrl: "https://marcteyssier.com/thumbs/projects/skin-on/pinchphone3-800x400.jpg",
+      sourceUrl: "https://marcteyssier.com/projects/skin-on",
+      counts: ["3 required", "1 optional", "0 alternative"],
+      component: "Artificial-skin capacitive fabrication kit"
+    },
+    {
+      slug: "polysense",
+      title: "PolySense",
+      image: "/project-images/polysense-official.jpg",
+      credit: "Image: CounterChemists · PolySense",
+      creditUrl: "https://marcteyssier.com/thumbs/projects/polysense/combined-800x400.jpg",
+      sourceUrl: "https://counterchemists.github.io/",
+      counts: ["3 required", "1 optional", "0 alternative"],
+      component: "Supervised wet-chemistry safety station"
+    },
+    {
+      slug: "eyecam",
+      title: "Eyecam",
+      image: "/project-images/eyecam-official.jpg",
+      credit: "Image: Marc Teyssier et al. · Eyecam",
+      creditUrl: "https://marcteyssier.com/thumbs/projects/eyecam/eyecam_3_zoom-800x400.jpg",
+      sourceUrl: "https://github.com/marcteys/eyecam",
+      counts: ["5 required", "1 optional", "1 alternative"],
+      component: "Eyecam six-servo mechanism"
+    }
+  ] as const;
+
+  for (const track of tracks) {
+    await page.goto("/projects");
+    const card = page.locator(`#${track.slug}`);
+    await expect(card.getByRole("heading", { name: track.title })).toBeVisible();
+    await expect(card.locator("img")).toHaveAttribute("src", track.image);
+    await expect(card.getByRole("link", { name: track.credit })).toHaveAttribute("href", track.creditUrl);
+    await expect(card.getByRole("link", { name: "Project source" })).toHaveAttribute("href", track.sourceUrl);
+    for (const count of track.counts) {
+      await expect(card.getByText(count)).toBeVisible();
+    }
+    await card.getByRole("link", { name: "Build components" }).click();
+    await expect(page.getByRole("heading", { name: `Build list for ${track.title}.` })).toBeVisible();
+    await expect(page.getByRole("heading", { name: track.component })).toBeVisible();
+  }
+});
+
 test("OpenActuator uses its released LinearVCM hardware and published demo stack", async ({ page }) => {
   await page.goto("/projects");
   const card = page.locator("#openactuator");
