@@ -3,9 +3,18 @@
 .env.*
 !.env.example
 dist/
+dev-dist/
 node_modules/
+coverage/
 playwright-report/
 test-results/
 .wrangler/
+supabase/.temp/
 tmp/
 *.log
+
+# Generated review renders; source assets belong under public/.
+/docs/armature-building-concept-*.png
+
+# Local confidential source material
+/private/

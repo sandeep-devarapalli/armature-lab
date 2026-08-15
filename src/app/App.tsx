@@ -1,9 +1,14 @@
 import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
 import { lazy, Suspense, type ReactNode } from "react";
+import { OpeningSoonPage, ReleaseGate } from "../components/OpeningSoonPage";
 import { PwaUpdatePrompt } from "../components/PwaUpdatePrompt";
 import { Shell } from "../components/Shell";
 import { MemberRoute, StaffRoute } from "../components/RouteGuard";
 import { HomePage } from "../pages/HomePage";
+import {
+  componentRequestsAvailable,
+  memberPlatformAvailable
+} from "../config/release";
 
 const ProjectsPage = lazy(() => import("../pages/ProjectsPage").then((module) => ({ default: module.ProjectsPage })));
 const ElectrofluidicMusclesPage = lazy(() => import("../pages/ElectrofluidicMusclesPage").then((module) => ({ default: module.ElectrofluidicMusclesPage })));
@@ -14,7 +19,18 @@ const FinancialsPage = lazy(() => import("../pages/PlanningPages").then((module)
 const ProcurementPage = lazy(() => import("../pages/PlanningPages").then((module) => ({ default: module.ProcurementPage })));
 const ComponentsPage = lazy(() => import("../pages/ComponentsPages").then((module) => ({ default: module.ComponentsPage })));
 const ComponentDetailPage = lazy(() => import("../pages/ComponentsPages").then((module) => ({ default: module.ComponentDetailPage })));
+const PublicComponentRequestPage = lazy(() => import("../pages/InventoryPages").then((module) => ({ default: module.PublicComponentRequestPage })));
+const ComponentRequestsPage = lazy(() => import("../pages/InventoryPages").then((module) => ({ default: module.ComponentRequestsPage })));
+const InventoryPage = lazy(() => import("../pages/InventoryPages").then((module) => ({ default: module.InventoryPage })));
+const AdminComponentsPage = lazy(() => import("../pages/InventoryPages").then((module) => ({ default: module.AdminComponentsPage })));
+const AdminInventoryPage = lazy(() => import("../pages/InventoryPages").then((module) => ({ default: module.AdminInventoryPage })));
+const AdminComponentRequestsPage = lazy(() => import("../pages/InventoryPages").then((module) => ({ default: module.AdminComponentRequestsPage })));
+const AdminCabinetsPage = lazy(() => import("../pages/InventoryPages").then((module) => ({ default: module.AdminCabinetsPage })));
 const MakerDeskPage = lazy(() => import("../pages/MakerDeskPages").then((module) => ({ default: module.MakerDeskPage })));
+const LockersPage = lazy(() => import("../pages/MakerDeskPages").then((module) => ({ default: module.LockersPage })));
+const ConsumablesPage = lazy(() => import("../pages/MakerDeskPages").then((module) => ({ default: module.ConsumablesPage })));
+const ToolkitsPage = lazy(() => import("../pages/MakerDeskPages").then((module) => ({ default: module.ToolkitsPage })));
+const AdminMakerServicesPage = lazy(() => import("../pages/MakerDeskPages").then((module) => ({ default: module.AdminMakerServicesPage })));
 const EquipmentPage = lazy(() => import("../pages/PublicPages").then((module) => ({ default: module.EquipmentPage })));
 const MembershipPage = lazy(() => import("../pages/PublicPages").then((module) => ({ default: module.MembershipPage })));
 const ServicesPage = lazy(() => import("../pages/PublicPages").then((module) => ({ default: module.ServicesPage })));
@@ -43,6 +59,17 @@ const protectedPage = (page: ReactNode) => (
 const staffPage = (page: ReactNode) => (
   <MemberRoute><StaffRoute>{page}</StaffRoute></MemberRoute>
 );
+const memberFeature = (page: ReactNode) => (
+  <ReleaseGate enabled={memberPlatformAvailable}>{page}</ReleaseGate>
+);
+const componentRequestFeature = (page: ReactNode) => (
+  <ReleaseGate enabled={componentRequestsAvailable}>{page}</ReleaseGate>
+);
+const memberComponentRequestFeature = (page: ReactNode) => (
+  <ReleaseGate enabled={memberPlatformAvailable && componentRequestsAvailable}>
+    {page}
+  </ReleaseGate>
+);
 
 export const router = createBrowserRouter([
   {
@@ -59,30 +86,46 @@ export const router = createBrowserRouter([
       { path: "/financials", element: <FinancialsPage /> },
       { path: "/procurement", element: <ProcurementPage /> },
       { path: "/components", element: <ComponentsPage /> },
+      { path: "/components/request", element: componentRequestFeature(<PublicComponentRequestPage />) },
       { path: "/components/:slug", element: <ComponentDetailPage /> },
       { path: "/maker-desk", element: <MakerDeskPage /> },
       { path: "/join", element: <JoinPage /> },
       { path: "/members", element: <MembersPage /> },
       { path: "/members/:handle", element: <PublicMemberPage /> },
-      { path: "/auth", element: <AuthPage /> },
-      { path: "/auth/callback", element: <AuthCallbackPage /> },
-      { path: "/dashboard", element: protectedPage(<DashboardPage />) },
-      { path: "/profile", element: protectedPage(<ProfilePage />) },
-      { path: "/book", element: protectedPage(<BookPage />) },
-      { path: "/book/:resource", element: protectedPage(<ResourceBookingPage />) },
-      { path: "/bookings", element: protectedPage(<BookingsPage />) },
-      { path: "/bookings/:id", element: protectedPage(<BookingDetailPage />) },
-      { path: "/check-in", element: protectedPage(<CheckInPage />) },
-      { path: "/admin", element: <Navigate to="/admin/members" replace /> },
-      { path: "/admin/members", element: staffPage(<AdminMembersPage />) },
-      { path: "/admin/resources", element: staffPage(<AdminResourcesPage />) },
-      { path: "/admin/bookings", element: staffPage(<AdminBookingsPage />) },
-      { path: "/admin/attendance", element: staffPage(<AdminAttendancePage />) },
-      { path: "/admin/integrations", element: staffPage(<AdminIntegrationsPage />) },
+      { path: "/auth", element: memberFeature(<AuthPage />) },
+      { path: "/auth/callback", element: memberFeature(<AuthCallbackPage />) },
+      { path: "/dashboard", element: memberFeature(protectedPage(<DashboardPage />)) },
+      { path: "/profile", element: memberFeature(protectedPage(<ProfilePage />)) },
+      { path: "/book", element: memberFeature(protectedPage(<BookPage />)) },
+      { path: "/book/:resource", element: memberFeature(protectedPage(<ResourceBookingPage />)) },
+      { path: "/bookings", element: memberFeature(protectedPage(<BookingsPage />)) },
+      { path: "/bookings/:id", element: memberFeature(protectedPage(<BookingDetailPage />)) },
+      { path: "/check-in", element: memberFeature(protectedPage(<CheckInPage />)) },
+      { path: "/component-requests", element: memberComponentRequestFeature(protectedPage(<ComponentRequestsPage />)) },
+      { path: "/inventory", element: memberFeature(protectedPage(<InventoryPage />)) },
+      { path: "/lockers", element: memberFeature(protectedPage(<LockersPage />)) },
+      { path: "/consumables", element: memberFeature(protectedPage(<ConsumablesPage />)) },
+      { path: "/toolkits", element: memberFeature(protectedPage(<ToolkitsPage />)) },
+      { path: "/admin", element: memberFeature(<Navigate to="/admin/members" replace />) },
+      { path: "/admin/members", element: memberFeature(staffPage(<AdminMembersPage />)) },
+      { path: "/admin/resources", element: memberFeature(staffPage(<AdminResourcesPage />)) },
+      { path: "/admin/bookings", element: memberFeature(staffPage(<AdminBookingsPage />)) },
+      { path: "/admin/attendance", element: memberFeature(staffPage(<AdminAttendancePage />)) },
+      { path: "/admin/integrations", element: memberFeature(staffPage(<AdminIntegrationsPage />)) },
+      { path: "/admin/components", element: memberFeature(staffPage(<AdminComponentsPage />)) },
+      { path: "/admin/inventory", element: memberFeature(staffPage(<AdminInventoryPage />)) },
+      { path: "/admin/component-requests", element: memberComponentRequestFeature(staffPage(<AdminComponentRequestsPage />)) },
+      { path: "/admin/cabinets", element: memberFeature(staffPage(<AdminCabinetsPage />)) },
+      { path: "/admin/maker-services", element: memberFeature(staffPage(<AdminMakerServicesPage />)) },
       { path: "*", element: <NotFoundPage /> }
     ]
   },
-  { path: "/kiosk", element: <KioskPage /> }
+  {
+    path: "/kiosk",
+    element: memberPlatformAvailable
+      ? <KioskPage />
+      : <Shell><OpeningSoonPage /></Shell>
+  }
 ]);
 
 export function App() {
