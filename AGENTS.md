@@ -21,6 +21,7 @@ identity, approvals, resources, bookings, attendance, and integration state.
 
 ## Brand And Naming Rules
 
+- The canonical public website and email domain is `armaturelab.org` (singular). Do not substitute `armaturelabs.org`.
 - Keep the parent and lab identities separate. The larger parent plan is `Institute for Physical AI`; the lab identity is `Armature - The Physical AI and Robotics Lab`.
 - The current public site and asset pack style the lab name as lowercase `armature`. Preserve that styling in existing site copy and SVG text unless the user explicitly asks for capitalization changes.
 - Do not flatten the hierarchy into a vague umbrella name like "Armature Institute" unless the user explicitly asks.
