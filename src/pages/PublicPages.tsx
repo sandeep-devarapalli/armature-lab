@@ -425,14 +425,14 @@ export function JoinPage() {
             <span className="mono">Backers</span>
             <h3>Back the lab</h3>
             <p>Sponsor hardware, a zone, or a workshop series and help builders access equipment they would not own alone.</p>
-            <button className="text-link" type="button">Partnership contact to be published <ArrowRight aria-hidden="true" /></button>
+            <p className="mono">Partnership inquiries opening soon</p>
           </article>
           <article>
             <Cpu aria-hidden="true" />
             <span className="mono">Businesses</span>
             <h3>Deploy physical AI</h3>
             <p>Request an on-prem GPU, camera, or local-LLM assessment backed by the engineering floor.</p>
-            <button className="text-link" type="button">Assessment intake to be published <ArrowRight aria-hidden="true" /></button>
+            <p className="mono">Assessment intake opening soon</p>
           </article>
         </div>
       </Section>

@@ -152,7 +152,7 @@
 
 .building-vision-room {
   content-visibility: auto;
-  contain-intrinsic-size: auto 1050px;
+  contain-intrinsic-block-size: auto 1050px;
   scroll-margin-top: 90px;
   border-top: 1px solid var(--hair-strong);
 }

@@ -14,6 +14,7 @@ test("building vision presents all views and filters without overflow", async ({
   await expect(page.getByRole("heading", { name: "Lower stair landing" })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Main entrance reception" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Quiet meeting room" })).toHaveCount(0);
+  await expect(page.locator(".building-vision-comparison img").first()).toHaveAttribute("loading", "lazy");
 
   await page.getByRole("button", { name: "Frontage", exact: true }).click();
   await expect(page.getByText("Showing 3 of 16 views")).toBeVisible();
@@ -72,5 +73,11 @@ test("building vision presents all views and filters without overflow", async ({
 
   expect(await page.evaluate(() =>
     document.documentElement.scrollWidth > document.documentElement.clientWidth
+  )).toBe(false);
+  expect(await page.locator(".building-vision-room").evaluateAll((rooms) =>
+    rooms.some((room) => {
+      const bounds = room.getBoundingClientRect();
+      return bounds.left < -1 || bounds.right > window.innerWidth + 1;
+    })
   )).toBe(false);
 });

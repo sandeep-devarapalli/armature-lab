@@ -140,7 +140,7 @@ export function BuildingVisionPage() {
         </p>
 
         <div className="building-vision-list">
-          {visibleItems.map((item, index) => (
+          {visibleItems.map((item) => (
             <article className="building-vision-room" id={item.id} key={item.id}>
               <header>
                 <div>
@@ -156,7 +156,8 @@ export function BuildingVisionPage() {
                     <img
                       src={item.before}
                       alt={item.beforeAlt ?? `${item.title} before the proposed finish-only fit-out`}
-                      loading={index < 2 ? "eager" : "lazy"}
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <figcaption><span className="mono">Before</span> {item.beforeCaption ?? "Existing photograph"}</figcaption>
@@ -166,7 +167,8 @@ export function BuildingVisionPage() {
                     <img
                       src={item.after}
                       alt={item.afterAlt ?? `${item.title} visual concept with new finishes and movable furniture`}
-                      loading={index < 2 ? "eager" : "lazy"}
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <figcaption><span className="mono">After</span> {item.afterCaption ?? "Finish-only visual concept"}</figcaption>
