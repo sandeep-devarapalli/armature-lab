@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "build:production": "node scripts/assert-production-env.mjs && tsc -b && vite build",
-    "build:demo": "tsc -b && VITE_DEMO_MODE=true vite build",
+    "build": "tsc -b && vite build && npm run materialize:route-shells",
+    "build:production": "node scripts/assert-production-env.mjs && tsc -b && vite build && npm run materialize:route-shells",
+    "build:demo": "tsc -b && VITE_DEMO_MODE=true vite build && npm run materialize:route-shells",
+    "materialize:route-shells": "node scripts/materialize-route-shells.mjs",
     "audit:production": "node scripts/check-production-audit.mjs",
     "preview": "vite preview",
     "test": "vitest run",
@@ -29,7 +30,7 @@
     "@playwright/test": "^1.55.1",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^14.6.1",
+    "@testing-library/user-event": "^14.6.4",
     "@types/node": "^24.5.2",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^19.1.16",
@@ -40,6 +41,6 @@
     "vite": "^7.1.7",
     "vite-plugin-pwa": "1.2.0",
     "vitest": "^3.2.4",
-    "wrangler": "4.119.0"
+    "wrangler": "4.120.0"
   }
 }

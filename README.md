@@ -74,6 +74,12 @@ for provisioning, kiosk, Google Workspace, release, and rollback procedures.
   Turnstile and a verified Resend or Postmark sender are configured.
 - Deploy only a fresh production build from a reviewed, merged `main` commit.
   Never deploy the demo build or the preserved `site/` directory.
+- Production builds materialize React shell files for the historical
+  `/projects/` and `/building-vision/` directory URLs so a Direct Upload
+  replaces their legacy static objects as well as serving the SPA fallback.
+- The React entrypoint removes the preserved static site's `armature-v16`
+  Cache Storage entry so returning visitors cannot retain legacy pages after
+  reaching the new application.
 - Production promotion requires frontend, SQL/RLS, concurrency, PWA-cache,
   direct-route, responsive-theme, and live smoke checks. The previous
   Cloudflare Pages deployment remains the rollback target until those checks
@@ -95,6 +101,10 @@ ten zones, sixteen builder pods, nine cameras, ~Rs 7.65 lakh monthly cash opex,
 and the full revenue stream set (memberships, pods, tenants, workshops,
 programs, data centre builds, on-prem services). Matches the calculator on the
 site's Financials page. Planning estimates, not quotes.
+
+The [Circuit Digest electronics project index](docs/circuit-digest-electronics-project-index.md)
+is a dated, source-linked catalog for discovering lab builds by practical lane,
+platform signal, and minimum safety review gate.
 
 ## Placeholders still open
 

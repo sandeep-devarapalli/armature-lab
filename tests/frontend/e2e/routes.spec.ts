@@ -105,6 +105,149 @@ test("q8bot uses official media and a project-linked build list", async ({ page 
   await expect(page.getByRole("heading", { name: "Protected 14500 1000mAh Li-ion cells" })).toBeVisible();
 });
 
+test("low-cost ESP32 drone uses the documented airframe and build list", async ({ page }) => {
+  await page.goto("/projects");
+  const card = page.locator("#low-cost-esp32-drone");
+
+  await expect(card.getByRole("heading", { name: "Low Cost Drone using ESP32" })).toBeVisible();
+  await expect(card.locator("img")).toHaveAttribute(
+    "src",
+    "/project-images/esp32-drone-circuit-digest-official.jpg"
+  );
+  await expect(card.getByRole("link", { name: "Image: Circuit Digest · ESP-Drone" })).toHaveAttribute(
+    "href",
+    "https://circuitdigest.com/microcontroller-projects/DIY-wifi-controlled-drone"
+  );
+  await expect(card.getByRole("link", { name: "Project source" })).toHaveAttribute(
+    "href",
+    "https://github.com/Circuit-Digest/ESP-Drone"
+  );
+  await expect(card.getByText("7 required")).toBeVisible();
+
+  await card.getByRole("link", { name: "Build components" }).click();
+  await expect(page.getByRole("heading", { name: "Build list for Low Cost Drone using ESP32." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "ESP32-WROOM drone controller set" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "ESP-Drone structural custom PCB" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "ESP-Drone 720 motor and 55mm propeller set" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "ESP-Drone 1S 1300mAh high-discharge LiPo" })).toBeVisible();
+});
+
+test("OpenMantaClaus uses its official AUV image and source-backed build list", async ({ page }) => {
+  await page.goto("/projects");
+  const card = page.locator("#openmantaclaus");
+
+  await expect(card.getByRole("heading", { name: "OpenMantaClaus" })).toBeVisible();
+  await expect(card.locator("img")).toHaveAttribute("src", "/project-images/openmantaclaus-official.jpg");
+  await expect(card.getByRole("link", { name: "Image: OpenMantaClaus · Kushagra Javeri" })).toHaveAttribute(
+    "href",
+    "https://github.com/kushagra77/OpenMantaClaus/blob/main/docs/assets/hero_shot.jpg"
+  );
+  await expect(card.getByRole("link", { name: "Project source" })).toHaveAttribute(
+    "href",
+    "https://github.com/kushagra77/OpenMantaClaus"
+  );
+  await expect(card.getByText("10 required")).toBeVisible();
+  await expect(card.getByText("2 optional")).toBeVisible();
+  await expect(card.getByText("1 alternative")).toBeVisible();
+
+  await card.getByRole("link", { name: "Build components" }).click();
+  await expect(page.getByRole("heading", { name: "Build list for OpenMantaClaus." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "OpenMantaClaus watertight structure set" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "OpenMantaClaus five-thruster propulsion set" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "OpenMantaClaus Navigator flight controller" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "OpenMantaClaus camera and depth-sensing set" })).toBeVisible();
+});
+
+test("Ego-OSCAR uses official media and exposes its calibrated capture build", async ({ page }) => {
+  await page.goto("/projects");
+  const card = page.locator("#ego-oscar");
+
+  await expect(card.getByRole("heading", { name: "Ego-OSCAR" })).toBeVisible();
+  await expect(card.locator("img")).toHaveAttribute("src", "/project-images/ego-oscar-official.webp");
+  await expect(card.getByRole("link", { name: "Image: FPV Labs · Ego-OSCAR" })).toHaveAttribute(
+    "href",
+    "https://www.fpvlabs.ai/images/ego-oscar-hero.webp"
+  );
+  await expect(card.getByRole("link", { name: "Project source" })).toHaveAttribute(
+    "href",
+    "https://www.fpvlabs.ai/essays/ego-oscar"
+  );
+  await expect(card.getByText("8 required")).toBeVisible();
+  await expect(card.getByText("2 optional")).toBeVisible();
+  await expect(card.getByText("0 alternative")).toBeVisible();
+
+  await card.getByRole("link", { name: "Build components" }).click();
+  await expect(page.getByRole("heading", { name: "Build list for Ego-OSCAR." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ego-OSCAR synchronized stereo camera" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ego-OSCAR Radxa ROCK 5C capture kit" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ego-OSCAR sync and watchdog controller kit" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ego-OSCAR calibration and session-validation kit" })).toBeVisible();
+
+  await page.goto("/components/ego-oscar-calibration-kit");
+  await expect(page.getByText(/repository README currently says no license has been granted/)).toBeVisible();
+  await expect(page.getByText(/Require informed consent and environment-owner permission/)).toBeVisible();
+});
+
+test("Marc Teyssier research tracks use distinct official media and source-backed build paths", async ({ page }) => {
+  const tracks = [
+    {
+      slug: "human-like-robot-skin",
+      title: "Human-like Robot Skin",
+      image: "/project-images/human-like-robot-skin-official.jpg",
+      credit: "Image: Marc Teyssier et al. · Human-like Robot Skin",
+      creditUrl: "https://marcteyssier.com/thumbs/projects/humanlike-skin/dscf0391_crop2-800x400.jpg",
+      sourceUrl: "https://marcteyssier.com/projects/humanlike-skin",
+      counts: ["3 required", "1 optional", "0 alternative"],
+      component: "MuCa mutual-capacitance controller"
+    },
+    {
+      slug: "skin-on-interfaces",
+      title: "Skin-On Interfaces",
+      image: "/project-images/skin-on-interfaces-official.jpg",
+      credit: "Image: Marc Teyssier et al. · Skin-On Interfaces",
+      creditUrl: "https://marcteyssier.com/thumbs/projects/skin-on/pinchphone3-800x400.jpg",
+      sourceUrl: "https://marcteyssier.com/projects/skin-on",
+      counts: ["3 required", "1 optional", "0 alternative"],
+      component: "Artificial-skin capacitive fabrication kit"
+    },
+    {
+      slug: "polysense",
+      title: "PolySense",
+      image: "/project-images/polysense-official.jpg",
+      credit: "Image: CounterChemists · PolySense",
+      creditUrl: "https://marcteyssier.com/thumbs/projects/polysense/combined-800x400.jpg",
+      sourceUrl: "https://counterchemists.github.io/",
+      counts: ["3 required", "1 optional", "0 alternative"],
+      component: "Supervised wet-chemistry safety station"
+    },
+    {
+      slug: "eyecam",
+      title: "Eyecam",
+      image: "/project-images/eyecam-official.jpg",
+      credit: "Image: Marc Teyssier et al. · Eyecam",
+      creditUrl: "https://marcteyssier.com/thumbs/projects/eyecam/eyecam_3_zoom-800x400.jpg",
+      sourceUrl: "https://github.com/marcteys/eyecam",
+      counts: ["5 required", "1 optional", "1 alternative"],
+      component: "Eyecam six-servo mechanism"
+    }
+  ] as const;
+
+  for (const track of tracks) {
+    await page.goto("/projects");
+    const card = page.locator(`#${track.slug}`);
+    await expect(card.getByRole("heading", { name: track.title })).toBeVisible();
+    await expect(card.locator("img")).toHaveAttribute("src", track.image);
+    await expect(card.getByRole("link", { name: track.credit })).toHaveAttribute("href", track.creditUrl);
+    await expect(card.getByRole("link", { name: "Project source" })).toHaveAttribute("href", track.sourceUrl);
+    for (const count of track.counts) {
+      await expect(card.getByText(count)).toBeVisible();
+    }
+    await card.getByRole("link", { name: "Build components" }).click();
+    await expect(page.getByRole("heading", { name: `Build list for ${track.title}.` })).toBeVisible();
+    await expect(page.getByRole("heading", { name: track.component })).toBeVisible();
+  }
+});
+
 test("OpenActuator uses its released LinearVCM hardware and published demo stack", async ({ page }) => {
   await page.goto("/projects");
   const card = page.locator("#openactuator");
@@ -302,11 +445,12 @@ test("home hero restores the mechanical kernel animation", async ({ page }) => {
   const firstFrame = await canvas.evaluate((element) =>
     (element as HTMLCanvasElement).toDataURL()
   );
-  await page.waitForTimeout(300);
-  const secondFrame = await canvas.evaluate((element) =>
-    (element as HTMLCanvasElement).toDataURL()
-  );
-  expect(secondFrame).not.toBe(firstFrame);
+  await expect.poll(
+    () => canvas.evaluate((element) =>
+      (element as HTMLCanvasElement).toDataURL()
+    ),
+    { timeout: 3_000 }
+  ).not.toBe(firstFrame);
 
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.reload();
