@@ -22,7 +22,7 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { BrandMark } from "../components/BrandMark";
 import { Metric, Section } from "../components/Primitives";
-import { memberPlatformAvailable } from "../config/release";
+import { equipmentPageAvailable, memberPlatformAvailable } from "../config/release";
 import { useTheme } from "../context/ThemeContext";
 
 const labRoles = [
@@ -82,10 +82,12 @@ export function HomePage() {
                 <ArrowRight aria-hidden="true" />
               </Link>
             )}
-            <Link className="button button-quiet" to="/equipment">
-              See the space
-              <ArrowRight aria-hidden="true" />
-            </Link>
+            {equipmentPageAvailable && (
+              <Link className="button button-quiet" to="/equipment">
+                See the space
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            )}
           </div>
           <div className="metrics-strip">
             <Metric label="Footprint" value="3,500 sq ft" />

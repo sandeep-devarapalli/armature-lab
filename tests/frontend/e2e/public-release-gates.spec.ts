@@ -15,10 +15,6 @@ test("public-first production gates operational routes", async ({ page }) => {
   await expect(page.getByRole("link", { name: "Request a component" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Book a workstation" })).toHaveCount(0);
 
-  await page.goto("/equipment");
-  await expect(page.getByRole("link", { name: "Book live resources" })).toHaveCount(0);
-  await expect(page.getByRole("link", { name: /View slots/ })).toHaveCount(0);
-
   await page.goto("/maker-desk");
   await expect(page.getByRole("link", { name: /Sign in|Request secure storage|Build a pickup order|Rent a toolkit/ })).toHaveCount(0);
 
@@ -43,6 +39,25 @@ test("public-first production gates operational routes", async ({ page }) => {
       page.getByRole("heading", { name: "Operational access is opening soon." })
     ).toBeVisible();
   }
+});
+
+test("equipment page stays hidden", async ({ page }, testInfo) => {
+  await page.goto("/");
+  await expect(page.getByRole("link", { name: "Equipment", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "See the space" })).toHaveCount(0);
+
+  if (testInfo.project.name === "mobile") {
+    await page.getByRole("button", { name: "Open navigation" }).click();
+    await expect(
+      page
+        .getByRole("navigation", { name: "Mobile navigation" })
+        .getByRole("link", { name: "Equipment", exact: true })
+    ).toHaveCount(0);
+  }
+
+  await page.goto("/equipment");
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole("heading", { name: "armature", exact: true })).toBeVisible();
 });
 
 test("public catalogs remain available", async ({ page }) => {

@@ -2,6 +2,8 @@ import { demoModeEnabled, isBackendAvailable } from "../lib/supabase";
 
 const enabled = (value: string | undefined) => value === "true";
 
+export const equipmentPageAvailable = false;
+
 export const memberPlatformEnabled = enabled(
   import.meta.env.VITE_MEMBER_PLATFORM_ENABLED
 );
