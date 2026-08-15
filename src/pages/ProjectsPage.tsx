@@ -35,6 +35,7 @@ const projectMediaCredits: Record<string, readonly [string, string]> = {
   valetudo: ["Valetudo · Sören Beye", "https://valetudo.cloud/"],
   oomwoo: ["OOMWOO · MakersPet", "https://makerspet.com/blog/building-an-open-source-robot-vacuum-meet-oomwoo/"],
   openmower: ["OpenMower · Clemens Elflein", "https://openmower.de/"],
+  "diy-weather-station": ["Nikodem Bartnik · DIY Weather Station", "https://github.com/NikodemBartnik/DIY-Weather-Station/blob/main/server/app/static/images/diy_weather_station.jpg"],
   q8bot: ["Q8bot · Yufeng (Eric) Wu", "https://github.com/EricYufengWu/q8bot"],
   "solo12-odri": ["Open Dynamic Robot Initiative · Solo 12", "https://github.com/open-dynamic-robot-initiative/open_robot_actuator_hardware"],
   yor: ["YOR project team · yourownrobot.ai", "https://www.yourownrobot.ai/"],
@@ -56,6 +57,7 @@ const projectMediaCredits: Record<string, readonly [string, string]> = {
   amazinghand: ["AmazingHand · Pollen Robotics", "https://github.com/pollen-robotics/AmazingHand"],
   "dexhand-v1": ["DexHand · IoT Design Shop", "https://www.dexhand.org/"],
   "leap-hand": ["LEAP Hand · CMU", "https://github.com/leap-hand/LEAP_Hand_Sim"],
+  indymill: ["Nikodem Bartnik · IndyMill", "https://indystry.cc/wp-content/uploads/2021/10/1.2-e1635075424574.jpg"],
   netbox: ["NetBox Community", "https://github.com/netbox-community/netbox"],
   openbmc: ["OpenBMC · Linux Foundation", "https://openbmc.org/"],
   sonic: ["SONiC · Linux Foundation", "https://sonicfoundation.dev/brand-guidelines/"],
@@ -78,7 +80,7 @@ function getProjectLayer(project: Project): Exclude<ProjectLayer, "All layers"> 
   if (["Embedded AI", "Machine Learning"].includes(project.category)) {
     return "AI & software";
   }
-  if (["Tactile Sensing", "Tactile Interfaces", "Vision AI", "Wearables"].includes(project.category)) {
+  if (["Tactile Sensing", "Tactile Interfaces", "Vision AI", "Wearables", "Environmental Sensing"].includes(project.category)) {
     return "Sensing & interfaces";
   }
   return "Robotics & autonomy";

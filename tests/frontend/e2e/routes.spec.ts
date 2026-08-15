@@ -105,6 +105,55 @@ test("q8bot uses official media and a project-linked build list", async ({ page 
   await expect(page.getByRole("heading", { name: "Protected 14500 1000mAh Li-ion cells" })).toBeVisible();
 });
 
+test("Indystry projects use official media and source-backed build lists", async ({ page }) => {
+  await page.goto("/projects");
+  const weatherCard = page.locator("#diy-weather-station");
+
+  await expect(weatherCard.getByRole("heading", { name: "DIY Weather Station" })).toBeVisible();
+  await expect(weatherCard.locator("img")).toHaveAttribute("src", "/project-images/diy-weather-station-official.jpg");
+  await expect(weatherCard.getByRole("link", { name: "Image: Nikodem Bartnik · DIY Weather Station" })).toHaveAttribute(
+    "href",
+    "https://github.com/NikodemBartnik/DIY-Weather-Station/blob/main/server/app/static/images/diy_weather_station.jpg"
+  );
+  await expect(weatherCard.getByRole("link", { name: "Project source" })).toHaveAttribute(
+    "href",
+    "https://weather.indystry.cc/"
+  );
+  await expect(weatherCard.getByText("7 required")).toBeVisible();
+  await expect(weatherCard.getByText("0 optional")).toBeVisible();
+
+  await weatherCard.getByRole("link", { name: "Build components" }).click();
+  await expect(page.getByRole("heading", { name: "Build list for DIY Weather Station." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "DIY Weather Station Pico W controller" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "DIY Weather Station sensor set" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "DIY Weather Station solar power stack" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "DIY Weather Station dashboard server" })).toBeVisible();
+
+  await page.goto("/projects");
+  const millCard = page.locator("#indymill");
+
+  await expect(millCard.getByRole("heading", { name: "IndyMill" })).toBeVisible();
+  await expect(millCard.locator("img")).toHaveAttribute("src", "/project-images/indymill-official.jpg");
+  await expect(millCard.getByRole("link", { name: "Image: Nikodem Bartnik · IndyMill" })).toHaveAttribute(
+    "href",
+    "https://indystry.cc/wp-content/uploads/2021/10/1.2-e1635075424574.jpg"
+  );
+  await expect(millCard.getByRole("link", { name: "Project source" })).toHaveAttribute(
+    "href",
+    "https://indystry.cc/indymill/"
+  );
+  await expect(millCard.getByText("7 required")).toBeVisible();
+  await expect(millCard.getByText("2 optional")).toBeVisible();
+
+  await millCard.getByRole("link", { name: "Build components" }).click();
+  await expect(page.getByRole("heading", { name: "Build list for IndyMill." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "IndyMill motion and structure set" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "IndyMill GRBL motion-control set" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "IndyMill 500 W spindle and power set" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "IndyMill machine safety set" })).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+});
+
 test("low-cost ESP32 drone uses the documented airframe and build list", async ({ page }) => {
   await page.goto("/projects");
   const card = page.locator("#low-cost-esp32-drone");
