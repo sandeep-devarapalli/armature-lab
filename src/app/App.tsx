@@ -7,6 +7,7 @@ import { MemberRoute, StaffRoute } from "../components/RouteGuard";
 import { HomePage } from "../pages/HomePage";
 import {
   componentRequestsAvailable,
+  equipmentPageAvailable,
   memberPlatformAvailable
 } from "../config/release";
 
@@ -76,7 +77,7 @@ export const router = createBrowserRouter([
     element: <Shell />,
     children: [
       { path: "/", element: <HomePage /> },
-      { path: "/equipment", element: <EquipmentPage /> },
+      { path: "/equipment", element: equipmentPageAvailable ? <EquipmentPage /> : <Navigate to="/" replace /> },
       { path: "/membership", element: <MembershipPage /> },
       { path: "/services", element: <ServicesPage /> },
       { path: "/projects", element: <ProjectsPage /> },

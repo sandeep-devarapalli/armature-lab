@@ -68,6 +68,7 @@ describe("public-first release gates", () => {
 
     const release = await import("../../src/config/release");
 
+    expect(release.equipmentPageAvailable).toBe(false);
     expect(release.memberPlatformEnabled).toBe(false);
     expect(release.componentRequestsEnabled).toBe(false);
   });

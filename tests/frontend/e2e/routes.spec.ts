@@ -473,11 +473,6 @@ test("public routes preserve the useful legacy lab sections", async ({ page }) =
   await expect(page.getByRole("heading", { name: "From idea to working machine" })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 
-  await page.goto("/equipment");
-  await expect(page.getByRole("heading", { name: "Distribution boards" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "One-line power topology" })).toBeVisible();
-  await expectNoHorizontalOverflow(page);
-
   await page.goto("/membership");
   await expect(page.getByRole("heading", { name: "Workstation choices" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Edge AI invention workshops" })).toBeVisible();
@@ -744,7 +739,7 @@ test("PWA keeps transactional traffic out of Cache Storage", async ({ page, cont
 test("mobile route families stay contained and avoid iOS form zoom", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile");
   const publicRoutes = [
-    "/", "/equipment", "/membership", "/services", "/projects", "/ecosystem", "/financials",
+    "/", "/membership", "/services", "/projects", "/ecosystem", "/financials",
     "/procurement", "/components", "/components/bno055-imu", "/components/request",
     "/maker-desk", "/join", "/members", "/auth", "/kiosk"
   ];
@@ -767,6 +762,7 @@ test("mobile route families stay contained and avoid iOS form zoom", async ({ pa
 
   await page.goto("/projects");
   await page.getByRole("button", { name: "Open navigation" }).click();
+  await expect(page.getByRole("link", { name: "Equipment", exact: true })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Components", exact: true })).toBeVisible();
   await page.getByRole("link", { name: "Components", exact: true }).click();
   await expect(page).toHaveURL(/\/components$/);

@@ -16,6 +16,7 @@ import {
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import {
   componentRequestsAvailable,
+  equipmentPageAvailable,
   memberPlatformAvailable
 } from "../config/release";
 import { useApp } from "../context/AppContext";
@@ -25,7 +26,7 @@ import { BrandMark } from "./BrandMark";
 
 const publicLinks = [
   ["/", "The lab"],
-  ["/equipment", "Equipment"],
+  ...(equipmentPageAvailable ? [["/equipment", "Equipment"]] : []),
   ["/membership", "Membership"],
   ["/services", "Services"],
   ["/projects", "Projects"],
