@@ -29,9 +29,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: supabase/setup-cli@v1
+      - uses: supabase/setup-cli@v3
         with:
-          version: latest
+          version: 2.114.0
       - run: supabase start
       - run: supabase test db supabase/tests/database
       - run: supabase/tests/concurrent_booking.sh
