@@ -26,6 +26,7 @@ const projectMediaCredits: Record<string, readonly [string, string]> = {
   "esp32-ai": ["Derived from slvDev · esp32-ai demo", "https://github.com/slvDev/esp32-ai"],
   recamera: ["Seeed Studio · reCamera", "https://github.com/Seeed-Studio/OSHW-reCamera-Series"],
   eyecam: ["Marc Teyssier et al. · Eyecam", "https://marcteyssier.com/thumbs/projects/eyecam/eyecam_3_zoom-800x400.jpg"],
+  "ego-oscar": ["FPV Labs · Ego-OSCAR", "https://www.fpvlabs.ai/images/ego-oscar-hero.webp"],
   "lerobot-so-arm101": ["Hugging Face LeRobot", "https://github.com/huggingface/lerobot"],
   "so-arm100-so101": ["TheRobotStudio · SO-ARM100", "https://github.com/TheRobotStudio/SO-ARM100"],
   gem: ["GEM · Joe Clinton", "https://joeclinton.me/gem/"],

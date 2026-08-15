@@ -82,6 +82,17 @@ export const projects: Project[] = [
     tags: ["open hardware", "embedded vision", "6 servos", "HCI", "privacy"]
   },
   {
+    slug: "ego-oscar",
+    title: "Ego-OSCAR",
+    category: "Vision AI",
+    priority: "P1",
+    status: "Research Track",
+    description: "A published 280 g head-worn stereo-inertial capture rig combining synchronized global-shutter video, high-rate IMU data, and on-device H.264 recording for egocentric robotics datasets.",
+    image: "/project-images/ego-oscar-official.webp",
+    sourceUrl: "https://www.fpvlabs.ai/essays/ego-oscar",
+    tags: ["egocentric capture", "global-shutter stereo", "visual-inertial", "Radxa ROCK 5C", "ESP32-S3"]
+  },
+  {
     slug: "lerobot-so-arm101",
     title: "LeRobot + SO-ARM101",
     category: "Robot Arms",
