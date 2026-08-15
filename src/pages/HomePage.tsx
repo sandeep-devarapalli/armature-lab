@@ -22,6 +22,7 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { BrandMark } from "../components/BrandMark";
 import { Metric, Section } from "../components/Primitives";
+import { memberPlatformAvailable } from "../config/release";
 import { useTheme } from "../context/ThemeContext";
 
 const labRoles = [
@@ -70,10 +71,17 @@ export function HomePage() {
             compute, all bookable by the hour.
           </p>
           <div className="button-row">
-            <Link className="button button-primary" to="/book">
-              <CalendarDays aria-hidden="true" />
-              Book a workstation
-            </Link>
+            {memberPlatformAvailable ? (
+              <Link className="button button-primary" to="/book">
+                <CalendarDays aria-hidden="true" />
+                Book a workstation
+              </Link>
+            ) : (
+              <Link className="button button-primary" to="/projects">
+                Explore projects
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            )}
             <Link className="button button-quiet" to="/equipment">
               See the space
               <ArrowRight aria-hidden="true" />

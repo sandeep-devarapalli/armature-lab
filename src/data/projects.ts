@@ -71,6 +71,28 @@ export const projects: Project[] = [
     tags: ["open hardware", "RISC-V", "1 TOPS", "Node-RED", "edge vision"]
   },
   {
+    slug: "eyecam",
+    title: "Eyecam",
+    category: "Vision AI",
+    priority: "P2",
+    status: "Research Track",
+    description: "An open anthropomorphic webcam with an actuated eye, eyelids, eyebrow, embedded camera, and six-servo motion for studying expressive sensing and visible privacy cues.",
+    image: "/project-images/eyecam-official.jpg",
+    sourceUrl: "https://github.com/marcteys/eyecam",
+    tags: ["open hardware", "embedded vision", "6 servos", "HCI", "privacy"]
+  },
+  {
+    slug: "ego-oscar",
+    title: "Ego-OSCAR",
+    category: "Vision AI",
+    priority: "P1",
+    status: "Research Track",
+    description: "A published 280 g head-worn stereo-inertial capture rig combining synchronized global-shutter video, high-rate IMU data, and on-device H.264 recording for egocentric robotics datasets.",
+    image: "/project-images/ego-oscar-official.webp",
+    sourceUrl: "https://www.fpvlabs.ai/essays/ego-oscar",
+    tags: ["egocentric capture", "global-shutter stereo", "visual-inertial", "Radxa ROCK 5C", "ESP32-S3"]
+  },
+  {
     slug: "lerobot-so-arm101",
     title: "LeRobot + SO-ARM101",
     category: "Robot Arms",
@@ -215,6 +237,17 @@ export const projects: Project[] = [
     tags: ["bimanual", "embodied AI"]
   },
   {
+    slug: "low-cost-esp32-drone",
+    title: "Low Cost Drone using ESP32",
+    category: "Drones",
+    priority: "P1",
+    status: "Building Soon",
+    description: "A compact Wi-Fi quadcopter built around an ESP32-WROOM, MPU6050, structural custom PCB, and four coreless motors for supervised flight-control and PID-tuning work in the netted drone cage.",
+    image: "/project-images/esp32-drone-circuit-digest-official.jpg",
+    sourceUrl: "https://github.com/Circuit-Digest/ESP-Drone",
+    tags: ["ESP32-WROOM", "MPU6050", "Wi-Fi control", "custom PCB", "supervised flight"]
+  },
+  {
     slug: "px4",
     title: "PX4 Autopilot",
     category: "Drones",
@@ -235,6 +268,39 @@ export const projects: Project[] = [
     image: "/project-images/ardupilot-official.jpg",
     sourceUrl: "https://github.com/ArduPilot/ardupilot",
     tags: ["autopilot", "rover", "mission planning", "simulation"]
+  },
+  {
+    slug: "openmantaclaus",
+    title: "OpenMantaClaus",
+    category: "Underwater Robots",
+    priority: "P1",
+    status: "Research Track",
+    description: "A competition-tested five-thruster AUV combining ROS 2 mission control, monocular YOLO perception, and bearing-only EKF SLAM for supervised pool autonomy.",
+    image: "/project-images/openmantaclaus-official.jpg",
+    sourceUrl: "https://github.com/kushagra77/OpenMantaClaus",
+    tags: ["AUV", "ROS 2", "ArduSub", "YOLO", "EKF SLAM", "Apache-2.0"]
+  },
+  {
+    slug: "human-like-robot-skin",
+    title: "Human-like Robot Skin",
+    category: "Tactile Sensing",
+    priority: "P1",
+    status: "Research Track",
+    description: "A compliant mutual-capacitance skin sensor that embeds an electrode matrix in layered silicone for precise, deformable, and replicable physical human-robot interaction research.",
+    image: "/project-images/human-like-robot-skin-official.jpg",
+    sourceUrl: "https://marcteyssier.com/projects/humanlike-skin",
+    tags: ["robot skin", "mutual capacitance", "pHRI", "silicone", "open source"]
+  },
+  {
+    slug: "skin-on-interfaces",
+    title: "Skin-On Interfaces",
+    category: "Tactile Interfaces",
+    priority: "P2",
+    status: "Research Track",
+    description: "A bio-driven artificial-skin interface combining textured silicone, a conductive electrode grid, and multitouch sensing for pressure, stretch, pinch, and touch gestures.",
+    image: "/project-images/skin-on-interfaces-official.jpg",
+    sourceUrl: "https://marcteyssier.com/projects/skin-on",
+    tags: ["artificial skin", "multitouch", "deformable input", "MuCa", "HCI"]
   },
   {
     slug: "flexitac",
@@ -290,6 +356,17 @@ export const projects: Project[] = [
     image: "/project-images/opentouch-glove-official.jpg",
     sourceUrl: "https://wiresens-gloves.vercel.app/",
     tags: ["tactile glove", "FPCB", "ESP-NOW", "WiReSens", "research prototype"]
+  },
+  {
+    slug: "polysense",
+    title: "PolySense",
+    category: "Wearables",
+    priority: "P2",
+    status: "Research Track",
+    description: "An open fabrication process that uses in-situ polymerization to turn ordinary textiles, tape, yarn, and other fibrous materials into custom conductive and piezoresistive sensors.",
+    image: "/project-images/polysense-official.jpg",
+    sourceUrl: "https://counterchemists.github.io/",
+    tags: ["smart textiles", "piezoresistive", "in-situ polymerization", "wearables", "wet chemistry"]
   },
   {
     slug: "stag",

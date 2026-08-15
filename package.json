@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "build:production": "node scripts/assert-production-env.mjs && tsc -b && vite build",
-    "build:demo": "tsc -b && VITE_DEMO_MODE=true vite build",
+    "build": "tsc -b && vite build && npm run materialize:route-shells",
+    "build:production": "node scripts/assert-production-env.mjs && tsc -b && vite build && npm run materialize:route-shells",
+    "build:demo": "tsc -b && VITE_DEMO_MODE=true vite build && npm run materialize:route-shells",
+    "materialize:route-shells": "node scripts/materialize-route-shells.mjs",
     "audit:production": "node scripts/check-production-audit.mjs",
     "preview": "vite preview",
     "test": "vitest run",
