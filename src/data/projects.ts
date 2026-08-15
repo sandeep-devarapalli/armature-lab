@@ -182,6 +182,17 @@ export const projects: Project[] = [
     tags: ["RTK", "outdoors", "ROS"]
   },
   {
+    slug: "diy-weather-station",
+    title: "DIY Weather Station",
+    category: "Environmental Sensing",
+    priority: "P1",
+    status: "Building Soon",
+    description: "A solar-powered Raspberry Pi Pico W station that measures temperature, humidity, wind, pressure, light, rain, and battery state, then posts readings to a self-hosted Flask and MariaDB dashboard.",
+    image: "/project-images/diy-weather-station-official.jpg",
+    sourceUrl: "https://weather.indystry.cc/",
+    tags: ["Raspberry Pi Pico W", "DHT22", "BMP180", "anemometer", "Flask", "MariaDB"]
+  },
+  {
     slug: "q8bot",
     title: "Q8bot",
     category: "Mobile Robots",
@@ -422,6 +433,18 @@ export const projects: Project[] = [
     image: "/project-images/wearable-ring.png",
     sourceUrl: "https://github.com/hzhou3/omniring",
     tags: ["wearables", "PPG", "SpO2", "sensor data"]
+  },
+  {
+    slug: "indymill",
+    title: "IndyMill",
+    category: "Fabrication",
+    priority: "P1",
+    status: "Building Soon",
+    description: "A documented metal CNC platform built from aluminum profiles, linear rails, ballscrews, laser-cut plates, and Arduino GRBL control for supervised wood, polymer, and aluminum machining.",
+    image: "/project-images/indymill-official.jpg",
+    sourceUrl: "https://indystry.cc/indymill/",
+    infrastructure: true,
+    tags: ["CNC", "GRBL", "NEMA 23", "linear rails", "ballscrews", "metal fabrication"]
   },
   {
     slug: "netbox",

@@ -141,6 +141,7 @@ export type ComponentCategory =
   | "Motion"
   | "Vision"
   | "Navigation"
+  | "Environmental sensing"
   | "Tactile sensing"
   | "Power and safety"
   | "Compute and storage"
