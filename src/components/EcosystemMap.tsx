@@ -27,6 +27,7 @@ const sectorColor = [
   "Space hardware", "#6b5ca5",
   "Industrial automation", "#3f5430",
   "Hardware & sensing", "#a06b35",
+  "Edge & embedded systems", "#496787",
   "Learning & training", "#667080",
   "#667080"
 ] as maplibregl.ExpressionSpecification;

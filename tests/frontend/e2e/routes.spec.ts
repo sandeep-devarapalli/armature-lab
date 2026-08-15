@@ -40,7 +40,7 @@ test("public projects and three themes remain usable", async ({ page }) => {
 test("ecosystem map filters and preserves a selected organization", async ({ page }) => {
   await page.goto("/ecosystem");
   await expect(page.getByRole("heading", { name: "Robotics, mapped." })).toBeVisible();
-  await expect(page.getByText("46 organizations")).toBeVisible();
+  await expect(page.getByText("51 organizations")).toBeVisible();
   await expect(page.locator(".ecosystem-method h2")).toHaveText("Built to be useful.");
   await expect(page.locator(".ecosystem-method").getByText("Contribute on GitHub")).toHaveAttribute(
     "href",

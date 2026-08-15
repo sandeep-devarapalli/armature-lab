@@ -5,6 +5,7 @@ export const ecosystemSectors = [
   "Space hardware",
   "Industrial automation",
   "Hardware & sensing",
+  "Edge & embedded systems",
   "Learning & training",
   "Research & ecosystem"
 ] as const;
@@ -12,7 +13,7 @@ export const ecosystemSectors = [
 export type EcosystemSector = (typeof ecosystemSectors)[number];
 export type EcosystemEntityType = "Startup" | "Company" | "Research & ecosystem";
 export type EcosystemConfidence = "High" | "Medium";
-export type EcosystemLocationPrecision = "Locality-level" | "City-level" | "Metro presence";
+export type EcosystemLocationPrecision = "Address-level" | "Locality-level" | "City-level" | "Metro presence";
 
 export interface EcosystemEntity {
   slug: string;
@@ -145,33 +146,34 @@ export const bengaluruEcosystem = [
     slug: "accio-robotics",
     name: "Accio Robotics",
     entityType: "Startup",
-    sectors: ["Robotics", "Industrial automation"],
-    summary: "Warehouse robotics and automation for goods movement and order operations.",
-    locality: "HSR Layout, Bengaluru",
-    coordinates: [77.638, 12.9135],
+    sectors: ["Robotics", "Physical AI", "Industrial automation"],
+    summary: "Autonomous goods-to-person robots, assisted picking systems, electrified carts, and AccioOS fleet orchestration for warehouses.",
+    locality: "HSR Sector 1, Bengaluru",
+    coordinates: [77.6450991, 12.9175572],
     locationPrecision: "Locality-level",
     confidence: "High",
     locationConfidence: "High",
     websiteUrl: "https://acciorobotics.com/",
     sourceUrl: "https://acciorobotics.com/about",
     founders: "Pranav Srinivasan · Tuhin Sharma",
-    provenance: "Bangalore Founders · rows 30–31"
-  }),
+    provenance: "Bangalore Founders · rows 30–31; Web Research Leads · Accio Robotics"
+  }, "2026-08-08"),
   entity({
     slug: "strider-robotics",
     name: "Strider Robotics",
     entityType: "Startup",
     sectors: ["Robotics", "Physical AI"],
-    summary: "Industrial legged robots for material movement and autonomous plant inspection.",
-    locality: "Bengaluru · IISc and ARTPARK ecosystem",
-    locationPrecision: "City-level",
+    summary: "Autonomous industrial quadrupeds for inspection, multisensor asset monitoring, and material movement across hazardous terrain.",
+    locality: "ARTgarage, Jalahalli, Bengaluru",
+    coordinates: [77.5399482, 13.0518839],
+    locationPrecision: "Locality-level",
     confidence: "High",
     locationConfidence: "High",
     websiteUrl: "https://www.strider-robotics.in/",
     sourceUrl: "https://www.strider-robotics.in/about",
-    founders: "Aditya Varma Sagi · Praveenchandra Kuthpady",
-    provenance: "Web Research Leads · row 102"
-  }),
+    founders: "Aditya Varma Sagi · Praveenchandra Kuthpady · Shishir Kolathaya",
+    provenance: "Bangalore Founders · Strider founding team; Web Research Leads · row 102"
+  }, "2026-08-08"),
   entity({
     slug: "rabtronix",
     name: "RABTRONIX",
@@ -327,16 +329,17 @@ export const bengaluruEcosystem = [
     slug: "craftifai",
     name: "CraftifAI",
     entityType: "Startup",
-    sectors: ["Physical AI", "Hardware & sensing"],
-    summary: "Embedded, edge-AI, FPGA, IoT, and robotics infrastructure for intelligent physical products.",
-    locality: "Bengaluru · Sunnyvale · Mainz",
-    locationPrecision: "Metro presence",
+    sectors: ["Physical AI", "Edge & embedded systems"],
+    summary: "Orbit software infrastructure for hardware-specific firmware and deployable edge-perception pipelines used in robots, drones, IoT, and other intelligent devices.",
+    locality: "Hustlehub Tech Park H206, HSR Layout, Bengaluru",
+    locationPrecision: "Address-level",
     confidence: "High",
     locationConfidence: "High",
     websiteUrl: "https://www.craftifai.com/",
     sourceUrl: "https://www.craftifai.com/",
-    provenance: "Web Research Leads · row 100"
-  }),
+    founders: "Pratik Sharda · Yashwant Dagar",
+    provenance: "User Provided Startups · verified 08-08-2026; official Orbit product and HSR office pages, current public LinkedIn, Economic Times funding coverage, and Indian entity records; the separate registered office remains in Indiranagar; customer and performance claims are company-reported"
+  }, "2026-08-08"),
   entity({
     slug: "deevia-software",
     name: "Deevia Software",
@@ -609,6 +612,36 @@ export const bengaluruEcosystem = [
     provenance: "User Provided Startups · row 16; official address verified 30-07-2026"
   }),
   entity({
+    slug: "astrobase-space-technologies",
+    name: "Astrobase Space Technologies",
+    entityType: "Startup",
+    sectors: ["Space hardware", "Hardware & sensing"],
+    summary: "Reusable launch systems built around a LOX-methane full-flow staged-combustion engine, with Bengaluru manufacturing and a separate Andhra Pradesh hot-fire site.",
+    locality: "Awfis Vista Pixel, Jakkuru Layout, Bengaluru",
+    locationPrecision: "Address-level",
+    confidence: "High",
+    locationConfidence: "High",
+    websiteUrl: "https://www.astrobase.in/",
+    sourceUrl: "https://www.astrobase.in/product",
+    founders: "Neeraj Khandelwal · Devakumar Thammisetty",
+    provenance: "User-supplied website · verified 08-08-2026; official team, product and address pages, current public LinkedIn, IN-SPACe company profile and Indian entity records; published office coordinates withheld after OpenStreetMap returned no match; sub-scale hot-fire and integrated-engine milestones are company-reported, while full-scale testing, stage tests and orbital flight remain pending; current sources conflict on the CEO title"
+  }, "2026-08-08"),
+  entity({
+    slug: "aule-space",
+    name: "Aule Space",
+    entityType: "Startup",
+    sectors: ["Space hardware", "Physical AI", "Hardware & sensing"],
+    summary: "Autonomous RPOD spacecraft, satellite-life-extension jetpacks, close-proximity inspection, and debris-removal systems.",
+    locality: "Kalyan Nagar Road, Bengaluru East",
+    locationPrecision: "Locality-level",
+    confidence: "High",
+    locationConfidence: "High",
+    websiteUrl: "https://aule.space/",
+    sourceUrl: "https://aule.space/about-us",
+    founders: "Jay Panchal · Nithyaa Giri · Hrishit Tambi",
+    provenance: "User Provided Startups · Aule Space; Bangalore Founders · Aule founding team; official site and careers, current public company page, and Indian entity records; premises-level coordinates withheld; current maturity is ground prototype with a planned in-space demonstration"
+  }, "2026-08-08"),
+  entity({
     slug: "comet-aerospace",
     name: "Comet Aerospace",
     entityType: "Startup",
@@ -702,6 +735,52 @@ export const bengaluruEcosystem = [
     founders: "Ankit Acharya · Pranjal Nadhani",
     provenance: "User Provided Startups · verified 07-08-2026; official product and founder pages, current Google Play developer address, and indexed LinkedIn profiles; OpenStreetMap 14th Main Road approximation; deployment figures are company-reported"
   }, "2026-08-07"),
+  entity({
+    slug: "flo-mobility",
+    name: "Flo Mobility",
+    entityType: "Startup",
+    sectors: ["Robotics", "Physical AI", "Industrial automation", "Hardware & sensing"],
+    summary: "Autonomous electric material-movement robots for construction sites, combining LiDAR, camera perception, edge AI, actuation, and fleet control.",
+    locality: "100 Feet Ring Road, HSR Layout, Bengaluru",
+    locationPrecision: "Locality-level",
+    confidence: "High",
+    locationConfidence: "High",
+    websiteUrl: "https://flomobility.com/",
+    sourceUrl: "https://flomobility.com/offerings/material-movement",
+    founders: "Manesh Jain · Pratik Patel",
+    provenance: "User Provided Startups · verified 07-08-2026; official product, founder, and HSR Layout operating-address pages; deployment and performance figures are company-reported; map coordinate withheld after OpenStreetMap returned no street-address match"
+  }, "2026-08-07"),
+  entity({
+    slug: "neuralzome-cybernetics",
+    name: "Neuralzome Cybernetics",
+    entityType: "Startup",
+    sectors: ["Robotics", "Physical AI", "Industrial automation", "Hardware & sensing"],
+    summary: "Autonomous mowing and weeding robots for orchards and steep terrain, with teachable vision-based autonomy and remote mission control.",
+    locality: "HSR Layout Sector 6, Bengaluru · Mountain View presence",
+    locationPrecision: "Locality-level",
+    confidence: "High",
+    locationConfidence: "High",
+    websiteUrl: "https://www.neuralzome.com/",
+    sourceUrl: "https://www.neuralzome.com/mowack-pro",
+    founders: "Mohan Sivam · Aditya Shriwastava · Prasanna Venkatesan",
+    provenance: "User Provided Startups · verified 08-08-2026; official product and founder pages, indexed LinkedIn HSR headquarters, and Indian entity records; official website also lists a Mountain View presence; performance and deployment figures are company-reported; map coordinate withheld after OpenStreetMap returned no street-address match"
+  }, "2026-08-08"),
+  entity({
+    slug: "twara-robotics",
+    name: "Twara Robotics",
+    entityType: "Startup",
+    sectors: ["Robotics", "Industrial automation", "Hardware & sensing"],
+    summary: "Industrial robotic arms, soft grippers, joint actuators, and AMR drive kits for welding, machine tending, material handling, and custom automation.",
+    locality: "Peenya Industrial Area, Bengaluru",
+    coordinates: [77.5061288, 13.0177954],
+    locationPrecision: "Locality-level",
+    confidence: "High",
+    locationConfidence: "High",
+    websiteUrl: "https://twararobotics.in/",
+    sourceUrl: "https://twararobotics.in/industrial-robotic-arms",
+    founders: "Kaushik Sampath · Alok Rawat · Ashish Joglekar",
+    provenance: "User Provided Startups · verified 08-08-2026; official product, Peenya contact and Google Maps pages, current public LinkedIn and ARTPARK founder evidence, and Indian entity records; coordinates resolve from the official map link; the legal registered office remains in Hebbal; pilot and small-volume manufacturing statements are organization-reported"
+  }, "2026-08-08"),
   entity({
     slug: "newspace-research",
     name: "NewSpace Research & Technologies",
