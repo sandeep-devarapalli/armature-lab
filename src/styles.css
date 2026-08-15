@@ -4330,6 +4330,10 @@ footer p {
   background: #a06b35;
 }
 
+.ecosystem-entity-marker[data-sector="Edge & embedded systems"] {
+  background: #496787;
+}
+
 .ecosystem-entity-marker[data-sector="Learning & training"] {
   background: var(--fg-2);
 }
