@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { ReleaseGate } from "../../src/components/OpeningSoonPage";
+import { ReleaseGate, RouteFailurePage } from "../../src/components/OpeningSoonPage";
 
 describe("public-first release gates", () => {
   afterEach(() => {
@@ -33,6 +33,18 @@ describe("public-first release gates", () => {
 
     expect(screen.getByText("Operational controls")).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Operational access is opening soon." })).not.toBeInTheDocument();
+  });
+
+  it("shows a production-safe recovery screen for route failures", () => {
+    render(
+      <MemoryRouter>
+        <RouteFailurePage />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole("heading", { name: "This page did not load." })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Reload page/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Return to the lab" })).toHaveAttribute("href", "/");
   });
 
   it("does not infer demo mode from missing Supabase configuration", async () => {

@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PageHeader, Section } from "./Primitives";
 
@@ -27,6 +27,26 @@ export function OpeningSoonPage() {
         lede="Projects, services, procurement, the component catalog, Maker Desk information, and the Bengaluru ecosystem remain available while operational systems are staged."
       />
     </>
+  );
+}
+
+export function RouteFailurePage() {
+  return (
+    <PageHeader
+      meta="Page load interrupted"
+      title="This page did not load."
+      description="A new site version may have arrived while this tab was open. Reload to use the current release."
+      actions={(
+        <>
+          <button className="button button-primary" type="button" onClick={() => window.location.reload()}>
+            <RefreshCw aria-hidden="true" /> Reload page
+          </button>
+          <Link className="button button-quiet" to="/">
+            Return to the lab
+          </Link>
+        </>
+      )}
+    />
   );
 }
 

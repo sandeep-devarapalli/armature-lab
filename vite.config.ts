@@ -31,7 +31,7 @@ export default defineConfig(({ mode }) => {
   plugins: [
     react(),
     VitePWA({
-      registerType: "autoUpdate",
+      registerType: "prompt",
       manifest: {
         name: "armature - The Physical AI and Robotics Lab",
         short_name: "armature",
@@ -84,8 +84,6 @@ export default defineConfig(({ mode }) => {
       },
       workbox: {
         navigateFallback: "/index.html",
-        skipWaiting: true,
-        clientsClaim: true,
         globPatterns: [
           "index.html",
           "apple-touch-icon.png",

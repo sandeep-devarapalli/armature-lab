@@ -13,10 +13,12 @@
     "build:demo": "tsc -b && VITE_DEMO_MODE=true vite build && npm run materialize:route-shells",
     "materialize:route-shells": "node scripts/materialize-route-shells.mjs",
     "audit:production": "node scripts/check-production-audit.mjs",
+    "audit:all": "npm audit --audit-level=high",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "npm run build:demo && playwright test"
+    "test:e2e": "npm run build:demo && playwright test",
+    "test:e2e:production": "playwright test tests/frontend/e2e/public-release-gates.spec.ts tests/frontend/e2e/building-vision.spec.ts --project=chromium --project=mobile"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",

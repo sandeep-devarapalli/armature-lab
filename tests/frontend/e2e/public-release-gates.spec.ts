@@ -23,6 +23,9 @@ test("public-first production gates operational routes", async ({ page }) => {
 
   await page.goto("/join");
   await expect(page.getByRole("link", { name: "Sign in to apply" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /contact to be published|intake to be published/ })).toHaveCount(0);
+  await expect(page.getByText("Partnership inquiries opening soon")).toBeVisible();
+  await expect(page.getByText("Assessment intake opening soon")).toBeVisible();
 
   for (const path of [
     "/auth",

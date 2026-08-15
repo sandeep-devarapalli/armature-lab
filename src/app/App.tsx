@@ -1,6 +1,6 @@
 import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
 import { lazy, Suspense, type ReactNode } from "react";
-import { OpeningSoonPage, ReleaseGate } from "../components/OpeningSoonPage";
+import { OpeningSoonPage, ReleaseGate, RouteFailurePage } from "../components/OpeningSoonPage";
 import { PwaUpdatePrompt } from "../components/PwaUpdatePrompt";
 import { Shell } from "../components/Shell";
 import { MemberRoute, StaffRoute } from "../components/RouteGuard";
@@ -75,6 +75,11 @@ const memberComponentRequestFeature = (page: ReactNode) => (
 export const router = createBrowserRouter([
   {
     element: <Shell />,
+    errorElement: (
+      <Shell>
+        <RouteFailurePage />
+      </Shell>
+    ),
     children: [
       { path: "/", element: <HomePage /> },
       { path: "/equipment", element: equipmentPageAvailable ? <EquipmentPage /> : <Navigate to="/" replace /> },
