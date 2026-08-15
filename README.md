@@ -22,7 +22,7 @@ operational mirror.
 
 ## Local development
 
-Use Node.js 22:
+Use Node.js 22.22.2 or another version allowed by `package.json`:
 
 ```bash
 npm ci
