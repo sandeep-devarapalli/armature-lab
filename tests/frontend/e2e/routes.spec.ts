@@ -158,6 +158,36 @@ test("OpenMantaClaus uses its official AUV image and source-backed build list", 
   await expect(page.getByRole("heading", { name: "OpenMantaClaus camera and depth-sensing set" })).toBeVisible();
 });
 
+test("Ego-OSCAR uses official media and exposes its calibrated capture build", async ({ page }) => {
+  await page.goto("/projects");
+  const card = page.locator("#ego-oscar");
+
+  await expect(card.getByRole("heading", { name: "Ego-OSCAR" })).toBeVisible();
+  await expect(card.locator("img")).toHaveAttribute("src", "/project-images/ego-oscar-official.webp");
+  await expect(card.getByRole("link", { name: "Image: FPV Labs · Ego-OSCAR" })).toHaveAttribute(
+    "href",
+    "https://www.fpvlabs.ai/images/ego-oscar-hero.webp"
+  );
+  await expect(card.getByRole("link", { name: "Project source" })).toHaveAttribute(
+    "href",
+    "https://www.fpvlabs.ai/essays/ego-oscar"
+  );
+  await expect(card.getByText("8 required")).toBeVisible();
+  await expect(card.getByText("2 optional")).toBeVisible();
+  await expect(card.getByText("0 alternative")).toBeVisible();
+
+  await card.getByRole("link", { name: "Build components" }).click();
+  await expect(page.getByRole("heading", { name: "Build list for Ego-OSCAR." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ego-OSCAR synchronized stereo camera" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ego-OSCAR Radxa ROCK 5C capture kit" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ego-OSCAR sync and watchdog controller kit" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ego-OSCAR calibration and session-validation kit" })).toBeVisible();
+
+  await page.goto("/components/ego-oscar-calibration-kit");
+  await expect(page.getByText(/repository README currently says no license has been granted/)).toBeVisible();
+  await expect(page.getByText(/Require informed consent and environment-owner permission/)).toBeVisible();
+});
+
 test("Marc Teyssier research tracks use distinct official media and source-backed build paths", async ({ page }) => {
   const tracks = [
     {
