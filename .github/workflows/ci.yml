@@ -23,6 +23,7 @@ jobs:
       - run: npm run audit:all
       - run: npm test
       - run: npm run build
+      - run: npm run check:pages-runtime
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
 
@@ -67,6 +68,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build:production
+      - run: npm run check:pages-runtime
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e:production
       - run: >-
@@ -74,3 +76,4 @@ jobs:
           --project-name armature-lab
           --branch main
           --commit-hash ${{ github.sha }}
+      - run: npm run check:live-release

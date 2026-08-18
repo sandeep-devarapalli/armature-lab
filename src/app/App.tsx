@@ -128,6 +128,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/kiosk",
+    errorElement: (
+      <Shell>
+        <RouteFailurePage />
+      </Shell>
+    ),
     element: memberPlatformAvailable
       ? <KioskPage />
       : <Shell><OpeningSoonPage /></Shell>

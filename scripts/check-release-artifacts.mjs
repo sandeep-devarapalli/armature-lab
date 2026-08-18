@@ -1,0 +1,39 @@
+import { readFile, readdir } from "node:fs/promises";
+import path from "node:path";
+
+async function listAssetFiles(directory, prefix = "") {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = await Promise.all(entries.map(async (entry) => {
+    const relativePath = path.posix.join(prefix, entry.name);
+    return entry.isDirectory()
+      ? listAssetFiles(path.join(directory, entry.name), relativePath)
+      : [relativePath];
+  }));
+  return files.flat();
+}
+
+const assetFiles = (await listAssetFiles(path.resolve("dist/assets"))).sort();
+const routes = JSON.parse(await readFile(path.resolve("dist/_routes.json"), "utf8"));
+const expectedExcludes = assetFiles.map((asset) => `/assets/${asset}`);
+const allRoutes = [...routes.include, ...routes.exclude];
+
+if (routes.version !== 1 || JSON.stringify(routes.include) !== JSON.stringify(["/assets/*"])) {
+  throw new Error("dist/_routes.json must route only unknown /assets/* requests through Functions.");
+}
+if (JSON.stringify(routes.exclude) !== JSON.stringify(expectedExcludes)) {
+  throw new Error("dist/_routes.json must exclude every built asset from Functions.");
+}
+if (allRoutes.length > 100 || allRoutes.some((route) => route.length > 100)) {
+  throw new Error("dist/_routes.json exceeds Cloudflare Pages routing limits.");
+}
+
+const serviceWorker = await readFile(path.resolve("dist/sw.js"), "utf8");
+const missingPrecacheAssets = assetFiles
+  .filter((asset) => /\.(?:js|css)$/.test(asset))
+  .filter((asset) => !serviceWorker.includes(`assets/${asset}`));
+
+if (missingPrecacheAssets.length > 0) {
+  throw new Error(`Service worker precache is missing: ${missingPrecacheAssets.join(", ")}`);
+}
+
+console.log(`Release artifacts verified: ${assetFiles.length} static assets bypass Functions.`);

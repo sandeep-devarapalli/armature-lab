@@ -20,8 +20,9 @@ describe("removeLegacyPwaCaches", () => {
 });
 
 describe("recoverFromStaleChunk", () => {
-  it("reloads once when a deployed route chunk has disappeared", () => {
-    const event = new Event("vite:preloadError", { cancelable: true });
+  it("reloads only once per tab and lets a second failure reach the route boundary", () => {
+    const firstEvent = new Event("vite:preloadError", { cancelable: true });
+    const secondEvent = new Event("vite:preloadError", { cancelable: true });
     const values = new Map<string, string>();
     const storage = {
       getItem: (key: string) => values.get(key) ?? null,
@@ -29,18 +30,43 @@ describe("recoverFromStaleChunk", () => {
     };
     const reload = vi.fn();
 
-    recoverFromStaleChunk(event, storage, reload, 10_000);
-    recoverFromStaleChunk(event, storage, reload, 20_000);
+    recoverFromStaleChunk(firstEvent, storage, reload);
+    recoverFromStaleChunk(secondEvent, storage, reload);
 
-    expect(event.defaultPrevented).toBe(true);
+    expect(firstEvent.defaultPrevented).toBe(true);
+    expect(secondEvent.defaultPrevented).toBe(false);
     expect(reload).toHaveBeenCalledOnce();
   });
 
   it("leaves the route error screen available when session storage is unavailable", () => {
+    const event = new Event("vite:preloadError", { cancelable: true });
     const reload = vi.fn();
 
-    recoverFromStaleChunk(new Event("vite:preloadError"), null, reload);
+    recoverFromStaleChunk(event, null, reload);
 
+    expect(event.defaultPrevented).toBe(false);
     expect(reload).not.toHaveBeenCalled();
   });
+
+  it.each(["getItem", "setItem"] as const)(
+    "falls through when session storage %s fails",
+    (failedMethod) => {
+      const event = new Event("vite:preloadError", { cancelable: true });
+      const storage = {
+        getItem: () => {
+          if (failedMethod === "getItem") throw new Error("blocked");
+          return null;
+        },
+        setItem: () => {
+          if (failedMethod === "setItem") throw new Error("blocked");
+        }
+      };
+      const reload = vi.fn();
+
+      recoverFromStaleChunk(event, storage, reload);
+
+      expect(event.defaultPrevented).toBe(false);
+      expect(reload).not.toHaveBeenCalled();
+    }
+  );
 });
