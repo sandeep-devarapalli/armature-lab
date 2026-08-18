@@ -1,6 +1,5 @@
 const legacyCacheNames = ["armature-v16"];
-const chunkReloadKey = "armature:chunk-reload-at";
-const chunkReloadWindowMs = 60_000;
+const chunkReloadKey = "armature:chunk-reload";
 
 export async function removeLegacyPwaCaches(
   cacheStorage: Pick<CacheStorage, "delete"> | undefined =
@@ -17,20 +16,18 @@ export function recoverFromStaleChunk(
   event: Event,
   storage: Pick<Storage, "getItem" | "setItem"> | null | undefined =
     typeof sessionStorage === "undefined" ? undefined : sessionStorage,
-  reload: () => void = () => window.location.reload(),
-  now = Date.now()
+  reload: () => void = () => window.location.reload()
 ) {
-  event.preventDefault();
   if (!storage) return;
 
   try {
-    const lastReload = Number(storage.getItem(chunkReloadKey) ?? 0);
-    if (lastReload > 0 && now - lastReload < chunkReloadWindowMs) return;
-    storage.setItem(chunkReloadKey, String(now));
+    if (storage.getItem(chunkReloadKey)) return;
+    storage.setItem(chunkReloadKey, "1");
   } catch {
     return;
   }
 
+  event.preventDefault();
   reload();
 }
 

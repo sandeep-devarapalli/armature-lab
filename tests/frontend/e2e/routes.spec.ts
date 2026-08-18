@@ -23,6 +23,39 @@ async function expectMobileFormsAvoidZoom(page: import("@playwright/test").Page)
   expect(formFontSizes.every((size) => size >= 16)).toBe(true);
 }
 
+test("the demo kiosk route also recovers from a retired chunk", async ({ browser }, testInfo) => {
+  test.skip(testInfo.project.name !== "chromium", "One browser covers the sibling router boundary.");
+  const context = await browser.newContext({ serviceWorkers: "block" });
+  const page = await context.newPage();
+  let documentRequests = 0;
+  let chunkRequests = 0;
+
+  page.on("request", (request) => {
+    if (request.resourceType() === "document") documentRequests += 1;
+  });
+  await page.route(/\/assets\/KioskPage-[^/]+\.js(?:\?.*)?$/, async (route) => {
+    chunkRequests += 1;
+    await route.fulfill({
+      status: 404,
+      contentType: "text/plain; charset=utf-8",
+      body: "Asset not found."
+    });
+  });
+
+  await page.goto("/kiosk");
+
+  if (await page.getByRole("heading", { name: "Operational access is opening soon." }).isVisible()) {
+    await context.close();
+    test.skip(true, "The production build intentionally gates the kiosk bundle.");
+  }
+
+  await expect(page.getByRole("heading", { name: "This page did not load." })).toBeVisible();
+  await expect(page.getByText("Unexpected Application Error!")).toHaveCount(0);
+  expect(documentRequests).toBe(2);
+  expect(chunkRequests).toBe(2);
+  await context.close();
+});
+
 test("public projects and three themes remain usable", async ({ page }) => {
   await page.goto("/projects");
   await expect(page.getByRole("heading", { name: "Build what the lab needs next." })).toBeVisible();

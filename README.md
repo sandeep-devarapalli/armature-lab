@@ -8,7 +8,7 @@ physical AI and robotics lab in HSR Layout, Bengaluru.
 ## Application
 
 - `src/`: public catalog, member booking/inventory, staff, and kiosk routes.
-- `public/`: PWA icons, Cloudflare SPA fallback, and credited project media.
+- `public/`: PWA icons, Cloudflare headers, and credited project media.
 - `supabase/`: schema, RLS, atomic booking RPCs, seed data, database tests, and
   Edge Functions for verified component requests, kiosk, calendar, reminders,
   and ICS.
@@ -84,6 +84,13 @@ for provisioning, kiosk, Google Workspace, release, and rollback procedures.
   direct-route, responsive-theme, and live smoke checks. The previous
   Cloudflare Pages deployment remains the rollback target until those checks
   pass.
+- Keep the Cloudflare zone's Browser Cache TTL set to `Respect Existing
+  Headers`. HTML must revalidate, while fingerprinted `/assets/*` files may be
+  cached as immutable.
+- Post-deploy smoke checks must confirm a built JavaScript asset returns `200`
+  with a JavaScript content type, a missing `/assets/*.js` path returns a
+  non-HTML `404` with `no-store`, and a representative deep route returns the
+  revalidating HTML shell.
 
 ## brand/
 Exploded-A mark and lockups. Light (monochrome ink) is the primary; ink/dark

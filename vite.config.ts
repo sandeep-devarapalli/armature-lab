@@ -84,14 +84,12 @@ export default defineConfig(({ mode }) => {
       },
       workbox: {
         navigateFallback: "/index.html",
+        skipWaiting: false,
+        clientsClaim: true,
         globPatterns: [
           "index.html",
           "apple-touch-icon.png",
-          "assets/index-*.js",
-          "assets/index-*.css",
-          "assets/react-*.js",
-          "assets/supabase-*.js",
-          "assets/workbox-window.*.js"
+          "assets/*.{js,css}"
         ],
         cleanupOutdatedCaches: true,
         runtimeCaching: [
