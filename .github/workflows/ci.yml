@@ -24,7 +24,7 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run check:pages-runtime
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --only-shell chromium
       - run: npm run test:e2e
 
   database:
@@ -69,7 +69,7 @@ jobs:
       - run: npm ci
       - run: npm run build:production
       - run: npm run check:pages-runtime
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --only-shell chromium
       - run: npm run test:e2e:production
       - run: >-
           npx wrangler pages deploy dist
