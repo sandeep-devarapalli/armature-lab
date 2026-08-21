@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",
-    "@zxing/browser": "^0.1.5",
+    "@zxing/browser": "^0.2.1",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.468.0",
     "maplibre-gl": "^5.24.0",
